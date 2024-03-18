@@ -7,7 +7,7 @@ import {
   POSTGRES_PORT,
   POSTGRES_URL,
   POSTGRES_USERNAME,
-} from 'src/global.variables';
+} from '../settings';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 export const typeormConfiguration = TypeOrmModule.forRoot({
