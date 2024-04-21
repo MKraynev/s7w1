@@ -9,18 +9,18 @@ import {
   POSTGRES_PORT,
   POSTGRES_URL,
   POSTGRES_USERNAME,
-} from 'src/settings';
+} from '../settings';
 
-// export const typeormConfiguration = TypeOrmModule.forRoot({
-//   type: 'postgres',
-//   host: POSTGRES_URL,
-//   port: POSTGRES_PORT,
-//   username: POSTGRES_USERNAME,
-//   password: POSTGRES_PASSWORD,
-//   database: POSTGRES_DATABASE,
-//   autoLoadEntities: true,
-//   synchronize: true,
-// });
+export const typeormConfiguration = TypeOrmModule.forRoot({
+  type: 'postgres',
+  host: POSTGRES_URL,
+  port: POSTGRES_PORT,
+  username: POSTGRES_USERNAME,
+  password: POSTGRES_PASSWORD,
+  database: POSTGRES_DATABASE,
+  autoLoadEntities: true,
+  synchronize: true,
+});
 
 @Module({
   imports: [],
