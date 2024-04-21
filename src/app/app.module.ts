@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { BlogModule } from 'src/blogs/BlogsModule';
+import { BlogModule } from '../blogs/BlogsModule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   POSTGRES_DATABASE,
@@ -23,7 +23,7 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
 });
 
 @Module({
-  imports: [],
+  imports: [typeormConfiguration, BlogModule],
   controllers: [AppController],
   providers: [AppService],
 })
