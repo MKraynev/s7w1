@@ -23,7 +23,7 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
 });
 
 @Module({
-  imports: [typeormConfiguration, BlogModule],
+  imports: [typeormConfiguration],
   controllers: [AppController],
   providers: [AppService],
 })
