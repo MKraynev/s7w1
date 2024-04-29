@@ -1,4 +1,3 @@
-import { GamesRepoEntity } from 'src/features/games/repo/entities/GamesRepoEntity';
 import {
   Column,
   Entity,
@@ -8,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { QuizQuestionEntity } from '../../repo/entity/QuestionsRepoEntity';
+import { GamesRepoEntity } from '../../../games/repo/entities/GamesRepoEntity';
 @Entity('QuizGameQuestion')
 export class QuizGameQuestionRepoEntity {
   @PrimaryGeneratedColumn()

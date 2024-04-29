@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CommentRepoEntity } from 'src/features/comments/repo/entities/CommentsRepoEntity';
 import { CommentInfo } from '../service/entities/PostControllerGetComment';
-import { CommentsRepoService } from 'src/features/comments/repo/CommentsRepoService';
 import { PostsRepoService } from '../repo/PostsRepoService';
+import { CommentRepoEntity } from '../../comments/repo/entities/CommentsRepoEntity';
+import { CommentsRepoService } from '../../comments/repo/CommentsRepoService';
 
 export class PostServiceGetPostCommentsCommand {
   constructor(

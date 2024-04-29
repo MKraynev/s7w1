@@ -17,7 +17,7 @@ import {
   UsersRepoClearUseCase,
 } from '../use-cases/UsersRepoClearUsecase';
 import { UserRepoEntity } from '../entities/UsersRepoEntity';
-import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/UsersControllerRegistrationEntity';
+import { UserControllerRegistrationEntity } from '../../controllers/entities/UsersControllerRegistrationEntity';
 
 describe(`${UsersRepoUpdateOneUseCase.name} test`, () => {
   let module: TestingModule;

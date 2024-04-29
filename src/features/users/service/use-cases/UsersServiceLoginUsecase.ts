@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { RequestDeviceEntity } from 'src/features/devices/decorators/entity/RequestDeviceEntity';
-import { JwtHandlerService } from 'src/jwt/JwtService';
 import { UsersRepoService } from '../../repo/UsersRepoService';
-import { DeviceRepoService } from 'src/features/devices/repo/DevicesRepoService';
+import { RequestDeviceEntity } from '../../../devices/decorators/entity/RequestDeviceEntity';
+import { JwtHandlerService } from '../../../../jwt/JwtService';
+import { DeviceRepoService } from '../../../devices/repo/DevicesRepoService';
 
 export enum UserLoginStatus {
   Success,

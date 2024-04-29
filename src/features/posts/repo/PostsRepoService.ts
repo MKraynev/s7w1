@@ -7,8 +7,8 @@ import {
   PostCreateEntity,
   PostWithExpectedBlogIdCreateEntity,
 } from '../controller/entities/SuperAdminCreatePostEntity';
-import { BlogsRepoService } from 'src/features/blogs/repo/blogs.repo.service';
-import { BlogRepoEntity } from 'src/features/blogs/repo/entities/blogs.repo.entity';
+import { BlogsRepoService } from '../../blogs/repo/blogs.repo.service';
+import { BlogRepoEntity } from '../../blogs/repo/entities/blogs.repo.entity';
 
 export class PostsRepoService {
   constructor(

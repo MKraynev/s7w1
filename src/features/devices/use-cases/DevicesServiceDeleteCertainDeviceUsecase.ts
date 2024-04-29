@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { JwtServiceUserRefreshTokenLoad } from 'src/jwt/entities/JwtServiceRefreshTokenLoad';
 import { DeviceRepoService } from '../repo/DevicesRepoService';
+import { JwtServiceUserRefreshTokenLoad } from '../../../jwt/entities/JwtServiceRefreshTokenLoad';
 
 export enum DeleteCertainUserDeviceStatus {
   Success,

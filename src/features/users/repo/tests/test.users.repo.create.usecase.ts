@@ -1,5 +1,4 @@
 import { TestingModule } from '@nestjs/testing';
-import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/UsersControllerRegistrationEntity';
 import {
   UsersRepoReadOneByPropertyValueCommand,
   UsersRepoReadOneByPropertyValueUseCase,
@@ -10,6 +9,7 @@ import {
   UsersRepoCreateUserCommand,
   UsersRepoCreateUserUseCase,
 } from '../use-cases/UsersRepoCreateUsecase';
+import { UserControllerRegistrationEntity } from '../../controllers/entities/UsersControllerRegistrationEntity';
 
 describe('UsersRepo UseCase: Create', () => {
   let module: TestingModule;

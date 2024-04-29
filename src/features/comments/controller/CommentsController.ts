@@ -18,17 +18,16 @@ import {
   CommentServicePutLikeStatusCommand,
   CommentServiceSetLikeStatus,
 } from '../use-cases/CommentsServicePutLikeStatusUsecase';
-import { _WAIT_ } from 'src/settings';
 import {
   ReadAccessToken,
   TokenExpectation,
-} from 'src/jwt/decorators/JwtRequestReadAccessToken';
-import { JwtServiceUserAccessTokenLoad } from 'src/jwt/entities/JwtServiceAccessTokenLoad';
-import { CommentInfo } from 'src/features/posts/service/entities/PostControllerGetComment';
-import { JwtAuthGuard } from 'src/guards/common/JwtAuthGuard';
-import { ValidateParameters } from 'src/pipes/ValidationPipe';
-import { CommentSetEntity } from 'src/features/posts/service/entities/PostControllerSetComment';
-import { LikeSetEntity } from 'src/features/posts/service/entities/PostControllerSetLikeStatus';
+} from '../../../jwt/decorators/JwtRequestReadAccessToken';
+import { JwtServiceUserAccessTokenLoad } from '../../../jwt/entities/JwtServiceAccessTokenLoad';
+import { CommentInfo } from '../../posts/service/entities/PostControllerGetComment';
+import { JwtAuthGuard } from '../../../guards/common/JwtAuthGuard';
+import { ValidateParameters } from '../../../pipes/ValidationPipe';
+import { CommentSetEntity } from '../../posts/service/entities/PostControllerSetComment';
+import { LikeSetEntity } from '../../posts/service/entities/PostControllerSetLikeStatus';
 
 @Controller('comments')
 export class CommentsController {
@@ -44,7 +43,6 @@ export class CommentsController {
       CommentsServiceGetCommentByIdCommand,
       CommentInfo
     >(new CommentsServiceGetCommentByIdCommand(id, tokenLoad?.id));
-    await _WAIT_();
     return comment;
   }
 
@@ -77,7 +75,6 @@ export class CommentsController {
       CommentServiceUpdateByIdCommand,
       boolean
     >(new CommentServiceUpdateByIdCommand(id, tokenLoad.id, commentData));
-    await _WAIT_();
     return;
   }
 

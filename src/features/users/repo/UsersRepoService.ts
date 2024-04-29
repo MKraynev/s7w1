@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { FindOptionsWhere, Raw, Repository } from 'typeorm';
 import { UserRepoEntity } from './entities/UsersRepoEntity';
-import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/UsersControllerRegistrationEntity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserControllerRegistrationEntity } from '../controllers/entities/UsersControllerRegistrationEntity';
 
 @Injectable()
 export class UsersRepoService {

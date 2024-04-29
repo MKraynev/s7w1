@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeviceRepoEntity } from './entities/DevicesRepoEntity';
 import { Repository } from 'typeorm';
 import { RequestDeviceEntity } from '../decorators/entity/RequestDeviceEntity';
-import { UserRepoEntity } from 'src/features/users/repo/entities/UsersRepoEntity';
+import { UserRepoEntity } from '../../users/repo/entities/UsersRepoEntity';
 
 @Injectable()
 export class DeviceRepoService {

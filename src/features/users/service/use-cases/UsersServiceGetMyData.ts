@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { JwtServiceUserAccessTokenLoad } from 'src/jwt/entities/JwtServiceAccessTokenLoad';
 import { UsersRepoService } from '../../repo/UsersRepoService';
+import { JwtServiceUserAccessTokenLoad } from '../../../../jwt/entities/JwtServiceAccessTokenLoad';
 
 export type UserPersonalInfo = {
   email: string;

@@ -21,9 +21,8 @@ import {
   DeleteCertainUserDeviceStatus,
   DeviceSerivceDeleteCertainDeviceCommand,
 } from '../use-cases/DevicesServiceDeleteCertainDeviceUsecase';
-import { _WAIT_ } from 'src/settings';
-import { JwtServiceUserRefreshTokenLoad } from 'src/jwt/entities/JwtServiceRefreshTokenLoad';
-import { ReadRefreshToken } from 'src/jwt/decorators/JwtRequestReadRefreshToken';
+import { ReadRefreshToken } from '../../../jwt/decorators/JwtRequestReadRefreshToken';
+import { JwtServiceUserRefreshTokenLoad } from '../../../jwt/entities/JwtServiceRefreshTokenLoad';
 
 @Controller('security/devices')
 export class DeviceController {
@@ -49,8 +48,6 @@ export class DeviceController {
       DeleteUserDevicesStatus
     >(new DeviceSerivceDeleteRestDevicesCommand(refreshToken));
 
-    await _WAIT_();
-
     return;
   }
 
@@ -64,8 +61,6 @@ export class DeviceController {
       DeviceSerivceDeleteCertainDeviceCommand,
       DeleteCertainUserDeviceStatus
     >(new DeviceSerivceDeleteCertainDeviceCommand(refreshToken, id));
-
-    await _WAIT_();
 
     switch (deleteStatus) {
       case DeleteCertainUserDeviceStatus.Success:

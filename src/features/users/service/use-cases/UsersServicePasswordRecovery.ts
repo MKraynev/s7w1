@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-// import { EmailService } from 'src/adapters/email/EmailService';
+// import { EmailService } from '../adapters/email/EmailService';
 import { UsersRepoService } from '../../repo/UsersRepoService';
-import { JwtHandlerService } from 'src/jwt/JwtService';
+import { JwtHandlerService } from '../../../../jwt/JwtService';
 
 export enum PasswordRecoveryStatus {
   Succsess,

@@ -9,9 +9,9 @@ import {
   POSTGRES_PORT,
   POSTGRES_URL,
   POSTGRES_USERNAME,
-} from 'src/settings';
-import { DeviceRepoEntity } from 'src/features/devices/repo/entities/DevicesRepoEntity';
-import { DeviceRepoService } from 'src/features/devices/repo/DevicesRepoService';
+} from '../../../../../settings';
+import { DeviceRepoEntity } from '../../../../devices/repo/entities/DevicesRepoEntity';
+import { DeviceRepoService } from '../../../../devices/repo/DevicesRepoService';
 
 export const testDbConfiguration = TypeOrmModule.forRoot({
   type: 'postgres',

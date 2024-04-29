@@ -16,7 +16,7 @@ import {
   UsersRepoClearUseCase,
 } from '../use-cases/UsersRepoClearUsecase';
 import { TestUsersRepoTestingModule } from './settings/users.repo.testingModule';
-import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/UsersControllerRegistrationEntity';
+import { UserControllerRegistrationEntity } from '../../controllers/entities/UsersControllerRegistrationEntity';
 
 describe(`${UsersRepoReadOneByLoginOrEmailUseCase.name}: read user`, () => {
   let module: TestingModule;

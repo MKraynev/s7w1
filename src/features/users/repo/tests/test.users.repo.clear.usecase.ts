@@ -9,9 +9,9 @@ import {
 } from '../use-cases/UsersRepoReadOneByPropertyUsecase';
 import { TestUsersRepoTestingModule } from './settings/users.repo.testingModule';
 import { UsersRepoClearUseCase } from '../use-cases/UsersRepoClearUsecase';
-import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/UsersControllerRegistrationEntity';
 import { UsersRepoService } from '../UsersRepoService';
-import { DeviceRepoService } from 'src/features/devices/repo/DevicesRepoService';
+import { DeviceRepoService } from '../../../devices/repo/DevicesRepoService';
+import { UserControllerRegistrationEntity } from '../../controllers/entities/UsersControllerRegistrationEntity';
 describe('UsersRepo UseCase: Clear', () => {
   let module: TestingModule;
 

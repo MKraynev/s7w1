@@ -1,12 +1,12 @@
 import { JwtServiceUserAccessTokenLoad } from './entities/JwtServiceAccessTokenLoad';
 import { JwtServiceUserRefreshTokenLoad } from './entities/JwtServiceRefreshTokenLoad';
-import { ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN_EXPIRE } from 'src/settings';
+import { ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN_EXPIRE } from '../settings';
 
 import { Injectable } from '@nestjs/common';
 
 import { JwtServicePasswordRecoveryTokenLoad } from './entities/JwtServicePasswordRecoveryLoad';
 import { UserRegistrationLoad } from './entities/JwtServiceUserRegistrationLoad';
-import { DeviceRepoEntity } from 'src/features/devices/repo/entities/DevicesRepoEntity';
+import { DeviceRepoEntity } from '../features/devices/repo/entities/DevicesRepoEntity';
 import { JwtService } from '@nestjs/jwt';
 import { SignOptions } from 'jsonwebtoken';
 

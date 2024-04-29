@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { MAIL_LOGIN } from 'src/settings';
-import {
-  EmailSendStatus,
-  EmailServiceExecutionStatus,
-  MailServiceEntity,
-} from './entities/EmailServiceEntity';
+// import { Injectable } from '@nestjs/common';
+// import { MAIL_LOGIN } from '../settings';
+// import {
+//   EmailSendStatus,
+//   EmailServiceExecutionStatus,
+//   MailServiceEntity,
+// } from './entities/EmailServiceEntity';
 
 // @Injectable()
 // export class EmailService {

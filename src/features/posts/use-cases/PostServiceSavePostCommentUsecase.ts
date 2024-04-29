@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CommentSetEntity } from '../service/entities/PostControllerSetComment';
 import { CommentInfo } from '../service/entities/PostControllerGetComment';
-import { UsersRepoService } from 'src/features/users/repo/UsersRepoService';
 import { PostsRepoService } from '../repo/PostsRepoService';
-import { CommentsRepoService } from 'src/features/comments/repo/CommentsRepoService';
 import { PostRepoEntity } from '../repo/entity/PostsRepoEntity';
+import { UsersRepoService } from '../../users/repo/UsersRepoService';
+import { CommentsRepoService } from '../../comments/repo/CommentsRepoService';
 
 export class PostServiceSavePostCommentCommand {
   constructor(

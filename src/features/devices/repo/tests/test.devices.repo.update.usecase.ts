@@ -1,9 +1,9 @@
 import { TestingModule } from '@nestjs/testing';
 import { TestDevicesRepoTestingModule } from './settings/devices.repo.testingModule';
 import { DeviceRepoService } from '../DevicesRepoService';
-import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/UsersControllerRegistrationEntity';
-import { UsersRepoService } from 'src/features/users/repo/UsersRepoService';
 import { RequestDeviceEntity } from '../../decorators/entity/RequestDeviceEntity';
+import { UsersRepoService } from '../../../users/repo/UsersRepoService';
+import { UserControllerRegistrationEntity } from '../../../users/controllers/entities/UsersControllerRegistrationEntity';
 
 describe(`DeviceRepoUpdate test`, () => {
   let module: TestingModule;

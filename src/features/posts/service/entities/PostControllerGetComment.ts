@@ -1,5 +1,5 @@
-import { CommentRepoEntity } from 'src/features/comments/repo/entities/CommentsRepoEntity';
-import { AvailableLikeStatus } from 'src/features/likes/postLikes/repo/entity/LikeForPostsRepoEntity';
+import { CommentRepoEntity } from '../../../comments/repo/entities/CommentsRepoEntity';
+import { AvailableLikeStatus } from '../../../likes/postLikes/repo/entity/LikeForPostsRepoEntity';
 
 export class CommentInfo {
   public id: string;

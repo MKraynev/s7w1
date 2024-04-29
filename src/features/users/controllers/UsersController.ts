@@ -15,11 +15,11 @@ import {
 import { UserControllerRegistrationEntity } from './entities/UsersControllerRegistrationEntity';
 import { UsersRepoService } from '../repo/UsersRepoService';
 import { UserRepoEntity } from '../repo/entities/UsersRepoEntity';
-import { InputPaginator } from 'src/paginator/entities/QueryPaginatorInputEntity';
-import { QueryPaginator } from 'src/paginator/QueryPaginatorDecorator';
-import { OutputPaginator } from 'src/paginator/entities/QueryPaginatorUutputEntity';
-import { SuperAdminGuard } from 'src/guards/admin/GuardAdmin';
-import { ValidateParameters } from 'src/pipes/ValidationPipe';
+import { SuperAdminGuard } from '../../../guards/admin/GuardAdmin';
+import { QueryPaginator } from '../../../paginator/QueryPaginatorDecorator';
+import { InputPaginator } from '../../../paginator/entities/QueryPaginatorInputEntity';
+import { OutputPaginator } from '../../../paginator/entities/QueryPaginatorUutputEntity';
+import { ValidateParameters } from '../../../pipes/ValidationPipe';
 
 @Controller('sa/users')
 @UseGuards(SuperAdminGuard)

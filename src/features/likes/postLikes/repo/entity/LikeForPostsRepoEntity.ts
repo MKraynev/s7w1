@@ -1,5 +1,3 @@
-import { PostRepoEntity } from 'src/features/posts/repo/entity/PostsRepoEntity';
-import { UserRepoEntity } from 'src/features/users/repo/entities/UsersRepoEntity';
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +8,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { PostRepoEntity } from '../../../../posts/repo/entity/PostsRepoEntity';
+import { UserRepoEntity } from '../../../../users/repo/entities/UsersRepoEntity';
 
 export type AvailableLikeStatus = 'Like' | 'Dislike' | 'None';
 export const AvailableLikeStatusArray: AvailableLikeStatus[] = [

@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { MAIL_LOGIN, MAIL_PASSWORD } from 'src/settings';
+// import { Module } from '@nestjs/common';
+// import { MAIL_LOGIN, MAIL_PASSWORD } from '../settings';
 // export const EmailServiceUseCases = [EmailService];
 
 // @Module({

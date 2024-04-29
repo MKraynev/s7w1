@@ -1,6 +1,3 @@
-import { LikeForCommentRepoEntity } from 'src/features/likes/commentLikes/repo/entity/LikeForCommentsRepoEntity';
-import { PostRepoEntity } from 'src/features/posts/repo/entity/PostsRepoEntity';
-import { UserRepoEntity } from 'src/features/users/repo/entities/UsersRepoEntity';
 import {
   Column,
   CreateDateColumn,
@@ -12,6 +9,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserRepoEntity } from '../../../users/repo/entities/UsersRepoEntity';
+import { PostRepoEntity } from '../../../posts/repo/entity/PostsRepoEntity';
+import { LikeForCommentRepoEntity } from '../../../likes/commentLikes/repo/entity/LikeForCommentsRepoEntity';
 
 @Entity('Comments')
 export class CommentRepoEntity {

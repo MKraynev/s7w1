@@ -1,15 +1,16 @@
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { DeviceRepoEntity } from '../../entities/DevicesRepoEntity';
+import { DeviceRepoService } from '../../DevicesRepoService';
 import {
   POSTGRES_PASSWORD,
   POSTGRES_PORT,
   POSTGRES_URL,
   POSTGRES_USERNAME,
-} from 'src/settings';
-import { DeviceRepoEntity } from '../../entities/DevicesRepoEntity';
-import { DeviceRepoService } from '../../DevicesRepoService';
-import { UserRepoEntity } from 'src/features/users/repo/entities/UsersRepoEntity';
-import { UsersRepoService } from 'src/features/users/repo/UsersRepoService';
+} from '../../../../../settings';
+import { UserRepoEntity } from '../../../../users/repo/entities/UsersRepoEntity';
+import { UsersRepoService } from '../../../../users/repo/UsersRepoService';
 
 export const testDbConfiguration = TypeOrmModule.forRoot({
   type: 'postgres',

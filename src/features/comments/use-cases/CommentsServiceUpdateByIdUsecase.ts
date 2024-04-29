@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CommentSetEntity } from 'src/features/posts/service/entities/PostControllerSetComment';
 import { CommentsRepoService } from '../repo/CommentsRepoService';
+import { CommentSetEntity } from '../../posts/service/entities/PostControllerSetComment';
 
 export class CommentServiceUpdateByIdCommand {
   constructor(

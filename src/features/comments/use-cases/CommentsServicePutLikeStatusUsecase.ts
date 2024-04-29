@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { LikeForCommentRepoService } from 'src/features/likes/commentLikes/repo/LikesForCommentRepoService';
-import { AvailableLikeStatus } from 'src/features/likes/postLikes/repo/entity/LikeForPostsRepoEntity';
-import { UsersRepoService } from 'src/features/users/repo/UsersRepoService';
 import { CommentsRepoService } from '../repo/CommentsRepoService';
+import { AvailableLikeStatus } from '../../likes/postLikes/repo/entity/LikeForPostsRepoEntity';
+import { LikeForCommentRepoService } from '../../likes/commentLikes/repo/LikesForCommentRepoService';
+import { UsersRepoService } from '../../users/repo/UsersRepoService';
 
 export enum CommentServiceSetLikeStatus {
   CommentNotFound,

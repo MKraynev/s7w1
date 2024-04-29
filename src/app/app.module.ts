@@ -10,15 +10,15 @@ import {
   POSTGRES_URL,
   POSTGRES_USERNAME,
 } from '../settings';
-import { UsersModule } from 'src/features/users/UsersModule';
-import { DevicesModule } from 'src/features/devices/DevicesModule';
-import { PostModule } from 'src/features/posts/PostModule';
-import { CommentsModule } from 'src/features/comments/CommentsModule';
-import { QuizQuestionsModule } from 'src/features/questions/QuizQuestionsModule';
-import { QuizGameQuestionsModule } from 'src/features/quiz_game_questions/quiz_game_questions_repo_module';
-import { GamesModule } from 'src/features/games/GamesModule';
+import { UsersModule } from '../features/users/UsersModule';
+import { DevicesModule } from '../features/devices/DevicesModule';
+import { PostModule } from '../features/posts/PostModule';
+import { CommentsModule } from '../features/comments/CommentsModule';
+import { QuizQuestionsModule } from '../features/questions/QuizQuestionsModule';
+import { QuizGameQuestionsModule } from '../features/quiz_game_questions/quiz_game_questions_repo_module';
+import { GamesModule } from '../features/games/GamesModule';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { SuperAdminModule } from 'src/superAdmin/SuperAdminModule';
+import { SuperAdminModule } from '../superAdmin/SuperAdminModule';
 
 export const typeormConfiguration = TypeOrmModule.forRoot({
   type: 'postgres',

@@ -1,9 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Injectable } from '@nestjs/common';
-// import { EmailService } from 'src/adapters/email/EmailService';
 import { UsersRepoService } from '../../repo/UsersRepoService';
-import { JwtHandlerService } from 'src/jwt/JwtService';
 import { UserControllerRegistrationEntity } from '../../controllers/entities/UsersControllerRegistrationEntity';
+import { JwtHandlerService } from '../../../../jwt/JwtService';
 
 export class UsersServiceRegistrationCommand {
   constructor(public command: UserControllerRegistrationEntity) {}

@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { BlogCreateEntity } from '../../controller/entities/blogs.super.admin.create.entity';
-import { PostRepoEntity } from 'src/features/posts/repo/entity/PostsRepoEntity';
+import { PostRepoEntity } from '../../../posts/repo/entity/PostsRepoEntity';
 
 @Entity('Blogs')
 export class BlogRepoEntity {

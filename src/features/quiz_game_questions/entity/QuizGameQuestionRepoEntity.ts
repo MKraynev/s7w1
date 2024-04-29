@@ -1,5 +1,3 @@
-import { GamesRepoEntity } from 'src/features/games/repo/entities/GamesRepoEntity';
-import { QuizQuestionEntity } from 'src/features/questions/repo/entity/QuestionsRepoEntity';
 import {
   Column,
   Entity,
@@ -8,6 +6,8 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { GamesRepoEntity } from '../../games/repo/entities/GamesRepoEntity';
+import { QuizQuestionEntity } from '../../questions/repo/entity/QuestionsRepoEntity';
 
 @Entity('QuizGameQuestion')
 export class QuizGameQuestionRepoEntity {

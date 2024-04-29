@@ -1,6 +1,5 @@
 //TODO доделать one->many   many->one
 
-import { UserRepoEntity } from 'src/features/users/repo/entities/UsersRepoEntity';
 import {
   Column,
   CreateDateColumn,
@@ -11,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { RequestDeviceEntity } from '../../decorators/entity/RequestDeviceEntity';
+import { UserRepoEntity } from '../../../users/repo/entities/UsersRepoEntity';
 
 @Entity('Devices')
 export class DeviceRepoEntity {

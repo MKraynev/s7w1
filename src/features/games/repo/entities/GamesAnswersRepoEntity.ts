@@ -1,5 +1,3 @@
-import { QuizQuestionEntity } from 'src/features/questions/repo/entity/QuestionsRepoEntity';
-import { UserRepoEntity } from 'src/features/users/repo/entities/UsersRepoEntity';
 import {
   Column,
   CreateDateColumn,
@@ -11,6 +9,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { GamesRepoEntity } from './GamesRepoEntity';
+import { UserRepoEntity } from '../../../users/repo/entities/UsersRepoEntity';
+import { QuizQuestionEntity } from '../../../questions/repo/entity/QuestionsRepoEntity';
 
 export type AnswerStatus = 'correct' | 'incorrect';
 

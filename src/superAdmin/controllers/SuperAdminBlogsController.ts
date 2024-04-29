@@ -19,17 +19,16 @@ import {
   PostWithExpectedBlogIdCreateEntity,
 } from './entities/SuperAdminCreatePostEntity';
 import { DataBaseException } from './exceptions/SuperAdminControllerExceptionFilter';
-import { _WAIT_ } from 'src/settings';
-import { SuperAdminGuard } from 'src/guards/admin/GuardAdmin';
-import { InputPaginator } from 'src/paginator/entities/QueryPaginatorInputEntity';
-import { QueryPaginator } from 'src/paginator/QueryPaginatorDecorator';
-import { OutputPaginator } from 'src/paginator/entities/QueryPaginatorUutputEntity';
-import { ValidateParameters } from 'src/pipes/ValidationPipe';
-import { BlogsRepoService } from 'src/features/blogs/repo/blogs.repo.service';
-import { PostsRepoService } from 'src/features/posts/repo/PostsRepoService';
-import { BlogRepoEntity } from 'src/features/blogs/repo/entities/blogs.repo.entity';
-import { PostRepoEntity } from 'src/features/posts/repo/entity/PostsRepoEntity';
-import { PostGetResultEntity } from 'src/features/posts/service/entities/PostsControllerGetResultEntity';
+import { SuperAdminGuard } from '../../guards/admin/GuardAdmin';
+import { BlogsRepoService } from '../../features/blogs/repo/blogs.repo.service';
+import { PostsRepoService } from '../../features/posts/repo/PostsRepoService';
+import { BlogRepoEntity } from '../../features/blogs/repo/entities/blogs.repo.entity';
+import { InputPaginator } from '../../paginator/entities/QueryPaginatorInputEntity';
+import { QueryPaginator } from '../../paginator/QueryPaginatorDecorator';
+import { OutputPaginator } from '../../paginator/entities/QueryPaginatorUutputEntity';
+import { ValidateParameters } from '../../pipes/ValidationPipe';
+import { PostGetResultEntity } from '../../features/posts/service/entities/PostsControllerGetResultEntity';
+import { PostRepoEntity } from '../../features/posts/repo/entity/PostsRepoEntity';
 
 @Controller('sa/blogs')
 @UseGuards(SuperAdminGuard)
@@ -57,7 +56,7 @@ export class SuperAdminBlogController {
     );
 
     let pagedBlogs = new OutputPaginator(count, blogs, paginator);
-    await _WAIT_();
+
     return pagedBlogs;
   }
 
@@ -65,7 +64,6 @@ export class SuperAdminBlogController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async saveBlog(@Body(new ValidateParameters()) blog: BlogCreateEntity) {
-    await _WAIT_();
     let savedBlog = await this.blogRepo.Create(blog, true);
 
     return savedBlog;
@@ -79,8 +77,6 @@ export class SuperAdminBlogController {
   ) {
     let updatedBlog = await this.blogRepo.UpdateById(+id, blogData, true);
 
-    await _WAIT_();
-
     if (updatedBlog) {
       return updatedBlog;
     }
@@ -93,8 +89,6 @@ export class SuperAdminBlogController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async DeleteBlog(@Param('id') id: string) {
     let count = await this.blogRepo.DeleteOne(+id);
-
-    await _WAIT_();
 
     if (count > 0) return;
 
@@ -117,7 +111,6 @@ export class SuperAdminBlogController {
     )) as PostGetResultEntity;
 
     createdPost.InitLikes();
-    await _WAIT_();
 
     return createdPost;
   }
@@ -139,7 +132,7 @@ export class SuperAdminBlogController {
       true,
     );
     let pagedPosts = new OutputPaginator(count, posts, paginator);
-    await _WAIT_();
+
     return pagedPosts;
   }
 
@@ -154,7 +147,7 @@ export class SuperAdminBlogController {
     postData: PostCreateEntity,
   ) {
     let updatePost = await this.postRepo.UpdateOne(+postId, +blogId, postData);
-    await _WAIT_();
+
     if (updatePost) return;
 
     throw new NotFoundException();
@@ -169,7 +162,7 @@ export class SuperAdminBlogController {
     @Param('postId') postId: string,
   ) {
     let updatePost = await this.postRepo.DeleteOne(+postId, +blogId);
-    await _WAIT_();
+
     if (updatePost > 0) return;
 
     throw new NotFoundException();

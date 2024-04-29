@@ -9,7 +9,7 @@ import { LikesForPostRepoModule } from '../features/likes/postLikes/repo/LikesFo
 import { LikesForCommentRepoModule } from '../features/likes/commentLikes/repo/LikesForCommentRepoModule';
 import { QuizQuestRepoModule } from '../features/questions/repo/QuestionsRepoModule';
 import { QuizGameRepoModule } from '../features/games/repo/GamesRepoModule';
-import { BlogsRepoModule } from 'src/features/blogs/repo/blogs.repo.module';
+import { BlogsRepoModule } from '../features/blogs/repo/blogs.repo.module';
 
 const adaminControllers = [AdminTestingController, SuperAdminBlogController];
 const adminImports = [

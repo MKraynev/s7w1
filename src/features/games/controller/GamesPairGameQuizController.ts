@@ -1,12 +1,12 @@
 import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { JwtAuthGuard } from 'src/guards/common/JwtAuthGuard';
-import { ReadAccessToken } from 'src/jwt/decorators/JwtRequestReadAccessToken';
-import { JwtServiceUserAccessTokenLoad } from 'src/jwt/entities/JwtServiceAccessTokenLoad';
 import { GamesRepoEntity } from '../repo/entities/GamesRepoEntity';
 import { QuizGameMyCurrentCommand } from '../use-cases/QuizGameMyCurrentUsecase';
 import { QuizGameConnectToGameCommand } from '../use-cases/QuizGameConnectToGameUsecase';
 import { QuizGameInfo } from './entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity';
+import { JwtAuthGuard } from '../../../guards/common/JwtAuthGuard';
+import { JwtServiceUserAccessTokenLoad } from '../../../jwt/entities/JwtServiceAccessTokenLoad';
+import { ReadAccessToken } from '../../../jwt/decorators/JwtRequestReadAccessToken';
 
 @Controller('pair-game-quiz')
 export class GamesPairGameQuizController {

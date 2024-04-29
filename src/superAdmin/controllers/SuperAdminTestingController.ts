@@ -1,13 +1,13 @@
 import { Controller, Delete, HttpCode, HttpStatus } from '@nestjs/common';
-import { BlogsRepoService } from 'src/features/blogs/repo/blogs.repo.service';
-import { CommentsRepoService } from 'src/features/comments/repo/CommentsRepoService';
-import { DeviceRepoService } from 'src/features/devices/repo/DevicesRepoService';
-import { GamesRepoService } from 'src/features/games/repo/GamesRepoService';
-import { LikeForCommentRepoService } from 'src/features/likes/commentLikes/repo/LikesForCommentRepoService';
-import { LikeForPostRepoService } from 'src/features/likes/postLikes/repo/LikesForPostRepoService';
-import { PostsRepoService } from 'src/features/posts/repo/PostsRepoService';
-import { QuizQuestionRepoService } from 'src/features/questions/repo/QuestionsRepoService';
-import { UsersRepoService } from 'src/features/users/repo/UsersRepoService';
+import { UsersRepoService } from '../../features/users/repo/UsersRepoService';
+import { DeviceRepoService } from '../../features/devices/repo/DevicesRepoService';
+import { BlogsRepoService } from '../../features/blogs/repo/blogs.repo.service';
+import { PostsRepoService } from '../../features/posts/repo/PostsRepoService';
+import { CommentsRepoService } from '../../features/comments/repo/CommentsRepoService';
+import { LikeForPostRepoService } from '../../features/likes/postLikes/repo/LikesForPostRepoService';
+import { LikeForCommentRepoService } from '../../features/likes/commentLikes/repo/LikesForCommentRepoService';
+import { QuizQuestionRepoService } from '../../features/questions/repo/QuestionsRepoService';
+import { GamesRepoService } from '../../features/games/repo/GamesRepoService';
 
 // @UseGuards(AdminGuard)
 @Controller('testing/all-data')

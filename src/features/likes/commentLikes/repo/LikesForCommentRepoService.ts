@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, Repository } from 'typeorm';
 import { LikeForCommentRepoEntity } from './entity/LikeForCommentsRepoEntity';
 import { AvailableLikeStatus } from '../../postLikes/repo/entity/LikeForPostsRepoEntity';
-import { UserRepoEntity } from 'src/features/users/repo/entities/UsersRepoEntity';
-import { CommentRepoEntity } from 'src/features/comments/repo/entities/CommentsRepoEntity';
+import { UserRepoEntity } from '../../../users/repo/entities/UsersRepoEntity';
+import { CommentRepoEntity } from '../../../comments/repo/entities/CommentsRepoEntity';
 @Injectable()
 export class LikeForCommentRepoService {
   constructor(

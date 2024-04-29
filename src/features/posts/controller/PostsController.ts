@@ -18,23 +18,22 @@ import {
   PostServiceGetPostByIdCommand,
 } from '../use-cases/PostServiceGetPostByIdUsecase';
 import { PostServiceGetManyCommand } from '../use-cases/PostServiceGetPostsManyUsecase';
-import { _WAIT_ } from 'src/settings';
-import { LikeForPostRepoService } from 'src/features/likes/postLikes/repo/LikesForPostRepoService';
 import { PostRepoEntity } from '../repo/entity/PostsRepoEntity';
-import { InputPaginator } from 'src/paginator/entities/QueryPaginatorInputEntity';
+import { CommentSetEntity } from '../service/entities/PostControllerSetComment';
+import { CommentInfo } from '../service/entities/PostControllerGetComment';
+import { LikeSetEntity } from '../service/entities/PostControllerSetLikeStatus';
+import { LikeForPostRepoService } from '../../likes/postLikes/repo/LikesForPostRepoService';
+import { QueryPaginator } from '../../../paginator/QueryPaginatorDecorator';
+import { InputPaginator } from '../../../paginator/entities/QueryPaginatorInputEntity';
 import {
   ReadAccessToken,
   TokenExpectation,
-} from 'src/jwt/decorators/JwtRequestReadAccessToken';
-import { JwtServiceUserAccessTokenLoad } from 'src/jwt/entities/JwtServiceAccessTokenLoad';
-import { QueryPaginator } from 'src/paginator/QueryPaginatorDecorator';
-import { OutputPaginator } from 'src/paginator/entities/QueryPaginatorUutputEntity';
-import { JwtAuthGuard } from 'src/guards/common/JwtAuthGuard';
-import { ValidateParameters } from 'src/pipes/ValidationPipe';
-import { CommentSetEntity } from '../service/entities/PostControllerSetComment';
-import { CommentInfo } from '../service/entities/PostControllerGetComment';
-import { CommentRepoEntity } from 'src/features/comments/repo/entities/CommentsRepoEntity';
-import { LikeSetEntity } from '../service/entities/PostControllerSetLikeStatus';
+} from '../../../jwt/decorators/JwtRequestReadAccessToken';
+import { JwtServiceUserAccessTokenLoad } from '../../../jwt/entities/JwtServiceAccessTokenLoad';
+import { OutputPaginator } from '../../../paginator/entities/QueryPaginatorUutputEntity';
+import { JwtAuthGuard } from '../../../guards/common/JwtAuthGuard';
+import { ValidateParameters } from '../../../pipes/ValidationPipe';
+import { CommentRepoEntity } from '../../comments/repo/entities/CommentsRepoEntity';
 
 @Controller('posts')
 export class PostsController {
@@ -51,8 +50,6 @@ export class PostsController {
     @ReadAccessToken(TokenExpectation.Possibly)
     tokenLoad: JwtServiceUserAccessTokenLoad | undefined,
   ) {
-    await _WAIT_();
-
     let { count, postInfos } = await this.commandBus.execute<
       PostServiceGetManyCommand,
       { count: number; postInfos: PostInfo[] }
@@ -76,7 +73,6 @@ export class PostsController {
     @ReadAccessToken(TokenExpectation.Possibly)
     tokenLoad: JwtServiceUserAccessTokenLoad | undefined,
   ) {
-    await _WAIT_();
     let post = await this.commandBus.execute<
       PostServiceGetPostByIdCommand,
       PostInfo
@@ -98,7 +94,7 @@ export class PostsController {
       PostServiceSavePostCommentCommand,
       CommentInfo
     >(new PostServiceSavePostCommentCommand(tokenLoad.id, id, commentData));
-    await _WAIT_();
+
     return comment;
   }
 
@@ -125,7 +121,7 @@ export class PostsController {
         paginator.pageSize,
       ),
     );
-    await _WAIT_();
+
     let result = new OutputPaginator(count, comments, paginator);
 
     return result;
@@ -145,8 +141,6 @@ export class PostsController {
       likeData.likeStatus,
       id,
     );
-
-    // await _WAIT_();
 
     return;
   }

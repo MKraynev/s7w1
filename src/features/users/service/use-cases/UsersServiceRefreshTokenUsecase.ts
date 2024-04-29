@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { RequestDeviceEntity } from 'src/features/devices/decorators/entity/RequestDeviceEntity';
-import { JwtServiceUserRefreshTokenLoad } from 'src/jwt/entities/JwtServiceRefreshTokenLoad';
 import { UsersRepoService } from '../../repo/UsersRepoService';
-import { DeviceRepoService } from 'src/features/devices/repo/DevicesRepoService';
-import { JwtHandlerService } from 'src/jwt/JwtService';
+import { JwtServiceUserRefreshTokenLoad } from '../../../../jwt/entities/JwtServiceRefreshTokenLoad';
+import { RequestDeviceEntity } from '../../../devices/decorators/entity/RequestDeviceEntity';
+import { DeviceRepoService } from '../../../devices/repo/DevicesRepoService';
+import { JwtHandlerService } from '../../../../jwt/JwtService';
 
 export enum RefreshTokenStatus {
   Success,

@@ -2,7 +2,7 @@ import { ExecutionContext, createParamDecorator } from '@nestjs/common';
 import { JwtServiceUserAccessTokenLoad } from '../entities/JwtServiceAccessTokenLoad';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { JWT_SECRET } from 'src/settings';
+import { JWT_SECRET } from '../../settings';
 
 export enum TokenExpectation {
   Expected,

@@ -8,19 +8,19 @@ import {
 } from '@nestjs/common';
 import { BlogsRepoService } from '../repo/blogs.repo.service';
 import { BlogRepoEntity } from '../repo/entities/blogs.repo.entity';
-import { QueryPaginator } from 'src/paginator/QueryPaginatorDecorator';
-import { InputPaginator } from 'src/paginator/entities/QueryPaginatorInputEntity';
-import { DataBaseException } from 'src/superAdmin/controllers/exceptions/SuperAdminControllerExceptionFilter';
-import { PostRepoEntity } from 'src/features/posts/repo/entity/PostsRepoEntity';
+import { QueryPaginator } from '../../../paginator/QueryPaginatorDecorator';
+import { InputPaginator } from '../../../paginator/entities/QueryPaginatorInputEntity';
+import { DataBaseException } from '../../../superAdmin/controllers/exceptions/SuperAdminControllerExceptionFilter';
+import { PostRepoEntity } from '../../posts/repo/entity/PostsRepoEntity';
+import { CommandBus } from '@nestjs/cqrs';
+import { PostInfo } from '../../posts/use-cases/PostServiceGetPostByIdUsecase';
+import { OutputPaginator } from '../../../paginator/entities/QueryPaginatorUutputEntity';
 import {
   ReadAccessToken,
   TokenExpectation,
-} from 'src/jwt/decorators/JwtRequestReadAccessToken';
-import { JwtServiceUserAccessTokenLoad } from 'src/jwt/entities/JwtServiceAccessTokenLoad';
-import { PostServiceGetManyCommand } from 'src/features/posts/service/use-cases/PostServiceGetPostsManyUsecase';
-import { OutputPaginator } from 'src/paginator/entities/QueryPaginatorUutputEntity';
-import { CommandBus } from '@nestjs/cqrs';
-import { PostInfo } from 'src/features/posts/use-cases/PostServiceGetPostByIdUsecase';
+} from '../../../jwt/decorators/JwtRequestReadAccessToken';
+import { JwtServiceUserAccessTokenLoad } from '../../../jwt/entities/JwtServiceAccessTokenLoad';
+import { PostServiceGetManyCommand } from '../../posts/use-cases/PostServiceGetPostsManyUsecase';
 
 @Controller('blogs')
 export class BlogsController {

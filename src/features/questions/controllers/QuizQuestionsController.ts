@@ -17,12 +17,12 @@ import { CommandBus } from '@nestjs/cqrs';
 import { QuizQuestionUpdatePublishStatusEntity } from './entities/QuestionsControllerUpdatePublishStatusEntity';
 import { QuizQuestionRepoService } from '../repo/QuestionsRepoService';
 import { QuizQuestionEntity } from '../repo/entity/QuestionsRepoEntity';
-import { InputPaginator } from 'src/paginator/entities/QueryPaginatorInputEntity';
-import { QueryPaginator } from 'src/paginator/QueryPaginatorDecorator';
-import { OutputPaginator } from 'src/paginator/entities/QueryPaginatorUutputEntity';
-import { SuperAdminGuard } from 'src/guards/admin/GuardAdmin';
-import { ValidateParameters } from 'src/pipes/ValidationPipe';
 import { QuizQuestionsSaveCommand } from '../service/use-cases/QuizQuestionsSaveUsecase';
+import { SuperAdminGuard } from '../../../guards/admin/GuardAdmin';
+import { QueryPaginator } from '../../../paginator/QueryPaginatorDecorator';
+import { InputPaginator } from '../../../paginator/entities/QueryPaginatorInputEntity';
+import { OutputPaginator } from '../../../paginator/entities/QueryPaginatorUutputEntity';
+import { ValidateParameters } from '../../../pipes/ValidationPipe';
 
 @Controller('sa/quiz')
 @UseGuards(SuperAdminGuard)

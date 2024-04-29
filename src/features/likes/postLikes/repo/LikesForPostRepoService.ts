@@ -9,9 +9,9 @@ import {
   LikeForPostRepoEntity,
 } from './entity/LikeForPostsRepoEntity';
 import { FindOptionsOrder, Repository } from 'typeorm';
-import { UsersRepoService } from 'src/features/users/repo/UsersRepoService';
-import { PostsRepoService } from 'src/features/posts/repo/PostsRepoService';
-import { PostRepoEntity } from 'src/features/posts/repo/entity/PostsRepoEntity';
+import { UsersRepoService } from '../../../users/repo/UsersRepoService';
+import { PostsRepoService } from '../../../posts/repo/PostsRepoService';
+import { PostRepoEntity } from '../../../posts/repo/entity/PostsRepoEntity';
 
 export type AvailableLikeTarget = 'post' | 'comment';
 

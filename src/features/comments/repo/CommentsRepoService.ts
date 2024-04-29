@@ -2,13 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { FindOptionsOrder, Repository } from 'typeorm';
 import { CommentRepoEntity } from './entities/CommentsRepoEntity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LikeForCommentRepoService } from 'src/features/likes/commentLikes/repo/LikesForCommentRepoService';
-import { PostsRepoService } from 'src/features/posts/repo/PostsRepoService';
-import { UsersRepoService } from 'src/features/users/repo/UsersRepoService';
-import { UserRepoEntity } from 'src/features/users/repo/entities/UsersRepoEntity';
-import { PostRepoEntity } from 'src/features/posts/repo/entity/PostsRepoEntity';
-import { CommentSetEntity } from 'src/features/posts/service/entities/PostControllerSetComment';
-import { CommentInfo } from 'src/features/posts/service/entities/PostControllerGetComment';
+import { LikeForCommentRepoService } from '../../likes/commentLikes/repo/LikesForCommentRepoService';
+import { UsersRepoService } from '../../users/repo/UsersRepoService';
+import { PostsRepoService } from '../../posts/repo/PostsRepoService';
+import { UserRepoEntity } from '../../users/repo/entities/UsersRepoEntity';
+import { PostRepoEntity } from '../../posts/repo/entity/PostsRepoEntity';
+import { CommentSetEntity } from '../../posts/service/entities/PostControllerSetComment';
+import { CommentInfo } from '../../posts/service/entities/PostControllerGetComment';
 
 @Injectable()
 export class CommentsRepoService {

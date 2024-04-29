@@ -1,4 +1,3 @@
-import { UserRepoEntity } from 'src/features/users/repo/entities/UsersRepoEntity';
 import {
   Column,
   CreateDateColumn,
@@ -12,6 +11,7 @@ import {
 } from 'typeorm';
 import { QuizGameAnswerRepoEntity } from './GamesAnswersRepoEntity';
 import { QuizGameStatus } from '../../controller/entities/QuizGameGetMyCurrent/QuizGameStatusEnum';
+import { UserRepoEntity } from '../../../users/repo/entities/UsersRepoEntity';
 
 @Entity('Games')
 export class GamesRepoEntity {

@@ -3,7 +3,7 @@ import { PostInfo } from './PostServiceGetPostByIdUsecase';
 import { Injectable } from '@nestjs/common';
 import { PostRepoEntity } from '../../repo/entity/PostsRepoEntity';
 import { PostsRepoService } from '../../repo/PostsRepoService';
-import { LikeForPostRepoService } from 'src/features/likes/postLikes/repo/LikesForPostRepoService';
+import { LikeForPostRepoService } from '../../../likes/postLikes/repo/LikesForPostRepoService';
 
 export class PostServiceGetManyCommand {
   constructor(

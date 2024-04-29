@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { BasicStrategy } from 'passport-http';
-import { ADMIN_LOGIN, ADMIN_PASSWORD } from 'src/settings';
+import { ADMIN_LOGIN, ADMIN_PASSWORD } from '../../settings';
 
 @Injectable()
 export class AdminStrategy extends PassportStrategy(BasicStrategy) {

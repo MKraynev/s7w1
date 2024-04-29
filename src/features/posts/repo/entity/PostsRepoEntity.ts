@@ -1,5 +1,3 @@
-import { CommentRepoEntity } from 'src/features/comments/repo/entities/CommentsRepoEntity';
-import { LikeForPostRepoEntity } from 'src/features/likes/postLikes/repo/entity/LikeForPostsRepoEntity';
 import {
   Column,
   CreateDateColumn,
@@ -14,7 +12,9 @@ import {
   PostCreateEntity,
   PostWithExpectedBlogIdCreateEntity,
 } from '../../controller/entities/SuperAdminCreatePostEntity';
-import { BlogRepoEntity } from 'src/features/blogs/repo/entities/blogs.repo.entity';
+import { BlogRepoEntity } from '../../../blogs/repo/entities/blogs.repo.entity';
+import { CommentRepoEntity } from '../../../comments/repo/entities/CommentsRepoEntity';
+import { LikeForPostRepoEntity } from '../../../likes/postLikes/repo/entity/LikeForPostsRepoEntity';
 
 @Entity('Posts')
 export class PostRepoEntity {

@@ -17,12 +17,8 @@ import { Response } from 'express';
 import { UsersControllerRegistrationConfirmEntity } from './entities/UsersControllerRegistrationConfirmEntity';
 import { UserLoginEntity } from './entities/UsersControllerLoginEntity';
 import { UsersControllerResending } from './entities/UsersControllerResending';
-import { _WAIT_ } from 'src/settings';
 import { UserControllerPasswordRecoveryEntity } from './entities/UsersControllerPasswordRecovertyEntity';
 import { UserControllerNewPasswordEntity } from './entities/UsersControllerNewPasswordEntity';
-import { JwtServiceUserRefreshTokenLoad } from 'src/jwt/entities/JwtServiceRefreshTokenLoad';
-import { ReadRefreshToken } from 'src/jwt/decorators/JwtRequestReadRefreshToken';
-import { ValidateParameters } from 'src/pipes/ValidationPipe';
 import {
   PasswordRecoveryStatus,
   UsersServicePasswordRecoveryCommand,
@@ -31,8 +27,6 @@ import {
   NewPasswordStatus,
   UsersServiceNewPasswordCommand,
 } from '../service/use-cases/UsersServiceNewPasswordUsecase';
-import { ReadRequestDevice } from 'src/features/devices/decorators/RequestDeviceRead';
-import { RequestDeviceEntity } from 'src/features/devices/decorators/entity/RequestDeviceEntity';
 import {
   UserLoginDto,
   UserLoginStatus,
@@ -59,14 +53,19 @@ import {
   LogoutStatus,
   UsersServiceLogoutCommand,
 } from '../service/use-cases/UsersServiceLogoutUsecase';
-import { JwtAuthGuard } from 'src/guards/common/JwtAuthGuard';
-import { ReadAccessToken } from 'src/jwt/decorators/JwtRequestReadAccessToken';
-import { JwtServiceUserAccessTokenLoad } from 'src/jwt/entities/JwtServiceAccessTokenLoad';
 import {
   UserPersonalInfo,
   UsersServiceGetMyDataCommand,
 } from '../service/use-cases/UsersServiceGetMyData';
 import { Throttle } from '@nestjs/throttler';
+import { ValidateParameters } from '../../../pipes/ValidationPipe';
+import { ReadRequestDevice } from '../../devices/decorators/RequestDeviceRead';
+import { RequestDeviceEntity } from '../../devices/decorators/entity/RequestDeviceEntity';
+import { ReadRefreshToken } from '../../../jwt/decorators/JwtRequestReadRefreshToken';
+import { JwtServiceUserRefreshTokenLoad } from '../../../jwt/entities/JwtServiceRefreshTokenLoad';
+import { JwtAuthGuard } from '../../../guards/common/JwtAuthGuard';
+import { ReadAccessToken } from '../../../jwt/decorators/JwtRequestReadAccessToken';
+import { JwtServiceUserAccessTokenLoad } from '../../../jwt/entities/JwtServiceAccessTokenLoad';
 
 @Throttle({ default: { limit: 5, ttl: 10000 } })
 @Controller('auth')
@@ -132,8 +131,6 @@ export class UsersAuthController {
     @Res({ passthrough: true }) response: Response,
     @ReadRequestDevice() device: RequestDeviceEntity,
   ) {
-    await _WAIT_();
-
     let login = await this.commandBus.execute<
       UsersServiceLoginCommand,
       UserLoginDto

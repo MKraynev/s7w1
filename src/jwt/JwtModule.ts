@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { JWT_SECRET } from 'src/settings';
+import { JWT_SECRET } from '../settings';
 import { JwtHandlerService } from './JwtService';
 
 @Module({

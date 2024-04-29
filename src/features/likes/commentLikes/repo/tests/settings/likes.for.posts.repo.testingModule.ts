@@ -1,7 +1,5 @@
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LikeForPostRepoEntity } from 'src/features/likes/postLikes/repo/entity/LikeForPostsRepoEntity';
-import { LikeForPostRepoService } from 'src/features/likes/postLikes/repo/LikesForPostRepoService';
 
 // export const TestLikesForPostsRepoTestingModule = Test.createTestingModule({
 //   imports: [

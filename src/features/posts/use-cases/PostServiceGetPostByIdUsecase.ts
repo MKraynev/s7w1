@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { PostRepoEntity } from '../repo/entity/PostsRepoEntity';
+import { PostsRepoService } from '../repo/PostsRepoService';
 import {
   AvailableLikeStatus,
   LikeForPostRepoEntity,
-} from 'src/features/likes/postLikes/repo/entity/LikeForPostsRepoEntity';
-import { PostRepoEntity } from '../repo/entity/PostsRepoEntity';
-import { PostsRepoService } from '../repo/PostsRepoService';
-import { LikeForPostRepoService } from 'src/features/likes/postLikes/repo/LikesForPostRepoService';
+} from '../../likes/postLikes/repo/entity/LikeForPostsRepoEntity';
+import { LikeForPostRepoService } from '../../likes/postLikes/repo/LikesForPostRepoService';
 
 export class LikeLiteInfo {
   constructor(

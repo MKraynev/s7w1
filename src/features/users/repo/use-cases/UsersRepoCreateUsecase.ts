@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersRepoService } from '../UsersRepoService';
 import { Injectable } from '@nestjs/common';
-import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/UsersControllerRegistrationEntity';
+import { UserControllerRegistrationEntity } from '../../controllers/entities/UsersControllerRegistrationEntity';
 
 export class UsersRepoCreateUserCommand {
   constructor(public message: UserControllerRegistrationEntity) {}

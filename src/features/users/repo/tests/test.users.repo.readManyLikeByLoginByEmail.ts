@@ -1,7 +1,7 @@
 import { TestingModule } from '@nestjs/testing';
 import { UsersRepoService } from '../UsersRepoService';
 import { TestUsersRepoTestingModule } from './settings/users.repo.testingModule';
-import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/UsersControllerRegistrationEntity';
+import { UserControllerRegistrationEntity } from '../../controllers/entities/UsersControllerRegistrationEntity';
 
 describe(`UsersRepoService ReadLike`, () => {
   let module: TestingModule;

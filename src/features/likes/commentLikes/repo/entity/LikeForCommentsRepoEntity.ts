@@ -8,8 +8,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { AvailableLikeStatus } from '../../../postLikes/repo/entity/LikeForPostsRepoEntity';
-import { CommentRepoEntity } from 'src/features/comments/repo/entities/CommentsRepoEntity';
-import { UserRepoEntity } from 'src/features/users/repo/entities/UsersRepoEntity';
+import { CommentRepoEntity } from '../../../../comments/repo/entities/CommentsRepoEntity';
+import { UserRepoEntity } from '../../../../users/repo/entities/UsersRepoEntity';
 
 @Entity('LikesForComments')
 export class LikeForCommentRepoEntity {

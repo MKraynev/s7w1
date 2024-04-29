@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UsersControllerResending } from '../../controllers/entities/UsersControllerResending';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepoService } from '../../repo/UsersRepoService';
-// import { EmailService } from 'src/adapters/email/EmailService';
-import { JwtHandlerService } from 'src/jwt/JwtService';
+import { JwtHandlerService } from '../../../../jwt/JwtService';
 
 export class UsersServiceResendingRegistrationCommand {
   constructor(public command: UsersControllerResending) {}

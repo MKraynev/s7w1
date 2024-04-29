@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { RequestDeviceEntity } from 'src/features/devices/decorators/entity/RequestDeviceEntity';
-import { DeviceRepoService } from 'src/features/devices/repo/DevicesRepoService';
-import { JwtServiceUserRefreshTokenLoad } from 'src/jwt/entities/JwtServiceRefreshTokenLoad';
+import { RequestDeviceEntity } from '../../../devices/decorators/entity/RequestDeviceEntity';
+import { JwtServiceUserRefreshTokenLoad } from '../../../../jwt/entities/JwtServiceRefreshTokenLoad';
+import { DeviceRepoService } from '../../../devices/repo/DevicesRepoService';
 export enum LogoutStatus {
   Success,
   ExpiredToken,

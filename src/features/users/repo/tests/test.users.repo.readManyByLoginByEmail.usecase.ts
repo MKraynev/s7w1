@@ -14,7 +14,7 @@ import {
   UsersRepoReadManyByLoginByEmailCommand,
   UsersRepoReadManyByLoginByEmailUseCase,
 } from '../use-cases/UsersRepoReadManyByLoginByEmailUsecase';
-import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/UsersControllerRegistrationEntity';
+import { UserControllerRegistrationEntity } from '../../controllers/entities/UsersControllerRegistrationEntity';
 
 describe(`${UsersRepoReadOneByLoginOrEmailUseCase.name}: read user`, () => {
   let module: TestingModule;

@@ -1,6 +1,6 @@
 import { InjectDataSource } from '@nestjs/typeorm';
-import { QuizGameQuestionsExtendedInfoEntity } from 'src/features/games/repo/entities/QuizGameQuestionsExtendedInfoEntity';
 import { DataSource } from 'typeorm';
+import { QuizGameQuestionsExtendedInfoEntity } from '../games/repo/entities/QuizGameQuestionsExtendedInfoEntity';
 
 export class QuizGameToQuestionsRepoService {
   constructor(@InjectDataSource() public dataSource: DataSource) {}

@@ -6,7 +6,7 @@ import {
 import { JwtServiceUserRefreshTokenLoad } from '../entities/JwtServiceRefreshTokenLoad';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { JWT_SECRET } from 'src/settings';
+import { JWT_SECRET } from '../../settings';
 
 export const ReadRefreshToken = createParamDecorator(
   async (

@@ -7,11 +7,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/UsersControllerRegistrationEntity';
-import { UsersControllerGetEntity } from 'src/features/users/controllers/entities/UsersControllerGetEntity';
-import { DeviceRepoEntity } from 'src/features/devices/repo/entities/DevicesRepoEntity';
-import { LikeForPostRepoEntity } from 'src/features/likes/postLikes/repo/entity/LikeForPostsRepoEntity';
 import { bcrypt } from 'bcrypt';
+import { DeviceRepoEntity } from '../../../devices/repo/entities/DevicesRepoEntity';
+import { LikeForPostRepoEntity } from '../../../likes/postLikes/repo/entity/LikeForPostsRepoEntity';
+import { UserControllerRegistrationEntity } from '../../controllers/entities/UsersControllerRegistrationEntity';
+import { UsersControllerGetEntity } from '../../controllers/entities/UsersControllerGetEntity';
 @Entity('Users')
 export class UserRepoEntity {
   @PrimaryGeneratedColumn()

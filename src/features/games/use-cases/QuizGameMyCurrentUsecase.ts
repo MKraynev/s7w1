@@ -3,12 +3,12 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { QuizGameInfo } from '../controller/entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity';
 import { GamesRepoEntity } from '../repo/entities/GamesRepoEntity';
 import { GamesRepoService } from '../repo/GamesRepoService';
-import { QuizGameToQuestionsRepoService } from 'src/features/quiz_game_questions/QuizGameQuestionsRepoService';
-import { UsersRepoService } from 'src/features/users/repo/UsersRepoService';
 import { QuizGameQuestionsExtendedInfoEntity } from '../repo/entities/QuizGameQuestionsExtendedInfoEntity';
 import { QuizGamePlayerProgressEntity } from '../controller/entities/QuizGameGetMyCurrent/QuizGamePlayerProgressEntity';
 import { QuizGamePlayerInfoEntity } from '../controller/entities/QuizGameGetMyCurrent/QuizGamePlayerInfoEntity';
 import { QuizGameQuestionInfoEntity } from '../controller/entities/QuizGameGetMyCurrent/QuizGameQuestionInfoEntity';
+import { QuizGameToQuestionsRepoService } from '../../quiz_game_questions/QuizGameQuestionsRepoService';
+import { UsersRepoService } from '../../users/repo/UsersRepoService';
 
 export class QuizGameMyCurrentCommand {
   constructor(public userId: string) {}

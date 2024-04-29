@@ -11,13 +11,13 @@ import { UsersServiceNewPasswordUseCase } from './service/use-cases/UsersService
 import { UsersSerivceRefreshTokenUseCase } from './service/use-cases/UsersServiceRefreshTokenUsecase';
 import { UsersServiceLogoutUseCase } from './service/use-cases/UsersServiceLogoutUsecase';
 import { UsersRepoModule } from './repo/UsersRepoModule';
-import { JwtHandlerModule } from 'src/jwt/JwtModule';
 import { DeviceRepoModule } from '../devices/repo/DevicesRepoModule';
 import { PassportModule } from '@nestjs/passport';
 import { UsersAuthController } from './controllers/UsersAuthController';
-import { AdminStrategy } from 'src/guards/admin/StrategyAdmin';
-import { JwtStrategy } from 'src/guards/common/StrategyJwt';
-// import { EmailModule } from 'src/adapters/email/EmailModule';
+import { JwtHandlerModule } from '../../jwt/JwtModule';
+import { JwtStrategy } from '../../guards/common/StrategyJwt';
+import { AdminStrategy } from '../../guards/admin/StrategyAdmin';
+// import { EmailModule } from '../adapters/email/EmailModule';
 
 export const UsersServiceUseCases = [
   UsersServiceRegistrationUseCase,

@@ -1,7 +1,6 @@
 import { TestingModule } from '@nestjs/testing';
 import { PostsRepoService } from '../PostsRepoService';
 import { PostCreateEntity } from '../../controller/entities/SuperAdminCreatePostEntity';
-import { BlogsRepoService } from 'src/features/blogs/repo/blogs.repo.service';
 
 describe('Blogs test', () => {
   // let module: TestingModule;
