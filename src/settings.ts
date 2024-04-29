@@ -26,6 +26,8 @@ export const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD || 'qwerty';
 export const POSTGRES_DATABASE =
   process.env.POSTGRES_DATABASE || 'TestDataBase';
 export const POSGRES_URL = process.env.POSTGRES_URL || '';
+console.log(PORT);
+
 console.log(
   'Postgres info:',
   POSTGRES_URL,
@@ -35,4 +37,5 @@ console.log(
   POSTGRES_DATABASE,
   POSGRES_URL,
 );
+
 export const _WAIT_ = async () => await new Promise((f) => setTimeout(f, 800));

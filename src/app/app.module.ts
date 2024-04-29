@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BlogModule } from '../features/blogs/BlogsModule';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import {
   POSTGRES_DATABASE,
   POSTGRES_PASSWORD,
@@ -17,8 +17,11 @@ import { CommentsModule } from '../features/comments/CommentsModule';
 import { QuizQuestionsModule } from '../features/questions/QuizQuestionsModule';
 import { QuizGameQuestionsModule } from '../features/quiz_game_questions/quiz_game_questions_repo_module';
 import { GamesModule } from '../features/games/GamesModule';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { SuperAdminModule } from '../superAdmin/SuperAdminModule';
+import { APP_GUARD } from '@nestjs/core';
+
+let a: TypeOrmModuleOptions;
 
 export const typeormConfiguration = TypeOrmModule.forRoot({
   type: 'postgres',
@@ -29,6 +32,7 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
   database: POSTGRES_DATABASE,
   autoLoadEntities: true,
   synchronize: true,
+  ssl: true,
 });
 
 @Module({
