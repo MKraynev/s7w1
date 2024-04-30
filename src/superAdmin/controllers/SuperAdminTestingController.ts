@@ -9,7 +9,6 @@ import { LikeForCommentRepoService } from '../../features/likes/commentLikes/rep
 import { QuizQuestionRepoService } from '../../features/questions/repo/QuestionsRepoService';
 import { GamesRepoService } from '../../features/games/repo/GamesRepoService';
 
-// @UseGuards(AdminGuard)
 @Controller('testing/all-data')
 export class AdminTestingController {
   constructor(

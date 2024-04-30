@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { bcrypt } from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { DeviceRepoEntity } from '../../../devices/repo/entities/DevicesRepoEntity';
 import { LikeForPostRepoEntity } from '../../../likes/postLikes/repo/entity/LikeForPostsRepoEntity';
 import { UserControllerRegistrationEntity } from '../../controllers/entities/UsersControllerRegistrationEntity';
