@@ -18,7 +18,7 @@ import { QuizQuestionsModule } from "../features/games/quiz/questions/service/Qu
 import { GamesModule } from "../features/games/quiz/self/GamesModule";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { SuperAdminModule } from "../superAdmin/SuperAdminModule";
-import { QuizGameQuestionsModule } from "../features/games/quiz/questions.in.game/repo/game.quiz.questions.in.game.repo.module";
+import { QuizGameQuestionsInGameModule } from "../features/games/quiz/questions.in.game/repo/game.quiz.questions.in.game.repo.module";
 
 let a: TypeOrmModuleOptions;
 
@@ -43,7 +43,7 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
     PostModule,
     CommentsModule,
     QuizQuestionsModule,
-    QuizGameQuestionsModule,
+    QuizGameQuestionsInGameModule,
     GamesModule,
     ThrottlerModule.forRoot([{ ttl: 20000, limit: 300 }]),
     SuperAdminModule,

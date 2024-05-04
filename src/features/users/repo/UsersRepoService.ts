@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { FindOptionsWhere, Raw, Repository } from 'typeorm';
-import { UserRepoEntity } from './entities/UsersRepoEntity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserControllerRegistrationEntity } from '../controllers/entities/UsersControllerRegistrationEntity';
+import { Injectable } from "@nestjs/common";
+import { FindOptionsWhere, Raw, Repository } from "typeorm";
+import { UserRepoEntity } from "./entities/UsersRepoEntity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { UserControllerRegistrationEntity } from "../controllers/entities/UsersControllerRegistrationEntity";
 
 @Injectable()
 export class UsersRepoService {
@@ -11,10 +11,7 @@ export class UsersRepoService {
     private userRepo: Repository<UserRepoEntity>,
   ) {}
 
-  public async Create(
-    userData: UserControllerRegistrationEntity,
-    confirmed: boolean = false,
-  ) {
+  public async Create(userData: UserControllerRegistrationEntity, confirmed: boolean = false) {
     let userDto = await UserRepoEntity.Init(userData, confirmed);
     let savedUser = await this.userRepo.save(userDto);
 
@@ -24,13 +21,12 @@ export class UsersRepoService {
   public async ReadManyLikeByLoginByEmail(
     login: string,
     email: string,
-    sortBy: keyof UserRepoEntity = 'createdAt',
-    sortDirection: 'asc' | 'desc' = 'desc',
+    sortBy: keyof UserRepoEntity = "createdAt",
+    sortDirection: "asc" | "desc" = "desc",
     skip: number = 0,
     limit: number = 10,
   ) {
-    if (login === undefined && email === undefined)
-      return { countAll: 0, foundusers: [] };
+    if (login === undefined && email === undefined) return { countAll: 0, foundusers: [] };
 
     let caseInsensitiveSearchPattern = (column: string, inputValue: string) =>
       `LOWER(${column}) Like '%${inputValue.toLowerCase()}%'`;
@@ -40,17 +36,13 @@ export class UsersRepoService {
     let whereStatement: FindOptionsWhere<UserRepoEntity>[] = [];
 
     if (login) {
-      loginSearchPatten['login'] = Raw((alias) =>
-        caseInsensitiveSearchPattern(alias, login),
-      );
+      loginSearchPatten["login"] = Raw((alias) => caseInsensitiveSearchPattern(alias, login));
 
       whereStatement.push(loginSearchPatten);
     }
 
     if (email) {
-      emailSearchPatten['email'] = Raw((alias) =>
-        caseInsensitiveSearchPattern(alias, email),
-      );
+      emailSearchPatten["email"] = Raw((alias) => caseInsensitiveSearchPattern(alias, email));
       whereStatement.push(emailSearchPatten);
     }
 
@@ -95,10 +87,18 @@ export class UsersRepoService {
     });
   }
 
-  public async ReadOneByPropertyValue(
-    propertyName: keyof UserRepoEntity,
-    propertyValue: any,
-  ) {
+  public async ReadOneByIdShort(userId: string): Promise<{ id: number; login: string } | null> {
+    let id_num = +userId;
+
+    if (isNaN(id_num)) return null;
+
+    return await this.userRepo.findOne({
+      where: { id: id_num },
+      select: { login: true, id: true },
+    });
+  }
+
+  public async ReadOneByPropertyValue(propertyName: keyof UserRepoEntity, propertyValue: any) {
     let findObj: any = {};
     findObj[propertyName] = propertyValue;
 
@@ -111,14 +111,11 @@ export class UsersRepoService {
 
     return updatedUser;
   }
-  public async GetIdLogin(
-    user_1_id: string | number,
-    user_2_id: string | number,
-  ) {
+  public async GetIdLogin(user_1_id: string | number, user_2_id: string | number) {
     let usersInfo = (await this.userRepo
       .createQueryBuilder()
-      .select('id, login')
-      .where('id = :id1 OR id = :id2', { id1: user_1_id, id2: user_2_id })
+      .select("id, login")
+      .where("id = :id1 OR id = :id2", { id1: user_1_id, id2: user_2_id })
       .execute()) as { id: number; login: string }[];
 
     return usersInfo;

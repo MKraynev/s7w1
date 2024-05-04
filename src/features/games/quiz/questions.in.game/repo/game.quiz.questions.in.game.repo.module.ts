@@ -8,4 +8,4 @@ import { GameQuizQuestionsInGameService } from "./game.quiz.questions.in.game.re
   providers: [GameQuizQuestionsInGameService],
   exports: [GameQuizQuestionsInGameService],
 })
-export class QuizGameQuestionsModule {}
+export class QuizGameQuestionsInGameModule {}

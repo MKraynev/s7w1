@@ -33,7 +33,7 @@ export class GameQuizGetByIdUseCase
     if (isNaN(userId_num) || game.player_1_id !== userId_num || game.player_2_id !== userId_num)
       throw new ForbiddenException("wrong user");
 
-    // let p1_info = await this.userRepo.ReadOneById(game.player_1_id.toString());
+    let p1_info = await this.userRepo.ReadOneByIdShort(game.player_1_id.toString());
     // let p1_answers = await this.answersInGameRepo.GetGameQuestionsInfoOrdered();
     // let p2_info = await this.userRepo.ReadOneById(game.player_2_id.toString());
     //TODO дописать

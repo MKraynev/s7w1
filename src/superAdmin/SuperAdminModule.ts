@@ -8,7 +8,7 @@ import { CommentRepoModule } from "../features/comments/repo/CommentsRepoModule"
 import { LikesForPostRepoModule } from "../features/likes/postLikes/repo/LikesForPostRepoModule";
 import { LikesForCommentRepoModule } from "../features/likes/commentLikes/repo/LikesForCommentRepoModule";
 import { QuizQuestRepoModule } from "../features/games/quiz/questions/repo/QuestionsRepoModule";
-import { QuizGameRepoModule } from "../features/games/quiz/self/repo/GamesRepoModule";
+import { GameQuizRepoModule } from "../features/games/quiz/self/repo/GamesRepoModule";
 import { BlogsRepoModule } from "../features/blogs/repo/blogs.repo.module";
 
 const adaminControllers = [AdminTestingController, SuperAdminBlogController];
@@ -21,7 +21,7 @@ const adminImports = [
   LikesForPostRepoModule,
   LikesForCommentRepoModule,
   QuizQuestRepoModule,
-  QuizGameRepoModule,
+  GameQuizRepoModule,
 ];
 @Module({
   imports: [...adminImports],
