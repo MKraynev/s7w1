@@ -8,5 +8,7 @@ export class GameQuizAnswersRepoService {
     private repo: Repository<QuizGameAnswerRepoEntity>,
   ) {}
 
-  public async GetUserAnswers(userId: string, gameId: string) {}
+  public async GetUserAnswers(userId: string, gameId: string): Promise<{ questionId: string; answerStatus: string; addedAt: Date }[]> {
+    return [{ questionId: "123", answerStatus: "Correct", addedAt: new Date() }];
+  }
 }

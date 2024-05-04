@@ -78,11 +78,9 @@ export class QuizQuestionRepoService {
   }> {
     let BodySearchPattern: FindOptionsWhere<QuizQuestionEntity> = {};
 
-    let caseInsensitiveSearchPattern = (column: string, inputValue: string) =>
-      `LOWER(${column}) Like '%${inputValue.toLowerCase()}%'`;
+    let caseInsensitiveSearchPattern = (column: string, inputValue: string) => `LOWER(${column}) Like '%${inputValue.toLowerCase()}%'`;
 
-    if (bodyPattern)
-      BodySearchPattern["body"] = Raw((alias) => caseInsensitiveSearchPattern(alias, bodyPattern));
+    if (bodyPattern) BodySearchPattern["body"] = Raw((alias) => caseInsensitiveSearchPattern(alias, bodyPattern));
 
     let orderObj: any = {};
     orderObj[sortBy] = sortDirection;
@@ -96,5 +94,28 @@ export class QuizQuestionRepoService {
     });
 
     return { count, questions: questions };
+  }
+
+  public async FindQuestions(gameIds: number[]) {
+    let idCOunter = 0;
+    let whereFindObj = {};
+    let whereSample = "question.id = :val";
+    let whereStrElements: string[] = [];
+
+    gameIds.forEach((id) => {
+      let keyVal = `id${idCOunter.toString()}`;
+      whereFindObj[keyVal] = id;
+      whereStrElements.push(whereSample.replace("val", keyVal));
+      idCOunter++;
+    });
+
+    let whereSearchString = whereStrElements.join(" OR ");
+
+    return (await this.repo
+      .createQueryBuilder("question")
+      .select(["question.id", "question.body", "question.correctAnswers"])
+      .where(whereSearchString, whereFindObj)
+      .getMany()) as { id: number; body: string; correctAnswers: string[] }[];
+    //
   }
 }

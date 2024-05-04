@@ -35,7 +35,7 @@ export class GamesRepoService {
     let gameId_num = +gameId;
     if (isNaN(gameId_num)) return null;
 
-    return await this.repo.findOneBy({ id: +gameId });
+    return await this.repo.findOne({ where: { id: gameId_num }, relations: { player_1: true, player_2: true } });
   }
 
   public async GetSearchingGame(): Promise<GamesRepoEntity | null> {

@@ -3,13 +3,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { BlogModule } from "../features/blogs/BlogsModule";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
-import {
-  POSTGRES_DATABASE,
-  POSTGRES_PASSWORD,
-  POSTGRES_PORT,
-  POSTGRES_URL,
-  POSTGRES_USERNAME,
-} from "../settings";
+import { POSTGRES_DATABASE, POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_SSL_STATUS, POSTGRES_URL, POSTGRES_USERNAME } from "../settings";
 import { UsersModule } from "../features/users/UsersModule";
 import { DevicesModule } from "../features/devices/DevicesModule";
 import { PostModule } from "../features/posts/PostModule";
@@ -31,7 +25,7 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
   database: POSTGRES_DATABASE,
   autoLoadEntities: true,
   synchronize: true,
-  ssl: true,
+  ssl: POSTGRES_SSL_STATUS === "true",
 });
 
 @Module({
