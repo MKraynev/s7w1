@@ -28,6 +28,17 @@ export class GamesRepoService {
       })
       .getOne();
 
+    console.log(
+      this.repo
+        .createQueryBuilder("game")
+        .where("game.player_1_id = :id OR game.player_2_id = :id", { id: userId })
+        .andWhere("game.status = :active OR game.status = :pending", {
+          active: "Active",
+          pending: "PendingSecondPlayer",
+        })
+        .getQuery(),
+    );
+
     return gameInfo;
   }
 
