@@ -26,7 +26,7 @@ export class GamesRepoService {
         active: "Active",
         pending: "PendingSecondPlayer",
       })
-      .getOneOrFail();
+      .getOne();
 
     return gameInfo;
   }
