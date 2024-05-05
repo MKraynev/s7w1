@@ -11,4 +11,8 @@ export class GameQuizAnswersRepoService {
   public async GetUserAnswers(userId: string, gameId: string): Promise<{ questionId: string; answerStatus: string; addedAt: Date }[]> {
     return [{ questionId: "123", answerStatus: "Correct", addedAt: new Date() }];
   }
+
+  public async DeleteAll() {
+    return (await this.repo.delete({})).affected;
+  }
 }

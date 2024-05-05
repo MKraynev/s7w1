@@ -8,6 +8,8 @@ import { LikeForPostRepoService } from "../../features/likes/postLikes/repo/Like
 import { LikeForCommentRepoService } from "../../features/likes/commentLikes/repo/LikesForCommentRepoService";
 import { QuizQuestionRepoService } from "../../features/games/quiz/questions/repo/QuestionsRepoService";
 import { GamesRepoService } from "../../features/games/quiz/self/repo/GamesRepoService";
+import { GameQuizAnswersRepoService } from "../../features/games/quiz/answers/repo/game.quiz.answers.repo.service";
+import { GameQuizQuestionsInGameService } from "../../features/games/quiz/questions.in.game/repo/game.quiz.questions.in.game.repo.service";
 
 @Controller("testing/all-data")
 export class AdminTestingController {
@@ -20,7 +22,9 @@ export class AdminTestingController {
     private likeForPost: LikeForPostRepoService,
     private likeForComments: LikeForCommentRepoService,
     private quizQuestionsRepo: QuizQuestionRepoService,
+    private quizQuestionsInGameRepo: GameQuizQuestionsInGameService,
     private quizGameRepo: GamesRepoService,
+    private answersRepo: GameQuizAnswersRepoService,
   ) {}
 
   @Delete()
@@ -35,6 +39,8 @@ export class AdminTestingController {
     await this.likeForComments.DeleteAll();
     await this.deviceRepo.DeleteAll();
     await this.quizQuestionsRepo.DeleteAll();
+    await this.answersRepo.DeleteAll();
+    await this.quizQuestionsInGameRepo.DeleteAll();
 
     return;
   }

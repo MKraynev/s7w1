@@ -1,15 +1,15 @@
-import { InjectDataSource } from "@nestjs/typeorm";
-import { DataSource } from "typeorm";
+import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
+import { DataSource, Repository } from "typeorm";
 import { QuizGameQuestionsExtendedInfoEntity } from "../../self/repo/entities/QuizGameQuestionsExtendedInfoEntity";
+import { GameQuizQuestionsInGameRepoEntity } from "./entity/game.quiz.questions.in.game.repo.entity";
 
 export class GameQuizQuestionsInGameService {
-  constructor(@InjectDataSource() public dataSource: DataSource) {}
+  constructor(
+    @InjectDataSource() public dataSource: DataSource,
+    @InjectRepository(GameQuizQuestionsInGameRepoEntity) private repo: Repository<GameQuizQuestionsInGameRepoEntity>,
+  ) {}
 
-  public async GetGameQuestionsInfoOrdered(
-    gameId: string | number,
-    user_1_id: string | number,
-    user_2_id: string | number,
-  ) {
+  public async GetGameQuestionsInfoOrdered(gameId: string | number, user_1_id: string | number, user_2_id: string | number) {
     let questionsInfo = (await this.dataSource.query(`
     SELECT m."questionId", q."body" question, q."correctAnswers" answer, m."orderNum", m."p1_answer", m."p1_answer_time", m."p2_answer", m."p2_answer_time"
     FROM public."QuizQuestions" q
@@ -32,4 +32,8 @@ export class GameQuizQuestionsInGameService {
   }
 
   public async FindMany(gameId: string) {}
+
+  public async DeleteAll() {
+    (await this.repo.delete({})).affected;
+  }
 }
