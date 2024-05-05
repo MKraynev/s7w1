@@ -19,10 +19,11 @@ export class GamesRepoService {
   public async GetUserCurrentGame(userId: string): Promise<GamesRepoEntity> {
     let gameInfo = await this.repo
       .createQueryBuilder("game")
-      .where("game.status = :active OR game.status = :pending", {
-        active: "Active",
-        pending: "PendingSecondPlayer",
-      })
+      .where(
+        new Brackets((qb) => {
+          qb.where("game.status = :active", { active: "Active" }).orWhere("game.status = :pending", { pending: "PendingSecondPlayer" });
+        }),
+      )
       .andWhere(
         new Brackets((qb) => {
           qb.where("game.player_1_id = :id", { id: userId }).orWhere("game.player_2_id = :id", { id: userId });
@@ -33,10 +34,11 @@ export class GamesRepoService {
     console.log(
       this.repo
         .createQueryBuilder("game")
-        .where("game.status = :active OR game.status = :pending", {
-          active: "Active",
-          pending: "PendingSecondPlayer",
-        })
+        .where(
+          new Brackets((qb) => {
+            qb.where("game.status = :active", { active: "Active" }).orWhere("game.status = :pending", { pending: "PendingSecondPlayer" });
+          }),
+        )
         .andWhere(
           new Brackets((qb) => {
             qb.where("game.player_1_id = :id", { id: userId }).orWhere("game.player_2_id = :id", { id: userId });
