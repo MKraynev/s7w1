@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { QuizGameInfo } from "../../controller/entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity";
 import { GamesRepoService } from "../../repo/GamesRepoService";
@@ -13,9 +13,7 @@ export class QuizGameConnectToGameCommand {
 
 @CommandHandler(QuizGameConnectToGameCommand)
 @Injectable()
-export class QuizGameConnectToGameUseCase
-  implements ICommandHandler<QuizGameConnectToGameCommand, QuizGameInfo>
-{
+export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameConnectToGameCommand, QuizGameInfo> {
   constructor(private gameRepo: GamesRepoService) {}
 
   async execute(command: QuizGameConnectToGameCommand): Promise<QuizGameInfo> {
@@ -23,16 +21,14 @@ export class QuizGameConnectToGameUseCase
     let gameCreated = false;
     let gameRepoEntity: GamesRepoEntity;
 
+    let userGame = await this.gameRepo.GetUserCurrentGame(command.userId);
+    if (userGame) throw new ForbiddenException("Player already got active game");
+
     gameRepoEntity = await this.gameRepo.GetSearchingGame();
     if (!gameRepoEntity) {
       gameRepoEntity = await this.gameRepo.CreateGame(+command.userId);
 
-      quizGame = QuizGameInfo.GetPendingForm(
-        gameRepoEntity.id.toString(),
-        command.userId,
-        command.userLogin,
-        gameRepoEntity.createdAt,
-      );
+      quizGame = QuizGameInfo.GetPendingForm(gameRepoEntity.id.toString(), command.userId, command.userLogin, gameRepoEntity.createdAt);
 
       return quizGame;
     }
