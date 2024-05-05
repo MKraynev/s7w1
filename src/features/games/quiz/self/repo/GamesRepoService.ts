@@ -1,5 +1,5 @@
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
-import { DataSource, Repository } from "typeorm";
+import { Brackets, DataSource, Repository } from "typeorm";
 import { GamesRepoEntity } from "./entities/GamesRepoEntity";
 import { QuizGameInfo } from "../controller/entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity";
 
@@ -17,25 +17,31 @@ export class GamesRepoService {
     return savedGame;
   }
   public async GetUserCurrentGame(userId: string): Promise<GamesRepoEntity> {
-    let result: QuizGameInfo;
-
     let gameInfo = await this.repo
       .createQueryBuilder("game")
-      .where("game.player_1_id = :id OR game.player_2_id = :id", { id: userId })
-      .andWhere("game.status = :active OR game.status = :pending", {
+      .where("game.status = :active OR game.status = :pending", {
         active: "Active",
         pending: "PendingSecondPlayer",
       })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where("game.player_1_id = :id", { id: userId }).orWhere("game.player_2_id = :id", { id: userId });
+        }),
+      )
       .getOne();
 
     console.log(
       this.repo
         .createQueryBuilder("game")
-        .where("game.player_1_id = :id OR game.player_2_id = :id", { id: userId })
-        .andWhere("game.status = :active OR game.status = :pending", {
+        .where("game.status = :active OR game.status = :pending", {
           active: "Active",
           pending: "PendingSecondPlayer",
         })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where("game.player_1_id = :id", { id: userId }).orWhere("game.player_2_id = :id", { id: userId });
+          }),
+        )
         .getQuery(),
     );
 
