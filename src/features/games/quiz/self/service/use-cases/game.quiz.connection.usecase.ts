@@ -22,6 +22,10 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
     let gameRepoEntity: GamesRepoEntity;
 
     let userGame = await this.gameRepo.GetUserCurrentGame(command.userId);
+
+    console.log("User ->", command.userId, command.userLogin);
+    console.log("Game ->", userGame);
+
     if (userGame) throw new ForbiddenException("Player already got active game");
 
     gameRepoEntity = await this.gameRepo.GetSearchingGame();
