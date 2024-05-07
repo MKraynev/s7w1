@@ -16,9 +16,7 @@ export class GameQuizGetMyCurrentCommand {
 
 @CommandHandler(GameQuizGetMyCurrentCommand)
 @Injectable()
-export class GameQuizGetMyCurrentUseCase
-  implements ICommandHandler<GameQuizGetMyCurrentCommand, QuizGameInfo>
-{
+export class GameQuizGetMyCurrentUseCase implements ICommandHandler<GameQuizGetMyCurrentCommand, QuizGameInfo> {
   private gameInfo: GamesRepoEntity | null = null;
   constructor(
     private quizGameRepo: GamesRepoService,
@@ -33,16 +31,12 @@ export class GameQuizGetMyCurrentUseCase
 
     if (this.gameInfo.status == "PendingSecondPlayer") return this.PendingSecondPlayerScenario();
 
-    let usersInfo = await this.userRepo.GetIdLogin(
+    let usersInfo = await this.userRepo.GetIdLogin(this.gameInfo.player_1_id, this.gameInfo.player_2_id);
+    let answersInfo: QuizGameQuestionsExtendedInfoEntity[] = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
+      this.gameInfo.id,
       this.gameInfo.player_1_id,
       this.gameInfo.player_2_id,
     );
-    let answersInfo: QuizGameQuestionsExtendedInfoEntity[] =
-      await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
-        this.gameInfo.id,
-        this.gameInfo.player_1_id,
-        this.gameInfo.player_2_id,
-      );
 
     let answers = QuizGameQuestionsExtendedInfoEntity.GetPlayersInfo(answersInfo);
 
@@ -58,10 +52,7 @@ export class GameQuizGetMyCurrentUseCase
         new QuizGamePlayerInfoEntity(usersInfo[1].id.toString(), usersInfo[1].login),
         0,
       ),
-      answersInfo.map(
-        (answerLine) =>
-          new QuizGameQuestionInfoEntity(answerLine.questionId.toString(), answerLine.question),
-      ),
+      answersInfo.map((answerLine) => new QuizGameQuestionInfoEntity(answerLine.questionId.toString(), answerLine.question)),
       "Active",
       this.gameInfo.createdAt,
       this.gameInfo.startedAt,
@@ -92,7 +83,7 @@ export class GameQuizGetMyCurrentUseCase
 
     let userInfo = await this.userRepo.ReadOneById(this.gameInfo.player_1_id.toString());
 
-    return QuizGameInfo.GetPendingForm(
+    return QuizGameInfo.InitNewGame(
       this.gameInfo.id.toString(),
       this.gameInfo.player_1_id.toString(),
       userInfo.login,

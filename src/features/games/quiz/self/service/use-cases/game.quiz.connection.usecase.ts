@@ -3,6 +3,7 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { QuizGameInfo } from "../../controller/entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity";
 import { GamesRepoService } from "../../repo/GamesRepoService";
 import { GamesRepoEntity } from "../../repo/entities/GamesRepoEntity";
+import { UsersRepoService } from "../../../../../users/repo/UsersRepoService";
 
 export class QuizGameConnectToGameCommand {
   constructor(
@@ -17,26 +18,22 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
   constructor(private gameRepo: GamesRepoService) {}
 
   async execute(command: QuizGameConnectToGameCommand): Promise<QuizGameInfo> {
-    let quizGame: QuizGameInfo;
-    let gameCreated = false;
-    let gameRepoEntity: GamesRepoEntity;
-
-    let userGame = await this.gameRepo.GetUserCurrentGame(command.userId);
-
     console.log("User ->", command.userId, command.userLogin);
-    console.log("Game ->", userGame);
 
-    if (userGame) throw new ForbiddenException("Player already got active game");
+    let userCurrentGame = await this.gameRepo.GetUserCurrentGame(command.userId);
+    if (userCurrentGame) throw new ForbiddenException("Player already got active game");
 
-    gameRepoEntity = await this.gameRepo.GetSearchingGame();
-    if (!gameRepoEntity) {
-      gameRepoEntity = await this.gameRepo.CreateGame(+command.userId);
+    let activeSearchingGame = await this.gameRepo.GetSearchingGame();
 
-      quizGame = QuizGameInfo.GetPendingForm(gameRepoEntity.id.toString(), command.userId, command.userLogin, gameRepoEntity.createdAt);
-
-      return quizGame;
+    if (activeSearchingGame) {
+      activeSearchingGame.TakeSecondPlayer(+command.userId); //changed to active game
+      let savedActivePlayingGame = await this.gameRepo.Save(activeSearchingGame);
+      return QuizGameInfo.InitGame(savedActivePlayingGame);
     }
 
-    return quizGame;
+    let newGame = await this.gameRepo.CreateGame(+command.userId);
+    let newQuizGame = QuizGameInfo.InitNewGame(newGame.id.toString(), command.userId, command.userLogin, newGame.createdAt);
+
+    return newQuizGame;
   }
 }

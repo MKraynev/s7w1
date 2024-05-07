@@ -60,9 +60,14 @@ export class GamesRepoService {
   public async GetSearchingGame(): Promise<GamesRepoEntity | null> {
     let game = await this.repo.findOne({
       where: { status: "PendingSecondPlayer" },
+      relations: { player_1: true },
     });
 
     return game;
+  }
+
+  public async Save(game: GamesRepoEntity) {
+    return await this.repo.save(game);
   }
 
   public async DeleteAll() {

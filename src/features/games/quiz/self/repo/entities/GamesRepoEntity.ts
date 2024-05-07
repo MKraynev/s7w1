@@ -66,5 +66,9 @@ export class GamesRepoEntity {
     return game;
   }
 
-  public static AnswerScore: number = 1;
+  public TakeSecondPlayer(secondPlayerId: number) {
+    this.player_2_id = secondPlayerId;
+    this.status = "Active";
+    this.startedAt = new Date();
+  }
 }
