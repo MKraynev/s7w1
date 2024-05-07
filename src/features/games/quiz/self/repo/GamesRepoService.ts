@@ -50,11 +50,19 @@ export class GamesRepoService {
     return gameInfo;
   }
 
-  public async FindOneById(gameId: string): Promise<GamesRepoEntity | null> {
+  public async FindOneById(gameId: string, takeAsCompleteEntity: boolean = false): Promise<GamesRepoEntity | null> {
     let gameId_num = +gameId;
     if (isNaN(gameId_num)) return null;
 
-    return await this.repo.findOne({ where: { id: gameId_num }, relations: { player_1: true, player_2: true } });
+    return await this.repo.findOne({
+      where: { id: gameId_num },
+      relations: {
+        player_1: takeAsCompleteEntity,
+        player_2: takeAsCompleteEntity,
+        answers_p1: takeAsCompleteEntity,
+        answers_p2: takeAsCompleteEntity,
+      },
+    });
   }
 
   public async GetSearchingGame(): Promise<GamesRepoEntity | null> {

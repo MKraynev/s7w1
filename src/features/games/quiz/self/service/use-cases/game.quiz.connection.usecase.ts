@@ -27,8 +27,9 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
 
     if (activeSearchingGame) {
       activeSearchingGame.TakeSecondPlayer(+command.userId); //changed to active game
-      let savedActivePlayingGame = await this.gameRepo.Save(activeSearchingGame);
-      return QuizGameInfo.InitGame(savedActivePlayingGame);
+      await this.gameRepo.Save(activeSearchingGame);
+      let savedGame = await this.gameRepo.FindOneById(activeSearchingGame.id.toString(), true);
+      return QuizGameInfo.InitGame(savedGame);
     }
 
     let newGame = await this.gameRepo.CreateGame(+command.userId);
