@@ -8,8 +8,14 @@ import { GamesPairGameQuizController } from "./controller/GamesPairGameQuizContr
 import { QuizGameQuestionsInGameModule } from "../questions.in.game/repo/game.quiz.questions.in.game.repo.module";
 import { GameQuizAnswersRepoModule } from "../answers/repo/game.quiz.answers.repo.module";
 import { GameQuizGetByIdUseCase } from "./service/use-cases/game.quiz.get.by.id.usecase";
+import { GameQuizAnswerTheQuestionUseCase } from "./service/use-cases/game.quiz.answer.the.question.usecase";
 
-export const QuizGameUseCases = [GameQuizGetMyCurrentUseCase, QuizGameConnectToGameUseCase, GameQuizGetByIdUseCase];
+export const QuizGameUseCases = [
+  GameQuizGetMyCurrentUseCase,
+  QuizGameConnectToGameUseCase,
+  GameQuizGetByIdUseCase,
+  GameQuizAnswerTheQuestionUseCase,
+];
 
 @Module({
   imports: [GameQuizRepoModule, GameQuizAnswersRepoModule, UsersRepoModule, QuizGameQuestionsInGameModule, CqrsModule],

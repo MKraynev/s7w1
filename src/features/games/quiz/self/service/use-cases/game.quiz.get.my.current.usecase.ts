@@ -17,7 +17,6 @@ export class GameQuizGetMyCurrentCommand {
 @CommandHandler(GameQuizGetMyCurrentCommand)
 @Injectable()
 export class GameQuizGetMyCurrentUseCase implements ICommandHandler<GameQuizGetMyCurrentCommand, QuizGameInfo> {
-  private gameInfo: GamesRepoEntity | null = null;
   constructor(
     private quizGameRepo: GamesRepoService,
     private quizGameQuestionRepo: GameQuizQuestionsInGameService,
@@ -25,23 +24,23 @@ export class GameQuizGetMyCurrentUseCase implements ICommandHandler<GameQuizGetM
   ) {}
 
   async execute(command: GameQuizGetMyCurrentCommand): Promise<QuizGameInfo> {
-    this.gameInfo = await this.quizGameRepo.GetUserCurrentGame(command.userId);
+    let currentGame = await this.quizGameRepo.GetUserCurrentGame(command.userId);
 
-    if (!this.gameInfo) throw new NotFoundException();
+    if (currentGame) throw new NotFoundException();
 
-    if (this.gameInfo.status == "PendingSecondPlayer") return this.PendingSecondPlayerScenario();
+    if (currentGame.status == "PendingSecondPlayer") return this.PendingSecondPlayerScenario(currentGame);
 
-    let usersInfo = await this.userRepo.GetIdLogin(this.gameInfo.player_1_id, this.gameInfo.player_2_id);
+    let usersInfo = await this.userRepo.GetIdLogin(currentGame.player_1_id, currentGame.player_2_id);
     let answersInfo: QuizGameQuestionsExtendedInfoEntity[] = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
-      this.gameInfo.id,
-      this.gameInfo.player_1_id,
-      this.gameInfo.player_2_id,
+      currentGame.id,
+      currentGame.player_1_id,
+      currentGame.player_2_id,
     );
 
     let answers = QuizGameQuestionsExtendedInfoEntity.GetPlayersInfo(answersInfo);
 
-    let currentGame: QuizGameInfo = new QuizGameInfo(
-      this.gameInfo.id.toString(),
+    let currentGameInfo: QuizGameInfo = new QuizGameInfo(
+      currentGame.id.toString(),
       new QuizGamePlayerProgressEntity(
         answers.firstPlayerResult,
         new QuizGamePlayerInfoEntity(usersInfo[0].id.toString(), usersInfo[0].login),
@@ -54,12 +53,12 @@ export class GameQuizGetMyCurrentUseCase implements ICommandHandler<GameQuizGetM
       ),
       answersInfo.map((answerLine) => new QuizGameQuestionInfoEntity(answerLine.questionId.toString(), answerLine.question)),
       "Active",
-      this.gameInfo.createdAt,
-      this.gameInfo.startedAt,
+      currentGame.createdAt,
+      currentGame.startedAt,
       null,
     );
 
-    return currentGame;
+    return currentGameInfo;
 
     // SELECT m."questionId", q."body" question, q."correctAnswers" answer, m."orderNum", m."p1_answer", m."p1_answer_time", m."p2_answer", m."p2_answer_time"
     // FROM public."QuizQuestions" q
@@ -78,16 +77,11 @@ export class GameQuizGetMyCurrentUseCase implements ICommandHandler<GameQuizGetM
     // ORDER BY m."orderNum" ASC;
   }
 
-  private async PendingSecondPlayerScenario(): Promise<QuizGameInfo> {
+  private async PendingSecondPlayerScenario(currentGame: GamesRepoEntity): Promise<QuizGameInfo> {
     let result: QuizGameInfo;
 
-    let userInfo = await this.userRepo.ReadOneById(this.gameInfo.player_1_id.toString());
+    let userInfo = await this.userRepo.ReadOneById(currentGame.player_1_id.toString());
 
-    return QuizGameInfo.InitNewGame(
-      this.gameInfo.id.toString(),
-      this.gameInfo.player_1_id.toString(),
-      userInfo.login,
-      this.gameInfo.createdAt,
-    );
+    return QuizGameInfo.InitNewGame(currentGame.id.toString(), currentGame.player_1_id.toString(), userInfo.login, currentGame.createdAt);
   }
 }

@@ -12,6 +12,10 @@ export class GameQuizAnswersRepoService {
     return [{ questionId: "123", answerStatus: "Correct", addedAt: new Date() }];
   }
 
+  public async Save(gameId: string, questionId: string, userId: string, answer: string) {
+    return await this.repo.save(QuizGameAnswerRepoEntity.Init(gameId, questionId, userId, answer));
+  }
+
   public async DeleteAll() {
     return (await this.repo.delete({})).affected;
   }

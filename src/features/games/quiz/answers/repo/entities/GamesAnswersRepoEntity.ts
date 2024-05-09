@@ -1,13 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { GamesRepoEntity } from "../../../self/repo/entities/GamesRepoEntity";
 import { UserRepoEntity } from "../../../../../users/repo/entities/UsersRepoEntity";
 import { QuizQuestionEntity } from "../../../questions/repo/entity/QuestionsRepoEntity";
@@ -47,4 +38,14 @@ export class QuizGameAnswerRepoEntity {
 
   @UpdateDateColumn({ type: "timestamptz" })
   updatedAt: Date;
+
+  public static Init(gameId: string, questionId: string, playerId: string, answer: string) {
+    let res = new QuizGameAnswerRepoEntity();
+    res.answer = answer;
+    res.userId = +playerId;
+    res.gameId = +gameId;
+    res.questionId = +questionId;
+
+    return res;
+  }
 }

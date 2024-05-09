@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { GamesRepoEntity } from "../repo/entities/GamesRepoEntity";
 import { QuizGameInfo } from "./entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity";
@@ -9,6 +9,11 @@ import { GameQuizGetMyCurrentCommand } from "../service/use-cases/game.quiz.get.
 import { QuizGameConnectToGameCommand } from "../service/use-cases/game.quiz.connection.usecase";
 import { GameQuizGetByIdCommand } from "../service/use-cases/game.quiz.get.by.id.usecase";
 import { QuizGameComplexInfo } from "../service/entities/quiz.game.complex.info";
+import { ValidateParameters } from "../../../../../pipes/ValidationPipe";
+import {
+  GameQuizAnswerTheQuestionCommand,
+  GameQuizAnswerTheQuestionUseCase,
+} from "../service/use-cases/game.quiz.answer.the.question.usecase";
 
 @Controller("pair-game-quiz")
 export class GamesPairGameQuizController {
@@ -19,6 +24,19 @@ export class GamesPairGameQuizController {
     let game = await this.commandBus.execute<GameQuizGetMyCurrentCommand, GamesRepoEntity>(new GameQuizGetMyCurrentCommand(tokenLoad.id));
 
     return game;
+  }
+
+  @Post("pairs/my-current/answers")
+  @UseGuards(JwtAuthGuard)
+  public async SendAnswer(
+    @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
+    @Body(new ValidateParameters()) userResponse: { answer: string },
+  ) {
+    let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, GameQuizAnswerTheQuestionUseCase>(
+      new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
+    );
+
+    return answerResult;
   }
 
   @Get("pairs/:id")
