@@ -9,6 +9,7 @@ import { QuizGameQuestionsInGameModule } from "../questions.in.game/repo/game.qu
 import { GameQuizAnswersRepoModule } from "../answers/repo/game.quiz.answers.repo.module";
 import { GameQuizGetByIdUseCase } from "./service/use-cases/game.quiz.get.by.id.usecase";
 import { GameQuizAnswerTheQuestionUseCase } from "./service/use-cases/game.quiz.answer.the.question.usecase";
+import { QuizQuestRepoModule } from "../questions/repo/QuestionsRepoModule";
 
 export const QuizGameUseCases = [
   GameQuizGetMyCurrentUseCase,
@@ -18,7 +19,7 @@ export const QuizGameUseCases = [
 ];
 
 @Module({
-  imports: [GameQuizRepoModule, GameQuizAnswersRepoModule, UsersRepoModule, QuizGameQuestionsInGameModule, CqrsModule],
+  imports: [GameQuizRepoModule, GameQuizAnswersRepoModule, UsersRepoModule, QuizGameQuestionsInGameModule, CqrsModule, QuizQuestRepoModule],
   controllers: [GamesPairGameQuizController],
   providers: [...QuizGameUseCases],
   exports: [...QuizGameUseCases],

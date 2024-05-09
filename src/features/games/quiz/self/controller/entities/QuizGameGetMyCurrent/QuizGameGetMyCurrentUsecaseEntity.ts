@@ -31,12 +31,12 @@ export class QuizGameInfo {
     return res;
   }
 
-  public static InitGame(game: GamesRepoEntity) {
+  public static InitGame(game: GamesRepoEntity, questions: QuizGameQuestionInfoEntity[]) {
     return new QuizGameInfo(
       game.id.toString(),
       new QuizGamePlayerProgressEntity([], new QuizGamePlayerInfoEntity(game.player_1.id.toString(), game.player_1.login), 0),
       new QuizGamePlayerProgressEntity([], new QuizGamePlayerInfoEntity(game.player_2.id.toString(), game.player_2.login), 0),
-      [],
+      questions,
       game.status,
       game.createdAt,
       game.startedAt,

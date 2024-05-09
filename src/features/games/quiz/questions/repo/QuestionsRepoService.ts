@@ -3,6 +3,7 @@ import { QuizQuestionEntity } from "./entity/QuestionsRepoEntity";
 import { FindOptionsWhere, Raw, Repository } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import { QuizQuestionPostEntity } from "../controllers/entities/QuestionsControllerPostEntity";
+import { getRandomValues } from "crypto";
 
 @Injectable()
 export class QuizQuestionRepoService {
@@ -94,6 +95,10 @@ export class QuizQuestionRepoService {
     });
 
     return { count, questions: questions };
+  }
+
+  public async GetRandomQuesitons(count: number = 5) {
+    return await this.repo.createQueryBuilder().select().orderBy("RANDOM()").limit(count).getMany();
   }
 
   public async FindQuestions(gameIds: number[]) {

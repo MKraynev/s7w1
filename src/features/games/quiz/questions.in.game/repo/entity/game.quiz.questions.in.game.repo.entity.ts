@@ -9,17 +9,24 @@ export class GameQuizQuestionsInGameRepoEntity {
   @ManyToOne(() => GamesRepoEntity, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "gameId" })
   game: GamesRepoEntity;
-
   @Column()
   gameId: number;
 
   @ManyToOne(() => QuizQuestionEntity)
   @JoinColumn({ name: "questionId" })
   question: QuizQuestionEntity;
-
   @Column({ nullable: false })
   questionId: number;
 
   @Column()
   orderNum: number;
+
+  public static Init(gameId: string, questionId: string, orderNum: number) {
+    let res = new GameQuizQuestionsInGameRepoEntity();
+    res.gameId = +gameId;
+    res.questionId = +questionId;
+    res.orderNum = orderNum;
+
+    return res;
+  }
 }

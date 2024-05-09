@@ -33,6 +33,10 @@ export class GameQuizQuestionsInGameService {
 
   public async FindMany(gameId: string) {}
 
+  public async Save(gameId: string, questionId: string, orderNum: number) {
+    return await this.repo.save(GameQuizQuestionsInGameRepoEntity.Init(gameId, questionId, orderNum));
+  }
+
   public async DeleteAll() {
     (await this.repo.delete({})).affected;
   }

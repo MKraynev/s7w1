@@ -4,6 +4,10 @@ import { QuizGameInfo } from "../../controller/entities/QuizGameGetMyCurrent/Qui
 import { GamesRepoService } from "../../repo/GamesRepoService";
 import { GamesRepoEntity } from "../../repo/entities/GamesRepoEntity";
 import { UsersRepoService } from "../../../../../users/repo/UsersRepoService";
+import { QuizQuestionRepoService } from "../../../questions/repo/QuestionsRepoService";
+import { GameQuizRules } from "../../../rules/game.quiz.rules";
+import { GameQuizQuestionsInGameService } from "../../../questions.in.game/repo/game.quiz.questions.in.game.repo.service";
+import { QuizGameQuestionInfoEntity } from "../../controller/entities/QuizGameGetMyCurrent/QuizGameQuestionInfoEntity";
 
 export class QuizGameConnectToGameCommand {
   constructor(
@@ -15,7 +19,11 @@ export class QuizGameConnectToGameCommand {
 @CommandHandler(QuizGameConnectToGameCommand)
 @Injectable()
 export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameConnectToGameCommand, QuizGameInfo> {
-  constructor(private gameRepo: GamesRepoService) {}
+  constructor(
+    private gameRepo: GamesRepoService,
+    private questionRepo: QuizQuestionRepoService,
+    private questionsInGameRepo: GameQuizQuestionsInGameService,
+  ) {}
 
   async execute(command: QuizGameConnectToGameCommand): Promise<QuizGameInfo> {
     console.log("User ->", command.userId, command.userLogin);
@@ -26,10 +34,27 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
     let activeSearchingGame = await this.gameRepo.GetSearchingGame();
 
     if (activeSearchingGame) {
+      let questionsForNewGame = await this.questionRepo.GetRandomQuesitons(GameQuizRules.GetGameQuestionCount());
+
+      //DEBUG
+      console.log("active game ->", activeSearchingGame);
+      console.log("random questions ->", questionsForNewGame);
+
+      await Promise.all(
+        questionsForNewGame.map(
+          async (gameQuestion, order) =>
+            await this.questionsInGameRepo.Save(activeSearchingGame.id.toString(), gameQuestion.id.toString(), order),
+        ),
+      );
+
       activeSearchingGame.TakeSecondPlayer(+command.userId); //changed to active game
+
       await this.gameRepo.Save(activeSearchingGame);
       let savedGame = await this.gameRepo.FindOneById(activeSearchingGame.id.toString(), true);
-      return QuizGameInfo.InitGame(savedGame);
+      return QuizGameInfo.InitGame(
+        savedGame,
+        questionsForNewGame.map((question) => new QuizGameQuestionInfoEntity(question.id.toString(), question.body)),
+      );
     }
 
     let newGame = await this.gameRepo.CreateGame(+command.userId);
