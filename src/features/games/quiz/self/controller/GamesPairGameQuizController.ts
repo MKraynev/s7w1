@@ -14,6 +14,7 @@ import {
   GameQuizAnswerTheQuestionCommand,
   GameQuizAnswerTheQuestionUseCase,
 } from "../service/use-cases/game.quiz.answer.the.question.usecase";
+import { QuizGameAnswerResult } from "../service/entities/quiz.game.answer.result";
 
 @Controller("pair-game-quiz")
 export class GamesPairGameQuizController {
@@ -32,7 +33,7 @@ export class GamesPairGameQuizController {
     @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
     @Body(new ValidateParameters()) userResponse: { answer: string },
   ) {
-    let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, GameQuizAnswerTheQuestionUseCase>(
+    let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
       new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
     );
 
