@@ -27,12 +27,12 @@ export class GameQuizGetMyCurrentUseCase implements ICommandHandler<GameQuizGetM
     try {
       let currentGame = await this.quizGameRepo.GetUserCurrentGame(command.userId);
 
-      if (currentGame) throw new NotFoundException();
-
-      if (currentGame.status == "PendingSecondPlayer") return this.PendingSecondPlayerScenario(currentGame);
+      if (!currentGame) throw new NotFoundException();
 
       //DEBUG
       console.log(currentGame);
+
+      if (currentGame.status == "PendingSecondPlayer") return this.PendingSecondPlayerScenario(currentGame);
 
       let usersInfo = await this.userRepo.GetIdLogin(currentGame.player_1_id, currentGame.player_2_id);
       let answersInfo: QuizGameQuestionsExtendedInfoEntity[] = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
