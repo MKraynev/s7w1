@@ -24,49 +24,45 @@ export class GameQuizGetMyCurrentUseCase implements ICommandHandler<GameQuizGetM
   ) {}
 
   async execute(command: GameQuizGetMyCurrentCommand): Promise<QuizGameInfo> {
-    try {
-      console.log("command ->", command);
-      let currentGame = await this.quizGameRepo.GetUserCurrentGame(command.userId);
+    console.log("command ->", command);
+    let currentGame = await this.quizGameRepo.GetUserCurrentGame(command.userId);
 
-      if (!currentGame) throw new NotFoundException();
+    if (!currentGame) throw new NotFoundException();
 
-      //DEBUG
-      console.log("game ->", currentGame);
+    //DEBUG
+    console.log("game ->", currentGame);
 
-      if (currentGame.status == "PendingSecondPlayer") return this.PendingSecondPlayerScenario(currentGame);
+    if (currentGame.status == "PendingSecondPlayer") return this.PendingSecondPlayerScenario(currentGame);
 
-      let usersInfo = await this.userRepo.GetIdLogin(currentGame.player_1_id, currentGame.player_2_id);
-      let answersInfo: QuizGameQuestionsExtendedInfoEntity[] = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
-        currentGame.id,
-        currentGame.player_1_id,
-        currentGame.player_2_id,
-      );
+    let usersInfo = await this.userRepo.GetIdLogin(currentGame.player_1_id, currentGame.player_2_id);
+    let answersInfo: QuizGameQuestionsExtendedInfoEntity[] = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
+      currentGame.id,
+      currentGame.player_1_id,
+      currentGame.player_2_id,
+    );
 
-      let answers = QuizGameQuestionsExtendedInfoEntity.GetPlayersInfo(answersInfo);
+    let answers = QuizGameQuestionsExtendedInfoEntity.GetPlayersInfo(answersInfo);
 
-      let currentGameInfo: QuizGameInfo = new QuizGameInfo(
-        currentGame.id.toString(),
-        new QuizGamePlayerProgressEntity(
-          answers.firstPlayerResult,
-          new QuizGamePlayerInfoEntity(usersInfo[0].id.toString(), usersInfo[0].login),
-          0,
-        ),
-        new QuizGamePlayerProgressEntity(
-          answers.secondPlayerResult,
-          new QuizGamePlayerInfoEntity(usersInfo[1].id.toString(), usersInfo[1].login),
-          0,
-        ),
-        answersInfo.map((answerLine) => new QuizGameQuestionInfoEntity(answerLine.questionId.toString(), answerLine.question)),
-        "Active",
-        currentGame.createdAt,
-        currentGame.startedAt,
-        null,
-      );
+    let currentGameInfo: QuizGameInfo = new QuizGameInfo(
+      currentGame.id.toString(),
+      new QuizGamePlayerProgressEntity(
+        answers.firstPlayerResult,
+        new QuizGamePlayerInfoEntity(usersInfo[0].id.toString(), usersInfo[0].login),
+        0,
+      ),
+      new QuizGamePlayerProgressEntity(
+        answers.secondPlayerResult,
+        new QuizGamePlayerInfoEntity(usersInfo[1].id.toString(), usersInfo[1].login),
+        0,
+      ),
+      answersInfo.map((answerLine) => new QuizGameQuestionInfoEntity(answerLine.questionId.toString(), answerLine.question)),
+      "Active",
+      currentGame.createdAt,
+      currentGame.startedAt,
+      null,
+    );
 
-      return currentGameInfo;
-    } catch (e) {
-      console.log(e);
-    }
+    return currentGameInfo;
   }
 
   private async PendingSecondPlayerScenario(currentGame: GamesRepoEntity): Promise<QuizGameInfo> {
