@@ -25,12 +25,13 @@ export class GameQuizGetMyCurrentUseCase implements ICommandHandler<GameQuizGetM
 
   async execute(command: GameQuizGetMyCurrentCommand): Promise<QuizGameInfo> {
     try {
+      console.log("command ->", command);
       let currentGame = await this.quizGameRepo.GetUserCurrentGame(command.userId);
 
       if (!currentGame) throw new NotFoundException();
 
       //DEBUG
-      console.log(currentGame);
+      console.log("game ->", currentGame);
 
       if (currentGame.status == "PendingSecondPlayer") return this.PendingSecondPlayerScenario(currentGame);
 
