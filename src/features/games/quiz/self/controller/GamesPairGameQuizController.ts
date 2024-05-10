@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { GamesRepoEntity } from "../repo/entities/GamesRepoEntity";
 import { QuizGameInfo } from "./entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity";
@@ -49,6 +49,7 @@ export class GamesPairGameQuizController {
 
   @Post("pairs/connection")
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   public async ConnectToGame(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad) {
     let newGame = await this.commandBus.execute<QuizGameConnectToGameCommand, QuizGameInfo>(
       new QuizGameConnectToGameCommand(tokenLoad.id, tokenLoad.login),
