@@ -33,20 +33,48 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
       userGame.player_2_id,
     );
 
-    let playerUnansweredQuestion: QuizGameQuestionsExtendedInfoEntity;
+    //DEBUG
+    console.log("command ->", command);
+    console.log("q status: \n", gameQuestionsAndAnswersInfo);
 
-    if (+command.userId === userGame.player_1_id)
-      playerUnansweredQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p1_answer === null)[0];
-    else playerUnansweredQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p2_answer === null)[0];
+    let currentQuestion: QuizGameQuestionsExtendedInfoEntity;
 
-    if (!playerUnansweredQuestion) throw new ForbiddenException(); //player answered all questions
+    let userIsFirstPlayer = +command.userId === userGame.player_1_id;
+    if (userIsFirstPlayer) currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p1_answer === null)[0];
+    else currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p2_answer === null)[0];
 
-    await this.answerRepo.Save(userGame.id.toString(), playerUnansweredQuestion.questionId.toString(), command.userId, command.answer);
+    if (!currentQuestion) throw new ForbiddenException(); //player answered all questions
+
+    if (userIsFirstPlayer) userGame.player_1_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
+    else userGame.player_2_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
+
+    if (this.BothUsersAnsweredAllQuestions(gameQuestionsAndAnswersInfo, userIsFirstPlayer)) {
+      userGame.status = "Finished";
+      userGame.endedAt = new Date();
+    }
+
+    await Promise.all([
+      this.answerRepo.Save(userGame.id.toString(), currentQuestion.questionId.toString(), command.userId, command.answer),
+      this.gameRepo.Save(userGame),
+    ]);
 
     return new QuizGameAnswerResult(
-      playerUnansweredQuestion.questionId.toString(),
-      playerUnansweredQuestion.answer.includes(command.answer) ? "Correct" : "Incorrect",
+      currentQuestion.questionId.toString(),
+      currentQuestion.answer.includes(command.answer) ? "Correct" : "Incorrect",
       new Date(),
     );
+  }
+
+  private BothUsersAnsweredAllQuestions(
+    gameQuestionsAndAnswersInfo: QuizGameQuestionsExtendedInfoEntity[],
+    userIsFirstPlayer: boolean,
+  ): boolean {
+    let firstPlayerUnansweredQuestionsCount = gameQuestionsAndAnswersInfo.map((info) => info.p1_answer === null).length;
+    let secondPlayerUnansweredQuestionsCount = gameQuestionsAndAnswersInfo.map((info) => info.p2_answer === null).length;
+
+    if (userIsFirstPlayer && firstPlayerUnansweredQuestionsCount === 1 && secondPlayerUnansweredQuestionsCount === 0) return true;
+    if (!userIsFirstPlayer && secondPlayerUnansweredQuestionsCount === 1 && firstPlayerUnansweredQuestionsCount === 0) return true;
+
+    return false;
   }
 }

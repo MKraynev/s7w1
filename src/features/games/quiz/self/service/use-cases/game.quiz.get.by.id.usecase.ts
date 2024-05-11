@@ -48,7 +48,6 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
             answerStatus: qa.answer.includes(qa.p1_answer) ? answerStatus[1] : answerStatus[0],
             addedAt: qa.p1_answer_time,
           });
-          gameInfo.firstPlayerProgress.score += GameQuizRules.ConvertAnswersToScores(qa.p1_answer, qa.answer);
         }
 
         if (qa.p2_answer !== null) {
@@ -57,12 +56,14 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
             answerStatus: qa.answer.includes(qa.p2_answer) ? answerStatus[1] : answerStatus[0],
             addedAt: qa.p2_answer_time,
           });
-          gameInfo.secondPlayerProgress.score += GameQuizRules.ConvertAnswersToScores(qa.p2_answer, qa.answer);
         }
       });
 
       gameInfo.firstPlayerProgress.player = { id: game.player_1_id.toString(), login: game.player_1.login };
+      gameInfo.firstPlayerProgress.score = game.player_1_score;
+
       gameInfo.secondPlayerProgress.player = { id: game.player_2_id.toString(), login: game.player_2.login };
+      gameInfo.secondPlayerProgress.score = game.player_2_score;
 
       gameInfo.status = game.status;
       gameInfo.pairCreatedDate = game.createdAt;
