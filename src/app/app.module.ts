@@ -18,14 +18,9 @@ let a: TypeOrmModuleOptions;
 
 export const typeormConfiguration = TypeOrmModule.forRoot({
   type: "postgres",
-  host: POSTGRES_URL,
-  port: POSTGRES_PORT,
-  username: POSTGRES_USERNAME,
-  password: POSTGRES_PASSWORD,
-  database: POSTGRES_DATABASE,
+  url: POSTGRES_URL,
   autoLoadEntities: true,
   synchronize: true,
-  ssl: POSTGRES_SSL_STATUS === "true",
 });
 
 @Module({

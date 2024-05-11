@@ -17,7 +17,8 @@ export const REFRESH_PASSWORD_URL = process.env.REFRESH_PASSWORD_URL || "localho
 export const ADMIN_LOGIN = process.env.ADMIN_LOGIN;
 export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-export const POSTGRES_URL = process.env.POSTGRES_HOST || "127.0.0.1";
+export const POSTGRES_URL = process.env.POSTGRES_URL || "";
+export const POSTGRES_HOST = process.env.POSTGRES_HOST || "";
 export const POSTGRES_PORT = parseInt(process.env.POSTGRES_PORT) || 5432;
 export const POSTGRES_USERNAME = process.env.POSTGRES_USER || "user";
 export const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD || "qwerty";
