@@ -20,8 +20,6 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
   ) {}
 
   async execute(command: GameQuizGetByIdCommand): Promise<QuizGameComplexInfo> {
-    let answerStatus = ["Incorrect", "Correct"];
-
     let game = await this.gamesRepo.FindOneById(command.gameId, true);
     if (!game) throw new NotFoundException();
 
@@ -45,31 +43,33 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
         game.player_2_id,
       );
 
-      questionsAndUsersAnswers.forEach((qa) => {
-        gameInfo.questions.push({ id: qa.questionId.toString(), body: qa.question });
+      gameInfo.setFirstPlayerProgress(
+        questionsAndUsersAnswers
+          .filter((qa) => qa.p1_answer !== null)
+          .map((qa) => {
+            return {
+              questionId: qa.questionId.toString(),
+              answerStatus: qa.answer.includes(qa.p1_answer) ? "Correct" : "Incorrect",
+              addedAt: qa.p1_answer_time,
+            };
+          }),
+        game.player_1_score,
+      );
 
-        if (qa.p1_answer !== null) {
-          gameInfo.firstPlayerProgress.answers.push({
-            questionId: qa.questionId.toString(),
-            answerStatus: qa.answer.includes(qa.p1_answer) ? answerStatus[1] : answerStatus[0],
-            addedAt: qa.p1_answer_time,
-          });
-        }
-
-        if (qa.p2_answer !== null) {
-          gameInfo.secondPlayerProgress.answers.push({
-            questionId: qa.questionId.toString(),
-            answerStatus: qa.answer.includes(qa.p2_answer) ? answerStatus[1] : answerStatus[0],
-            addedAt: qa.p2_answer_time,
-          });
-        }
-      });
-
-      gameInfo.firstPlayerProgress.player = { id: game.player_1_id.toString(), login: game.player_1.login };
-      gameInfo.firstPlayerProgress.score = game.player_1_score;
-
-      gameInfo.secondPlayerProgress.player = { id: game.player_2_id.toString(), login: game.player_2.login };
-      gameInfo.secondPlayerProgress.score = game.player_2_score;
+      gameInfo.SetSecondPlayerProgress(
+        game.player_2_id.toString(),
+        game.player_2.login,
+        questionsAndUsersAnswers
+          .filter((qa) => qa.p2_answer !== null)
+          .map((qa) => {
+            return {
+              questionId: qa.questionId.toString(),
+              answerStatus: qa.answer.includes(qa.p2_answer) ? "Correct" : "Incorrect",
+              addedAt: qa.p1_answer_time,
+            };
+          }),
+        game.player_2_score,
+      );
     }
 
     return gameInfo;
