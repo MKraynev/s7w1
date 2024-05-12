@@ -78,8 +78,8 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     gameQuestionsAndAnswersInfo: QuizGameQuestionsExtendedInfoEntity[],
     userIsFirstPlayer: boolean,
   ): boolean {
-    let firstPlayerUnansweredQuestionsCount = gameQuestionsAndAnswersInfo.map((info) => info.p1_answer === null).length;
-    let secondPlayerUnansweredQuestionsCount = gameQuestionsAndAnswersInfo.map((info) => info.p2_answer === null).length;
+    let firstPlayerUnansweredQuestionsCount = gameQuestionsAndAnswersInfo.filter((info) => info.p1_answer === null).length;
+    let secondPlayerUnansweredQuestionsCount = gameQuestionsAndAnswersInfo.filter((info) => info.p2_answer === null).length;
 
     console.log("first unanswered:", firstPlayerUnansweredQuestionsCount);
     console.log("second unanswered:", secondPlayerUnansweredQuestionsCount);
