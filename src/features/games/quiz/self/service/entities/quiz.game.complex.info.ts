@@ -3,13 +3,27 @@ export class QuizGameComplexInfo {
     answers: { questionId: string; answerStatus: string; addedAt: Date }[];
     player: { id: string; login: string };
     score: number;
-  } = { answers: [], player: null, score: 0 };
+  } = {
+    answers: [],
+    player: {
+      id: null,
+      login: null,
+    },
+    score: 0,
+  };
 
   public secondPlayerProgress: {
     answers: { questionId: string; answerStatus: string; addedAt: Date }[];
     player: { id: string; login: string };
     score: number;
-  } = { answers: [], player: null, score: 0 };
+  } = {
+    answers: [],
+    player: {
+      id: null,
+      login: null,
+    },
+    score: 0,
+  };
 
   public questions: { id: string; body: string }[] = [];
 
