@@ -23,15 +23,17 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
     try {
       let answerStatus = ["Incorrect", "Correct"];
 
-      let game = await this.gamesRepo.FindOneById(command.gameId);
+      let game = await this.gamesRepo.FindOneById(command.gameId, true);
+
+      console.log("game ->", game);
+
       if (!game) throw new NotFoundException();
 
       let userId_num = +command.userId;
 
-      if (isNaN(userId_num) || (game.player_1_id !== userId_num && game.player_2_id !== userId_num))
-        throw new ForbiddenException("wrong user");
+      if (game.player_1_id !== userId_num && game.player_2_id !== userId_num) throw new ForbiddenException();
 
-      let gameInfo = new QuizGameComplexInfo(game.id.toString());
+      let gameInfo = new QuizGameComplexInfo(command.gameId);
 
       let questionsAndUsersAnswers = await this.questionsInGameRepo.GetGameQuestionsInfoOrdered(
         game.id,

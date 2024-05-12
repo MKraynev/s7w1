@@ -52,6 +52,9 @@ export class GamesRepoService {
 
   public async FindOneById(gameId: string, takeAsCompleteEntity: boolean = false): Promise<GamesRepoEntity | null> {
     let gameId_num = +gameId;
+
+    console.log("repo, id search ->", gameId);
+
     if (isNaN(gameId_num)) return null;
 
     return await this.repo.findOne({
