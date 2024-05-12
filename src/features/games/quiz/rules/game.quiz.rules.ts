@@ -2,7 +2,7 @@ import { QuizGameQuestionsExtendedInfoEntity } from "../self/repo/entities/QuizG
 
 export class GameQuizRules {
   public static ConvertAnswersToScores(userAnswers: string, correctAnswers: string[]): number {
-    return 0;
+    return 1;
   }
 
   public static GetGameQuestionCount() {
