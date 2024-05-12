@@ -44,12 +44,12 @@ export class GameQuizGetMyCurrentUseCase implements ICommandHandler<GameQuizGetM
       new QuizGamePlayerProgressEntity(
         answers.firstPlayerResult,
         new QuizGamePlayerInfoEntity(usersInfo[0].id.toString(), usersInfo[0].login),
-        0,
+        currentGame.player_1_score,
       ),
       new QuizGamePlayerProgressEntity(
         answers.secondPlayerResult,
         new QuizGamePlayerInfoEntity(usersInfo[1].id.toString(), usersInfo[1].login),
-        0,
+        currentGame.player_2_score,
       ),
       answersInfo.map((answerLine) => new QuizGameQuestionInfoEntity(answerLine.questionId.toString(), answerLine.question)),
       "Active",

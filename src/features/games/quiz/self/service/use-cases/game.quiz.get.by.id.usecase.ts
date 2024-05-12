@@ -70,6 +70,13 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
           }),
         game.player_2_score,
       );
+
+      gameInfo.questions = questionsAndUsersAnswers.map((qa) => {
+        return {
+          id: qa.questionId.toString(),
+          body: qa.question,
+        };
+      });
     }
 
     return gameInfo;

@@ -18,7 +18,7 @@ export class QuizGameComplexInfo {
     score: number;
   } = null;
 
-  public questions: { id: string; body: string }[] = [];
+  public questions: { id: string; body: string }[] = null;
 
   constructor(
     public id: string,
