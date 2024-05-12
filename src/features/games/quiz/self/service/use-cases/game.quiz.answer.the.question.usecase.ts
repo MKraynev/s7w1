@@ -36,6 +36,7 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     //DEBUG
     console.log("command ->", command);
     console.log("q status: \n", gameQuestionsAndAnswersInfo);
+    console.log("game status before logic ->", userGame);
 
     let currentQuestion: QuizGameQuestionsExtendedInfoEntity;
 
@@ -51,12 +52,17 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     if (this.BothUsersAnsweredAllQuestions(gameQuestionsAndAnswersInfo, userIsFirstPlayer)) {
       userGame.status = "Finished";
       userGame.endedAt = new Date();
+
+      console.log("both users answered right now");
     }
 
     await Promise.all([
       this.answerRepo.Save(userGame.id.toString(), currentQuestion.questionId.toString(), command.userId, command.answer),
       this.gameRepo.Save(userGame),
     ]);
+
+    //DEBUG
+    console.log("game status before return ->", userGame);
 
     return new QuizGameAnswerResult(
       currentQuestion.questionId.toString(),
