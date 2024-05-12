@@ -6,6 +6,7 @@ import { GameQuizQuestionsInGameService } from "../../../questions.in.game/repo/
 import { QuizGameQuestionsExtendedInfoEntity } from "../../repo/entities/QuizGameQuestionsExtendedInfoEntity";
 import { GameQuizRules } from "../../../rules/game.quiz.rules";
 import { GameQuizAnswersRepoService } from "../../../answers/repo/game.quiz.answers.repo.service";
+import { QuizGameAnswerRepoEntity } from "../../../answers/repo/entities/GamesAnswersRepoEntity";
 
 export class GameQuizAnswerTheQuestionCommand {
   constructor(
@@ -59,10 +60,14 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
       console.log("both users answered right now");
     }
 
-    await Promise.all([
-      this.answerRepo.Save(userGame.id.toString(), currentQuestion.questionId.toString(), command.userId, command.answer),
-      this.gameRepo.Save(userGame),
-    ]);
+    let savedAnswer = await this.answerRepo.Save(
+      userGame.id.toString(),
+      currentQuestion.questionId.toString(),
+      command.userId,
+      command.answer,
+    );
+
+    this.gameRepo.Save(userGame);
 
     //DEBUG
     console.log("game status before return ->", userGame);
@@ -70,7 +75,7 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     return new QuizGameAnswerResult(
       currentQuestion.questionId.toString(),
       currentQuestion.answer.includes(command.answer) ? "Correct" : "Incorrect",
-      new Date(),
+      savedAnswer.createdAt,
     );
   }
 

@@ -32,22 +32,6 @@ export class GamesRepoService {
       )
       .getOne();
 
-    console.log(
-      this.repo
-        .createQueryBuilder("game")
-        .where(
-          new Brackets((qb) => {
-            qb.where("game.status = :active", { active: "Active" }).orWhere("game.status = :pending", { pending: "PendingSecondPlayer" });
-          }),
-        )
-        .andWhere(
-          new Brackets((qb) => {
-            qb.where("game.player_1_id = :id", { id: userId }).orWhere("game.player_2_id = :id", { id: userId });
-          }),
-        )
-        .getQuery(),
-    );
-
     return gameInfo;
   }
 
@@ -70,13 +54,12 @@ export class GamesRepoService {
     });
   }
 
-  public async GetSearchingGame(): Promise<GamesRepoEntity | null> {
-    let game = await this.repo.findOne({
-      where: { status: "PendingSecondPlayer" },
-      relations: { player_1: true },
-    });
-
-    return game;
+  public async GetSearchingGame(exceptId: string): Promise<GamesRepoEntity | null> {
+    return await this.repo
+      .createQueryBuilder("game")
+      .where("game.status =: status", { status: "PendingSecondPlayer" })
+      .andWhere("game.player_1_id != :id", { id: exceptId })
+      .getOne();
   }
 
   public async Save(game: GamesRepoEntity) {
