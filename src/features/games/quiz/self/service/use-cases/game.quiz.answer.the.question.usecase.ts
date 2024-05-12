@@ -49,6 +49,9 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     if (userIsFirstPlayer) userGame.player_1_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
     else userGame.player_2_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
 
+    console.log("first player ->", userIsFirstPlayer);
+    console.log("current question status ->", currentQuestion);
+
     if (this.BothUsersAnsweredAllQuestions(gameQuestionsAndAnswersInfo, userIsFirstPlayer)) {
       userGame.status = "Finished";
       userGame.endedAt = new Date();
@@ -78,8 +81,11 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     let firstPlayerUnansweredQuestionsCount = gameQuestionsAndAnswersInfo.map((info) => info.p1_answer === null).length;
     let secondPlayerUnansweredQuestionsCount = gameQuestionsAndAnswersInfo.map((info) => info.p2_answer === null).length;
 
+    console.log("first unanswered:", firstPlayerUnansweredQuestionsCount);
+    console.log("second unanswered:", secondPlayerUnansweredQuestionsCount);
+
     if (userIsFirstPlayer && firstPlayerUnansweredQuestionsCount === 1 && secondPlayerUnansweredQuestionsCount === 0) return true;
-    if (!userIsFirstPlayer && secondPlayerUnansweredQuestionsCount === 1 && firstPlayerUnansweredQuestionsCount === 0) return true;
+    else if (!userIsFirstPlayer && secondPlayerUnansweredQuestionsCount === 1 && firstPlayerUnansweredQuestionsCount === 0) return true;
 
     return false;
   }
