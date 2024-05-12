@@ -12,12 +12,19 @@ export class QuizGameComplexInfo {
   } = { answers: [], player: null, score: 0 };
 
   public questions: { id: string; body: string }[] = [];
-  public status: string;
-  public pairCreatedDate: Date;
-  public startGameDate: Date;
-  public finishGameDate: Date;
 
-  constructor(public id: string) {}
+  constructor(
+    public id: string,
+    p1_id: string,
+    p1_login: string,
+    public status: string,
+    public pairCreatedDate: Date,
+    public startGameDate: Date,
+    public finishGameDate: Date,
+  ) {
+    this.firstPlayerProgress.player.id = p1_id;
+    this.firstPlayerProgress.player.login = p1_login;
+  }
 }
 
 /*

@@ -20,21 +20,25 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
   ) {}
 
   async execute(command: GameQuizGetByIdCommand): Promise<QuizGameComplexInfo> {
-    try {
-      let answerStatus = ["Incorrect", "Correct"];
+    let answerStatus = ["Incorrect", "Correct"];
 
-      let game = await this.gamesRepo.FindOneById(command.gameId, true);
+    let game = await this.gamesRepo.FindOneById(command.gameId, true);
+    if (!game) throw new NotFoundException();
 
-      console.log("game ->", game);
+    let userId_num = +command.userId;
+    if (game.player_1_id !== userId_num && game.player_2_id !== userId_num) throw new ForbiddenException();
 
-      if (!game) throw new NotFoundException();
+    let gameInfo = new QuizGameComplexInfo(
+      command.gameId,
+      game.player_1.id.toString(),
+      game.player_1.login,
+      game.status,
+      game.createdAt,
+      game.startedAt,
+      game.endedAt,
+    );
 
-      let userId_num = +command.userId;
-
-      if (game.player_1_id !== userId_num && game.player_2_id !== userId_num) throw new ForbiddenException();
-
-      let gameInfo = new QuizGameComplexInfo(command.gameId);
-
+    if (game.player_2) {
       let questionsAndUsersAnswers = await this.questionsInGameRepo.GetGameQuestionsInfoOrdered(
         game.id,
         game.player_1_id,
@@ -66,16 +70,8 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
 
       gameInfo.secondPlayerProgress.player = { id: game.player_2_id.toString(), login: game.player_2.login };
       gameInfo.secondPlayerProgress.score = game.player_2_score;
-
-      gameInfo.status = game.status;
-      gameInfo.pairCreatedDate = game.createdAt;
-      gameInfo.startGameDate = game.startedAt;
-      gameInfo.finishGameDate = game.endedAt;
-
-      return gameInfo;
-    } catch (e) {
-      console.log(e);
-      throw e;
     }
+
+    return gameInfo;
   }
 }

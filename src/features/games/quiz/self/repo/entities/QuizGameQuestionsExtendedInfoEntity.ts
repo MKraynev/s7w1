@@ -10,7 +10,7 @@ export class QuizGameQuestionsExtendedInfoEntity {
   public p2_answer: string | null;
   public p2_answer_time: Date | null;
 
-  public static GetPlayersInfo(data: QuizGameQuestionsExtendedInfoEntity[]): {
+  public static GetPlayersAnswersInfo(data: QuizGameQuestionsExtendedInfoEntity[]): {
     firstPlayerResult: QuizGameAnswerInfoEntity[];
     secondPlayerResult: QuizGameAnswerInfoEntity[];
   } {

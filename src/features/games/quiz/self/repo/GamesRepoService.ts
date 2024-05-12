@@ -2,6 +2,7 @@ import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { Brackets, DataSource, Repository } from "typeorm";
 import { GamesRepoEntity } from "./entities/GamesRepoEntity";
 import { QuizGameInfo } from "../controller/entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity";
+import { BadRequestException } from "@nestjs/common";
 
 export class GamesRepoService {
   constructor(
@@ -55,8 +56,9 @@ export class GamesRepoService {
 
     console.log("repo, id search ->", gameId);
 
-    if (isNaN(gameId_num)) return null;
+    if (isNaN(gameId_num)) throw new BadRequestException();
 
+    //TODO обрезать сущность user, чтобы не возвращать salt и прочее
     return await this.repo.findOne({
       where: { id: gameId_num },
       relations: {
