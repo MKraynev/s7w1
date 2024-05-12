@@ -24,11 +24,14 @@ export class GamesPairGameQuizController {
   public async GetCurrentUserGame(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad) {
     let game = await this.commandBus.execute<GameQuizGetMyCurrentCommand, GamesRepoEntity>(new GameQuizGetMyCurrentCommand(tokenLoad.id));
 
+    console.log('@Get("pairs/my-current") ->', game);
+
     return game;
   }
 
   @Post("pairs/my-current/answers")
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   public async SendAnswer(
     @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
     @Body(new ValidateParameters()) userResponse: { answer: string },
@@ -37,6 +40,8 @@ export class GamesPairGameQuizController {
       new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
     );
 
+    console.log('@Post("pairs/my-current/answers") ->', answerResult);
+
     return answerResult;
   }
 
@@ -44,6 +49,8 @@ export class GamesPairGameQuizController {
   @UseGuards(JwtAuthGuard)
   public async GetById(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad, @Param("id") id: string) {
     let game = await this.commandBus.execute<GameQuizGetByIdCommand, QuizGameComplexInfo>(new GameQuizGetByIdCommand(id, tokenLoad.id));
+
+    console.log('@Get("pairs/:id") ->', game);
 
     return game;
   }
@@ -55,6 +62,8 @@ export class GamesPairGameQuizController {
     let newGame = await this.commandBus.execute<QuizGameConnectToGameCommand, QuizGameInfo>(
       new QuizGameConnectToGameCommand(tokenLoad.id, tokenLoad.login),
     );
+
+    console.log('@Post("pairs/connection") ->', newGame);
 
     return newGame;
   }
