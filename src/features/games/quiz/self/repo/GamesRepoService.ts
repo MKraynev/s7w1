@@ -58,7 +58,7 @@ export class GamesRepoService {
     return await this.repo
       .createQueryBuilder("game")
       .where("game.status =: status", { status: "PendingSecondPlayer" })
-      .andWhere("game.player_1_id NOT IN (...:ids)", { ids: [exceptId] })
+      .andWhere("game.player_1_id NOT IN (:...ids)", { ids: [exceptId] })
       .getOne();
   }
 
