@@ -55,10 +55,20 @@ export class GamesRepoService {
   }
 
   public async GetSearchingGame(exceptId: string): Promise<GamesRepoEntity | null> {
+    console.log(
+      this.repo
+        .createQueryBuilder("game")
+        .where("game.status =: status", { status: "PendingSecondPlayer" })
+        .andWhere("game.player_1_id NOT IN (:...ids)", { ids: [exceptId] })
+        .limit(1)
+        .getQuery(),
+    );
+
     return await this.repo
       .createQueryBuilder("game")
       .where("game.status =: status", { status: "PendingSecondPlayer" })
       .andWhere("game.player_1_id NOT IN (:...ids)", { ids: [exceptId] })
+      .limit(1)
       .getOne();
   }
 
