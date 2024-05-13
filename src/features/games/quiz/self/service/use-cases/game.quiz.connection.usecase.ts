@@ -33,7 +33,7 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
 
     if (userCurrentGame) throw new ForbiddenException("Player already got active game");
 
-    let activeSearchingGame = Object.assign(new GamesRepoEntity(), await this.gameRepo.GetSearchingGame(command.userId));
+    let activeSearchingGame = await this.gameRepo.GetSearchingGame(command.userId);
 
     if (activeSearchingGame) {
       let questionsForNewGame = await this.questionRepo.GetRandomQuesitons(GameQuizRules.GetGameQuestionCount());
