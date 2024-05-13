@@ -42,11 +42,9 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
       console.log("active game ->", activeSearchingGame);
       console.log("random questions ->", questionsForNewGame);
 
-      await Promise.all(
-        questionsForNewGame.map(
-          async (gameQuestion, order) =>
-            await this.questionsInGameRepo.Save(activeSearchingGame.id.toString(), gameQuestion.id.toString(), order),
-        ),
+      questionsForNewGame.forEach(
+        async (gameQuestion, order) =>
+          await this.questionsInGameRepo.Save(activeSearchingGame.id.toString(), gameQuestion.id.toString(), order),
       );
 
       activeSearchingGame = this.AssemblyGame(activeSearchingGame, command.userId);
