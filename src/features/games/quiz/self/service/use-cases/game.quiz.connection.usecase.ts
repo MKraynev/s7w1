@@ -6,6 +6,7 @@ import { QuizQuestionRepoService } from "../../../questions/repo/QuestionsRepoSe
 import { GameQuizRules } from "../../../rules/game.quiz.rules";
 import { GameQuizQuestionsInGameService } from "../../../questions.in.game/repo/game.quiz.questions.in.game.repo.service";
 import { QuizGameQuestionInfoEntity } from "../../controller/entities/QuizGameGetMyCurrent/QuizGameQuestionInfoEntity";
+import { GamesRepoEntity } from "../../repo/entities/GamesRepoEntity";
 
 export class QuizGameConnectToGameCommand {
   constructor(
@@ -32,7 +33,7 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
 
     if (userCurrentGame) throw new ForbiddenException("Player already got active game");
 
-    let activeSearchingGame = await this.gameRepo.GetSearchingGame(command.userId);
+    let activeSearchingGame = Object.assign(new GamesRepoEntity(), await this.gameRepo.GetSearchingGame(command.userId));
 
     if (activeSearchingGame) {
       let questionsForNewGame = await this.questionRepo.GetRandomQuesitons(GameQuizRules.GetGameQuestionCount());
