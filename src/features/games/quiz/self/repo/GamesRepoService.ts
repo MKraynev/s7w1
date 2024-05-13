@@ -58,16 +58,16 @@ export class GamesRepoService {
     let searchingGame = (
       await this.dataSource.query(`
     SELECT 
-      "game"."id" AS "game_id", 
-      "game"."player_1_id" AS "game_player_1_id", 
-      "game"."player_2_id" AS "game_player_2_id", 
-      "game"."player_1_score" AS "game_player_1_score", 
-      "game"."player_2_score" AS "game_player_2_score", 
-      "game"."status" AS "game_status", 
-      "game"."createdAt" AS "game_createdAt", 
-      "game"."startedAt" AS "game_startedAt", 
-      "game"."endedAt" AS "game_endedAt", 
-      "game"."updatedAt" AS "game_updatedAt" 
+      "game"."id" AS "id", 
+      "game"."player_1_id" AS "player_1_id", 
+      "game"."player_2_id" AS "player_2_id", 
+      "game"."player_1_score" AS "player_1_score", 
+      "game"."player_2_score" AS "player_2_score", 
+      "game"."status" AS "status", 
+      "game"."createdAt" AS "createdAt", 
+      "game"."startedAt" AS "startedAt", 
+      "game"."endedAt" AS "endedAt", 
+      "game"."updatedAt" AS "updatedAt" 
     FROM public."Games" "game" 
       WHERE "game"."status" = 'PendingSecondPlayer'
       AND "game"."player_1_id" != ${exceptId}
