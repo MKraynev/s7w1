@@ -1,5 +1,5 @@
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
-import { Brackets, DataSource, Repository } from "typeorm";
+import { Brackets, DataSource, FindManyOptions, Repository } from "typeorm";
 import { GamesRepoEntity } from "./entities/GamesRepoEntity";
 import { QuizGameInfo } from "../controller/entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity";
 import { BadRequestException } from "@nestjs/common";
@@ -55,21 +55,25 @@ export class GamesRepoService {
   }
 
   public async GetSearchingGame(exceptId: string): Promise<GamesRepoEntity | null> {
-    console.log(
-      this.repo
-        .createQueryBuilder("game")
-        .where("game.status =: status", { status: "PendingSecondPlayer" })
-        .andWhere("game.player_1_id NOT IN (:...ids)", { ids: [exceptId] })
-        .limit(1)
-        .getQuery(),
-    );
+    let searchingGame = (await this.dataSource.query(`
+    SELECT 
+      "game"."id" AS "game_id", 
+      "game"."player_1_id" AS "game_player_1_id", 
+      "game"."player_2_id" AS "game_player_2_id", 
+      "game"."player_1_score" AS "game_player_1_score", 
+      "game"."player_2_score" AS "game_player_2_score", 
+      "game"."status" AS "game_status", 
+      "game"."createdAt" AS "game_createdAt", 
+      "game"."startedAt" AS "game_startedAt", 
+      "game"."endedAt" AS "game_endedAt", 
+      "game"."updatedAt" AS "game_updatedAt" 
+    FROM public."Games" "game" 
+      WHERE "game"."status" = 'PendingSecondPlayer'
+      AND "game"."player_1_id" != ${exceptId}
+    LIMIT 1
+    `)) as GamesRepoEntity | null;
 
-    return await this.repo
-      .createQueryBuilder("game")
-      .where("game.status =: status", { status: "PendingSecondPlayer" })
-      .andWhere("game.player_1_id NOT IN (:...ids)", { ids: [exceptId] })
-      .limit(1)
-      .getOne();
+    return searchingGame;
   }
 
   public async Save(game: GamesRepoEntity) {
