@@ -73,7 +73,7 @@ export class GamesRepoService {
       AND "game"."player_1_id" != ${exceptId}
     LIMIT 1
     `)
-    )[0] as GamesRepoEntity | null;
+    ).getOne() as GamesRepoEntity | null;
 
     return searchingGame;
   }
