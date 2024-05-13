@@ -73,7 +73,7 @@ export class GamesRepoService {
     LIMIT 1
     `)) as GamesRepoEntity | null;
 
-    searchingGame = Object.assign(new GamesRepoEntity(), searchingGame);
+    //searchingGame = Object.assign(new GamesRepoEntity(), searchingGame);
 
     return searchingGame;
   }
