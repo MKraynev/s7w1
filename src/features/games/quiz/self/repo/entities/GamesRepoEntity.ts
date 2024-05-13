@@ -65,12 +65,4 @@ export class GamesRepoEntity {
 
     return game;
   }
-
-  public TakeSecondPlayer(secondPlayerId: number) {
-    this.player_2_id = secondPlayerId;
-    this.status = "Active";
-    this.startedAt = new Date();
-    this.player_1_score = 0;
-    this.player_2_score = 0;
-  }
 }

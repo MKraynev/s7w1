@@ -49,7 +49,7 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
         ),
       );
 
-      activeSearchingGame.TakeSecondPlayer(+command.userId); //changed to active game
+      activeSearchingGame = this.AssemblyGame(activeSearchingGame, command.userId);
 
       await this.gameRepo.Save(activeSearchingGame);
       let savedGame = await this.gameRepo.FindOneById(activeSearchingGame.id.toString(), true);
@@ -63,5 +63,15 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
     let newQuizGame = QuizGameInfo.InitNewGame(newGame.id.toString(), command.userId, command.userLogin, newGame.createdAt);
 
     return newQuizGame;
+  }
+
+  private AssemblyGame(game: GamesRepoEntity, newUserId: string) {
+    game.player_2_id = +newUserId;
+    game.status = "Active";
+    game.startedAt = new Date();
+    game.player_1_score = 0;
+    game.player_2_score = 0;
+
+    return game;
   }
 }
