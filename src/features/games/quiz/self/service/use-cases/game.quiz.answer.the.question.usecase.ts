@@ -67,7 +67,7 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
       command.answer,
     );
 
-    this.gameRepo.Save(userGame);
+    await this.gameRepo.Save(userGame);
 
     //DEBUG
     console.log("game status before return ->", userGame);
