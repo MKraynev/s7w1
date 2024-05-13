@@ -55,8 +55,7 @@ export class GamesRepoService {
   }
 
   public async GetSearchingGame(exceptId: string): Promise<GamesRepoEntity | null> {
-    let searchingGame = (
-      await this.dataSource.query(`
+    let searchingGame = (await this.dataSource.query(`
     SELECT 
       "game"."id" AS "id", 
       "game"."player_1_id" AS "player_1_id", 
@@ -72,8 +71,9 @@ export class GamesRepoService {
       WHERE "game"."status" = 'PendingSecondPlayer'
       AND "game"."player_1_id" != ${exceptId}
     LIMIT 1
-    `)
-    ).getOne() as GamesRepoEntity | null;
+    `)) as GamesRepoEntity | null;
+
+    searchingGame = Object.assign(new GamesRepoEntity(), searchingGame);
 
     return searchingGame;
   }
