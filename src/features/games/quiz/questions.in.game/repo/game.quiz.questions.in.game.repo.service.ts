@@ -11,7 +11,7 @@ export class GameQuizQuestionsInGameService {
 
   public async GetGameQuestionsInfoOrdered(gameId: string | number, user_1_id: string | number, user_2_id: string | number) {
     let questionsInfo = (await this.dataSource.query(`
-    SELECT m."questionId", q."body" question, q."correctAnswers" answer, m."orderNum", m."p1_answer", m."p1_answer_time", m."p2_answer", m."p2_answer_time"
+    SELECT DISTINCT m."questionId", q."body" question, q."correctAnswers" answer, m."orderNum", m."p1_answer", m."p1_answer_time", m."p2_answer", m."p2_answer_time"
     FROM public."QuizQuestions" q
     RIGHT JOIN (
       SELECT m1.*, a2."answer" p2_answer, a2."createdAt" p2_answer_time

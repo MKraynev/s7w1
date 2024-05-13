@@ -23,9 +23,6 @@ export class GamesPairGameQuizController {
   @UseGuards(JwtAuthGuard)
   public async GetCurrentUserGame(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad) {
     let game = await this.commandBus.execute<GameQuizGetMyCurrentCommand, GamesRepoEntity>(new GameQuizGetMyCurrentCommand(tokenLoad.id));
-
-    console.log('@Get("pairs/my-current") ->', game);
-
     return game;
   }
 
@@ -39,8 +36,6 @@ export class GamesPairGameQuizController {
     let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
       new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
     );
-
-    console.log('@Post("pairs/my-current/answers") ->', answerResult);
 
     return answerResult;
   }
