@@ -4,6 +4,7 @@ import { QuizGameQuestionsExtendedInfoEntity } from "../../self/repo/entities/Qu
 import { GameQuizQuestionsInGameRepoEntity } from "./entity/game.quiz.questions.in.game.repo.entity";
 import { GameQuizAnswersRepoService } from "../../answers/repo/game.quiz.answers.repo.service";
 import { QuizQuestionRepoService } from "../../questions/repo/QuestionsRepoService";
+import { QuizGameAnswerRepoEntity } from "../../answers/repo/entities/GamesAnswersRepoEntity";
 
 export class GameQuizQuestionsInGameService {
   constructor(
@@ -29,10 +30,10 @@ export class GameQuizQuestionsInGameService {
         question.body,
         question.correctAnswers,
         gq.orderNum,
-        p1_answer.answer,
-        p1_answer.createdAt,
-        p2_answer.answer,
-        p2_answer.createdAt,
+        p1_answer ? p1_answer.answer : null,
+        p1_answer ? p1_answer.createdAt : null,
+        p2_answer ? p2_answer.answer : null,
+        p2_answer ? p2_answer.createdAt : null,
       );
     });
 
