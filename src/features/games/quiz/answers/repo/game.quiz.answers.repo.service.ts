@@ -8,8 +8,8 @@ export class GameQuizAnswersRepoService {
     private repo: Repository<QuizGameAnswerRepoEntity>,
   ) {}
 
-  public async GetUserAnswers(userId: string, gameId: string): Promise<{ questionId: string; answerStatus: string; addedAt: Date }[]> {
-    return [{ questionId: "123", answerStatus: "Correct", addedAt: new Date() }];
+  public async GetUserAnswers(userId: string, gameId: string) {
+    return await this.repo.find({ where: { gameId: +gameId, userId: +userId } });
   }
 
   public async Save(gameId: string, questionId: string, userId: string, answer: string) {

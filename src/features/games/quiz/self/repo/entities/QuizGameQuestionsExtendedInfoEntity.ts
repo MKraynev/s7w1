@@ -1,15 +1,16 @@
 import { QuizGameAnswerInfoEntity } from "../../controller/entities/QuizGameGetMyCurrent/QuizGameAnswerInfoEntity";
 
 export class QuizGameQuestionsExtendedInfoEntity {
-  public questionId: number;
-  public question: string;
-  public answer: Array<string>;
-  public orderNum: number;
-  public p1_answer: string | null;
-  public p1_answer_time: Date | null;
-  public p2_answer: string | null;
-  public p2_answer_time: Date | null;
-
+  constructor(
+    public questionId: number,
+    public question: string,
+    public answer: Array<string>,
+    public orderNum: number,
+    public p1_answer: string | null,
+    public p1_answer_time: Date | null,
+    public p2_answer: string | null,
+    public p2_answer_time: Date | null,
+  ) {}
   public static GetPlayersAnswersInfo(data: QuizGameQuestionsExtendedInfoEntity[]): {
     firstPlayerResult: QuizGameAnswerInfoEntity[];
     secondPlayerResult: QuizGameAnswerInfoEntity[];

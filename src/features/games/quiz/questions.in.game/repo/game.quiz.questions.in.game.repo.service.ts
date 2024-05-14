@@ -2,48 +2,46 @@ import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
 import { QuizGameQuestionsExtendedInfoEntity } from "../../self/repo/entities/QuizGameQuestionsExtendedInfoEntity";
 import { GameQuizQuestionsInGameRepoEntity } from "./entity/game.quiz.questions.in.game.repo.entity";
-import { skip } from "node:test";
+import { GameQuizAnswersRepoService } from "../../answers/repo/game.quiz.answers.repo.service";
+import { UsersRepoService } from "../../../../users/repo/UsersRepoService";
+import { QuizQuestionRepoService } from "../../questions/repo/QuestionsRepoService";
 
 export class GameQuizQuestionsInGameService {
   constructor(
     @InjectDataSource() public dataSource: DataSource,
     @InjectRepository(GameQuizQuestionsInGameRepoEntity) private repo: Repository<GameQuizQuestionsInGameRepoEntity>,
+    private answersRepo: GameQuizAnswersRepoService,
+    private questionRepo: QuizQuestionRepoService,
   ) {}
 
   public async GetGameQuestionsInfoOrdered(gameId: string | number, user_1_id: string | number, user_2_id: string | number) {
-    let questionsInfo = (await this.dataSource.query(`
-    SELECT  m."questionId", q."body" question, q."correctAnswers" answer, m."orderNum", m."p1_answer", m."p1_answer_time", m."p2_answer", m."p2_answer_time"
-    FROM public."QuizQuestions" q
-    RIGHT JOIN (
-      SELECT m1.*, a2."answer" p2_answer, a2."createdAt" p2_answer_time
-      FROM public."Answers" a2
-      RIGHT JOIN (
-        SELECT qq."gameId", qq."questionId", qq."orderNum", a1."answer" p1_answer, a1."createdAt" p1_answer_time
-        FROM public."QuizGameQuestion" qq
-        LEFT JOIN public."Answers" a1
-        ON qq."questionId" = a1."questionId" AND qq."gameId" = ${gameId} AND a1."userId" = ${user_1_id}
-      ) as m1
-      ON a2."questionId" = m1."questionId" AND a2."userId" = ${user_2_id}
-    ) m
-    ON m."questionId" = q."id"
-    ORDER BY m."orderNum" ASC;
-    `)) as QuizGameQuestionsExtendedInfoEntity[];
+    let gameQuestions = await this.repo.find({ where: { gameId: +gameId } });
+    let p1_answers = await this.answersRepo.GetUserAnswers(user_1_id.toString(), gameId.toString());
+    let p2_answers = await this.answersRepo.GetUserAnswers(user_2_id.toString(), gameId.toString());
+    let questions = await this.questionRepo.FindQuestions(gameQuestions.map((gq) => gq.questionId));
 
-    //TODO переделать запрос на уникальные записи, без дубликатов
-    let usedIds: number[] = [];
-    let res = [];
+    let exInfo = gameQuestions.map((gq) => {
+      let question = questions.find((q) => q.id === gq.questionId);
+      let p1_answer = p1_answers.find((pa) => +pa.questionId === gq.questionId);
+      let p2_answer = p2_answers.find((pa) => +pa.questionId === gq.questionId);
 
-    questionsInfo.forEach((val) => {
-      if (!usedIds.includes(val.questionId)) {
-        res.push(val);
-        usedIds.push(val.questionId);
-      }
+      return new QuizGameQuestionsExtendedInfoEntity(
+        question.id,
+        question.body,
+        question.correctAnswers,
+        gq.orderNum,
+        p1_answer.answer,
+        p1_answer.createdAt,
+        p2_answer.answer,
+        p2_answer.createdAt,
+      );
     });
 
-    return res;
+    return exInfo.sort((a, b) => {
+      if (a.orderNum > b.orderNum) return 1;
+      return -1;
+    });
   }
-
-  public async FindMany(gameId: string) {}
 
   public async Save(gameId: string, questionId: string, orderNum: number) {
     return await this.repo.save(GameQuizQuestionsInGameRepoEntity.Init(gameId, questionId, orderNum));
