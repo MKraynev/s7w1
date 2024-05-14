@@ -3,7 +3,6 @@ import { DataSource, Repository } from "typeorm";
 import { QuizGameQuestionsExtendedInfoEntity } from "../../self/repo/entities/QuizGameQuestionsExtendedInfoEntity";
 import { GameQuizQuestionsInGameRepoEntity } from "./entity/game.quiz.questions.in.game.repo.entity";
 import { GameQuizAnswersRepoService } from "../../answers/repo/game.quiz.answers.repo.service";
-import { UsersRepoService } from "../../../../users/repo/UsersRepoService";
 import { QuizQuestionRepoService } from "../../questions/repo/QuestionsRepoService";
 
 export class GameQuizQuestionsInGameService {
