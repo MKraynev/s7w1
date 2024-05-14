@@ -2,6 +2,7 @@ import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
 import { QuizGameQuestionsExtendedInfoEntity } from "../../self/repo/entities/QuizGameQuestionsExtendedInfoEntity";
 import { GameQuizQuestionsInGameRepoEntity } from "./entity/game.quiz.questions.in.game.repo.entity";
+import { skip } from "node:test";
 
 export class GameQuizQuestionsInGameService {
   constructor(
@@ -28,7 +29,18 @@ export class GameQuizQuestionsInGameService {
     ORDER BY m."orderNum" ASC;
     `)) as QuizGameQuestionsExtendedInfoEntity[];
 
-    return questionsInfo.filter((value, position) => questionsInfo.indexOf(value) === position);
+    //TODO переделать запрос на уникальные записи, без дубликатов
+    let usedIds: number[] = [];
+    let res = [];
+
+    questionsInfo.forEach((val) => {
+      if (!usedIds.includes(val.questionId)) {
+        res.push(val);
+        usedIds.push(val.questionId);
+      }
+    });
+
+    return res;
   }
 
   public async FindMany(gameId: string) {}
