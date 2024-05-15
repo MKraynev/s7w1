@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, UseGuards } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { GamesRepoEntity } from "../repo/entities/GamesRepoEntity";
 import { QuizGameInfo } from "./entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity";
@@ -33,11 +33,16 @@ export class GamesPairGameQuizController {
     @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
     @Body(new ValidateParameters()) userResponse: { answer: string },
   ) {
-    let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
-      new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
-    );
+    try {
+      let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
+        new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
+      );
 
-    return answerResult;
+      return answerResult;
+    } catch (e) {
+      console.log(e);
+      throw new NotFoundException("my error");
+    }
   }
 
   @Get("pairs/:id")
