@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandBus, ICommandHandler } from "@nestjs/cqrs";
 import { QuizGameAnswerResult } from "../entities/quiz.game.answer.result";
 import { GamesRepoService } from "../../repo/GamesRepoService";
@@ -28,55 +28,60 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     let userGame = await this.gameRepo.GetUserCurrentGame(command.userId);
     if (!userGame) throw new ForbiddenException();
 
-    let gameQuestionsAndAnswersInfo = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
-      userGame.id,
-      userGame.player_1_id,
-      userGame.player_2_id,
-    );
+    try {
+      let gameQuestionsAndAnswersInfo = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
+        userGame.id,
+        userGame.player_1_id,
+        userGame.player_2_id,
+      );
 
-    //DEBUG
-    console.log("command ->", command);
-    console.log("q status: \n", gameQuestionsAndAnswersInfo);
-    console.log("game status before logic ->", userGame);
+      //DEBUG
+      console.log("command ->", command);
+      console.log("q status: \n", gameQuestionsAndAnswersInfo);
+      console.log("game status before logic ->", userGame);
 
-    let currentQuestion: QuizGameQuestionsExtendedInfoEntity;
+      let currentQuestion: QuizGameQuestionsExtendedInfoEntity;
 
-    let userIsFirstPlayer = +command.userId === userGame.player_1_id;
-    if (userIsFirstPlayer) currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p1_answer === null)[0];
-    else currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p2_answer === null)[0];
+      let userIsFirstPlayer = +command.userId === userGame.player_1_id;
+      if (userIsFirstPlayer) currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p1_answer === null)[0];
+      else currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p2_answer === null)[0];
 
-    if (!currentQuestion) throw new ForbiddenException(); //player answered all questions
+      if (!currentQuestion) throw new ForbiddenException(); //player answered all questions
 
-    if (userIsFirstPlayer) userGame.player_1_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
-    else userGame.player_2_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
+      if (userIsFirstPlayer) userGame.player_1_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
+      else userGame.player_2_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
 
-    console.log("first player ->", userIsFirstPlayer);
-    console.log("current question status ->", currentQuestion);
+      console.log("first player ->", userIsFirstPlayer);
+      console.log("current question status ->", currentQuestion);
 
-    if (this.BothUsersAnsweredAllQuestions(gameQuestionsAndAnswersInfo, userIsFirstPlayer)) {
-      userGame.status = "Finished";
-      userGame.endedAt = new Date();
+      if (this.BothUsersAnsweredAllQuestions(gameQuestionsAndAnswersInfo, userIsFirstPlayer)) {
+        userGame.status = "Finished";
+        userGame.endedAt = new Date();
 
-      console.log("both users answered right now");
+        console.log("both users answered right now");
+      }
+
+      let savedAnswer = await this.answerRepo.Save(
+        userGame.id.toString(),
+        currentQuestion.questionId.toString(),
+        command.userId,
+        command.answer,
+      );
+
+      await this.gameRepo.Save(userGame);
+
+      //DEBUG
+      console.log("game status before return ->", userGame);
+
+      return new QuizGameAnswerResult(
+        currentQuestion.questionId.toString(),
+        currentQuestion.answer.includes(command.answer) ? "Correct" : "Incorrect",
+        savedAnswer.createdAt,
+      );
+    } catch (e) {
+      console.log(e);
+      throw new BadRequestException();
     }
-
-    let savedAnswer = await this.answerRepo.Save(
-      userGame.id.toString(),
-      currentQuestion.questionId.toString(),
-      command.userId,
-      command.answer,
-    );
-
-    await this.gameRepo.Save(userGame);
-
-    //DEBUG
-    console.log("game status before return ->", userGame);
-
-    return new QuizGameAnswerResult(
-      currentQuestion.questionId.toString(),
-      currentQuestion.answer.includes(command.answer) ? "Correct" : "Incorrect",
-      savedAnswer.createdAt,
-    );
   }
 
   private BothUsersAnsweredAllQuestions(

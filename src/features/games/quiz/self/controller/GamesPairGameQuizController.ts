@@ -33,16 +33,11 @@ export class GamesPairGameQuizController {
     @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
     @Body(new ValidateParameters()) userResponse: { answer: string },
   ) {
-    try {
-      let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
-        new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
-      );
+    let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
+      new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
+    );
 
-      return answerResult;
-    } catch (e) {
-      console.log(e);
-      throw new NotFoundException("my error");
-    }
+    return answerResult;
   }
 
   @Get("pairs/:id")
