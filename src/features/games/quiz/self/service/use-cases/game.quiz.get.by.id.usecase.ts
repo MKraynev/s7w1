@@ -103,19 +103,19 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
       game.id.toString(),
       new QuizGamePlayerProgressEntity(
         answers.firstPlayerResult,
-        new QuizGamePlayerInfoEntity(usersInfo[0].id.toString(), usersInfo[0].login),
+        new QuizGamePlayerInfoEntity(game.player_1_id.toString(), usersInfo.find((info) => info.id === game.player_1_id).login),
         game.player_1_score,
       ),
       new QuizGamePlayerProgressEntity(
         answers.secondPlayerResult,
-        new QuizGamePlayerInfoEntity(usersInfo[1].id.toString(), usersInfo[1].login),
+        new QuizGamePlayerInfoEntity(game.player_2_id.toString(), usersInfo.find((info) => info.id === game.player_2_id).login),
         game.player_2_score,
       ),
       answersInfo.map((answerLine) => new QuizGameQuestionInfoEntity(answerLine.questionId.toString(), answerLine.question)),
       game.status,
       game.createdAt,
       game.startedAt,
-      null,
+      game.endedAt,
     );
 
     return currentGameInfo;

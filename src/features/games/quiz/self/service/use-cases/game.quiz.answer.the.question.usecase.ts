@@ -53,19 +53,19 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     console.log("first player ->", userIsFirstPlayer);
     console.log("current question status ->", currentQuestion);
 
-    if (this.BothUsersAnsweredAllQuestions(gameQuestionsAndAnswersInfo, userIsFirstPlayer)) {
-      userGame.status = "Finished";
-      userGame.endedAt = new Date();
-
-      console.log("both users answered right now");
-    }
-
     let savedAnswer = await this.answerRepo.Save(
       userGame.id.toString(),
       currentQuestion.questionId.toString(),
       command.userId,
       command.answer,
     );
+
+    if (this.BothUsersAnsweredAllQuestions(gameQuestionsAndAnswersInfo, userIsFirstPlayer)) {
+      userGame.status = "Finished";
+      userGame.endedAt = savedAnswer.createdAt;
+
+      console.log("both users answered right now");
+    }
 
     await this.gameRepo.Save(userGame);
 
