@@ -28,26 +28,26 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     let userGame = await this.gameRepo.GetUserCurrentGame(command.userId);
     if (!userGame) throw new ForbiddenException();
 
+    let gameQuestionsAndAnswersInfo = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
+      userGame.id,
+      userGame.player_1_id,
+      userGame.player_2_id,
+    );
+
+    //DEBUG
+    console.log("command ->", command);
+    console.log("q status: \n", gameQuestionsAndAnswersInfo);
+    console.log("game status before logic ->", userGame);
+
+    let currentQuestion: QuizGameQuestionsExtendedInfoEntity;
+
+    let userIsFirstPlayer = +command.userId === userGame.player_1_id;
+    if (userIsFirstPlayer) currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p1_answer === null)[0];
+    else currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p2_answer === null)[0];
+
+    if (!currentQuestion) throw new ForbiddenException(); //player answered all questions
+
     try {
-      let gameQuestionsAndAnswersInfo = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
-        userGame.id,
-        userGame.player_1_id,
-        userGame.player_2_id,
-      );
-
-      //DEBUG
-      console.log("command ->", command);
-      console.log("q status: \n", gameQuestionsAndAnswersInfo);
-      console.log("game status before logic ->", userGame);
-
-      let currentQuestion: QuizGameQuestionsExtendedInfoEntity;
-
-      let userIsFirstPlayer = +command.userId === userGame.player_1_id;
-      if (userIsFirstPlayer) currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p1_answer === null)[0];
-      else currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p2_answer === null)[0];
-
-      if (!currentQuestion) throw new ForbiddenException(); //player answered all questions
-
       if (userIsFirstPlayer) userGame.player_1_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
       else userGame.player_2_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
 
