@@ -26,7 +26,7 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
   ) {}
   async execute(command: GameQuizAnswerTheQuestionCommand): Promise<QuizGameAnswerResult> {
     let userGame = await this.gameRepo.GetUserCurrentGame(command.userId);
-    if (!userGame) throw new ForbiddenException();
+    if (!userGame || userGame.status !== "Active") throw new ForbiddenException();
 
     let gameQuestionsAndAnswersInfo = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
       userGame.id,

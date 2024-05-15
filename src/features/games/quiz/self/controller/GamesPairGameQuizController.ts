@@ -65,7 +65,7 @@ export class GamesPairGameQuizController {
   @Get("pairs/:id")
   @UseGuards(JwtAuthGuard)
   public async GetById(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad, @Param("id") id: string) {
-    let game = await this.commandBus.execute<GameQuizGetByIdCommand, QuizGameComplexInfo>(new GameQuizGetByIdCommand(id, tokenLoad.id));
+    let game = await this.commandBus.execute<GameQuizGetByIdCommand, QuizGameInfo>(new GameQuizGetByIdCommand(id, tokenLoad.id));
 
     console.log('@Get("pairs/:id") ->', game);
 
