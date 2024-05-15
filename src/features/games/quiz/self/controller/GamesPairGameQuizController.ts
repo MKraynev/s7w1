@@ -57,10 +57,8 @@ export class GamesPairGameQuizController {
 
       return answerResult;
     } catch (e) {
-      if (e instanceof ForbiddenException) throw e;
-
       console.log(e);
-      throw new BadRequestException();
+      throw e;
     }
   }
 

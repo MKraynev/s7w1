@@ -47,41 +47,36 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
 
     if (!currentQuestion) throw new ForbiddenException(); //player answered all questions
 
-    try {
-      if (userIsFirstPlayer) userGame.player_1_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
-      else userGame.player_2_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
+    if (userIsFirstPlayer) userGame.player_1_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
+    else userGame.player_2_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
 
-      console.log("first player ->", userIsFirstPlayer);
-      console.log("current question status ->", currentQuestion);
+    console.log("first player ->", userIsFirstPlayer);
+    console.log("current question status ->", currentQuestion);
 
-      if (this.BothUsersAnsweredAllQuestions(gameQuestionsAndAnswersInfo, userIsFirstPlayer)) {
-        userGame.status = "Finished";
-        userGame.endedAt = new Date();
+    if (this.BothUsersAnsweredAllQuestions(gameQuestionsAndAnswersInfo, userIsFirstPlayer)) {
+      userGame.status = "Finished";
+      userGame.endedAt = new Date();
 
-        console.log("both users answered right now");
-      }
-
-      let savedAnswer = await this.answerRepo.Save(
-        userGame.id.toString(),
-        currentQuestion.questionId.toString(),
-        command.userId,
-        command.answer,
-      );
-
-      await this.gameRepo.Save(userGame);
-
-      //DEBUG
-      console.log("game status before return ->", userGame);
-
-      return new QuizGameAnswerResult(
-        currentQuestion.questionId.toString(),
-        currentQuestion.answer.includes(command.answer) ? "Correct" : "Incorrect",
-        savedAnswer.createdAt,
-      );
-    } catch (e) {
-      console.log(e);
-      throw new BadRequestException();
+      console.log("both users answered right now");
     }
+
+    let savedAnswer = await this.answerRepo.Save(
+      userGame.id.toString(),
+      currentQuestion.questionId.toString(),
+      command.userId,
+      command.answer,
+    );
+
+    await this.gameRepo.Save(userGame);
+
+    //DEBUG
+    console.log("game status before return ->", userGame);
+
+    return new QuizGameAnswerResult(
+      currentQuestion.questionId.toString(),
+      currentQuestion.answer.includes(command.answer) ? "Correct" : "Incorrect",
+      savedAnswer.createdAt,
+    );
   }
 
   private BothUsersAnsweredAllQuestions(
