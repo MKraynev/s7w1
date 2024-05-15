@@ -1,4 +1,16 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, UseGuards } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { GamesRepoEntity } from "../repo/entities/GamesRepoEntity";
 import { QuizGameInfo } from "./entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity";
@@ -23,6 +35,9 @@ export class GamesPairGameQuizController {
   @UseGuards(JwtAuthGuard)
   public async GetCurrentUserGame(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad) {
     let game = await this.commandBus.execute<GameQuizGetMyCurrentCommand, GamesRepoEntity>(new GameQuizGetMyCurrentCommand(tokenLoad.id));
+
+    console.log("result", game);
+
     return game;
   }
 
@@ -33,11 +48,20 @@ export class GamesPairGameQuizController {
     @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
     @Body(new ValidateParameters()) userResponse: { answer: string },
   ) {
-    let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
-      new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
-    );
+    try {
+      let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
+        new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
+      );
 
-    return answerResult;
+      console.log("result", answerResult);
+
+      return answerResult;
+    } catch (e) {
+      if (e instanceof ForbiddenException) throw e;
+
+      console.log(e);
+      throw new BadRequestException();
+    }
   }
 
   @Get("pairs/:id")
