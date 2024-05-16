@@ -20,16 +20,20 @@ export class GameQuizRules {
     let p1_endTime: Date;
     let p2_endTime: Date;
 
-    if (Object.keys(results[-1]).includes("p1_answer")) {
-      p2_correctAnswerCount += results[-1].answer.includes(lastAnswer) ? 1 : 0;
+    let lastResult = results.pop();
+
+    console.log("lastResult =>", lastResult);
+
+    if (Object.keys(lastResult).includes("p1_answer")) {
+      p2_correctAnswerCount += lastResult.answer.includes(lastAnswer) ? 1 : 0;
       p2_endTime = lastAnswerTime;
 
-      p1_endTime = results[-1].p1_answer_time;
+      p1_endTime = lastResult.p1_answer_time;
     } else {
-      p1_correctAnswerCount += results[-1].answer.includes(lastAnswer) ? 1 : 0;
+      p1_correctAnswerCount += lastResult.answer.includes(lastAnswer) ? 1 : 0;
       p1_endTime = lastAnswerTime;
 
-      p2_endTime = results[-1].p2_answer_time;
+      p2_endTime = lastResult.p2_answer_time;
     }
 
     if (p1_endTime < p2_endTime && p1_correctAnswerCount > 0) res.p1_points = 1;
