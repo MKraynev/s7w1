@@ -23,6 +23,8 @@ export class QuizGameQuestionsExtendedInfoEntity {
       secondPlayerResult: [],
     };
 
+    console.log("data:", data);
+
     data.forEach((dataline) => {
       if (dataline.p1_answer) {
         let firstPlayerInfo = new QuizGameAnswerInfoEntity(
@@ -44,6 +46,10 @@ export class QuizGameQuestionsExtendedInfoEntity {
         result.secondPlayerResult.push(secondPlayerInfo);
       }
     });
+
+    console.log("users answers");
+    console.log("p1: \n", result.firstPlayerResult);
+    console.log("p2: \n", result.secondPlayerResult);
 
     return result;
   }
