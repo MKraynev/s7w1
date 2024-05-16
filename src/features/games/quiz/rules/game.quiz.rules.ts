@@ -14,7 +14,7 @@ export class GameQuizRules {
   ): { p1_points: number; p2_points: number } {
     let res = { p1_points: 0, p2_points: 0 };
 
-    if (results[-1].p1_answer) {
+    if (Object.keys(results[-1]).includes("p1_answer")) {
       results[-1]["p2_answer"] = lastAnswer;
       results[-1]["p2_answer_time"] = lastAnswerTime;
     } else {
