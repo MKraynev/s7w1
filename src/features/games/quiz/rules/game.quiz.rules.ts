@@ -24,7 +24,9 @@ export class GameQuizRules {
 
     console.log("lastResult =>", lastResult);
 
-    if (Object.keys(lastResult).includes("p1_answer")) {
+    if (lastResult.p1_answer) {
+      console.log("in if statement");
+
       p2_correctAnswerCount += lastResult.answer.includes(lastAnswer) ? 1 : 0;
       p2_endTime = lastAnswerTime;
 
