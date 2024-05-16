@@ -64,15 +64,7 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
       userGame.status = "Finished";
       userGame.endedAt = savedAnswer.createdAt;
 
-      if (userIsFirstPlayer) {
-        gameQuestionsAndAnswersInfo[-1].p1_answer = savedAnswer.answer;
-        gameQuestionsAndAnswersInfo[-1].p1_answer_time = savedAnswer.createdAt;
-      } else {
-        gameQuestionsAndAnswersInfo[-1].p2_answer = savedAnswer.answer;
-        gameQuestionsAndAnswersInfo[-1].p2_answer_time = savedAnswer.createdAt;
-      }
-
-      let { p1_points, p2_points } = GameQuizRules.FinishExtraPoints(gameQuestionsAndAnswersInfo);
+      let { p1_points, p2_points } = GameQuizRules.FinishExtraPoints(gameQuestionsAndAnswersInfo, command.answer, savedAnswer.createdAt);
       userGame.player_1_score += p1_points;
       userGame.player_2_score += p2_points;
 
