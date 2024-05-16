@@ -36,8 +36,13 @@ export class GameQuizRules {
       p2_endTime = lastResult.p2_answer_time;
     }
 
-    if (p1_endTime < p2_endTime && p1_correctAnswerCount > 0) res.p1_points = 1;
-    else if (p2_endTime < p1_endTime && p2_correctAnswerCount > 0) res.p2_points = 1;
+    console.log("+new Date(p1_endTime) < +new Date(p2_endTime)", +new Date(p1_endTime) < +new Date(p2_endTime));
+    console.log("p1_correctAnswerCount", p1_correctAnswerCount);
+    console.log("p2_correctAnswerCount", p2_correctAnswerCount);
+    console.log("+new Date(p2_endTime) < +new Date(p1_endTime)", +new Date(p2_endTime) < +new Date(p1_endTime));
+
+    if (+new Date(p1_endTime) < +new Date(p2_endTime) && p1_correctAnswerCount > 0) res.p1_points = 1;
+    else if (+new Date(p2_endTime) < +new Date(p1_endTime) && p2_correctAnswerCount > 0) res.p2_points = 1;
 
     return res;
   }
