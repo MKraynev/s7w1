@@ -20,7 +20,7 @@ export class GameQuizRules {
     let p1_endTime: Date;
     let p2_endTime: Date;
 
-    if (results[-1].p1_answer) {
+    if (Object.keys(results[-1]).includes("p1_answer")) {
       p2_correctAnswerCount += results[-1].answer.includes(lastAnswer) ? 1 : 0;
       p2_endTime = lastAnswerTime;
 
