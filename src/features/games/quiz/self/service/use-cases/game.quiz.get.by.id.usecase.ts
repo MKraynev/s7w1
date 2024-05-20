@@ -34,60 +34,6 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
     let userId_num = +command.userId;
     if (game.player_1_id !== userId_num && game.player_2_id !== userId_num) throw new ForbiddenException();
 
-    // let gameInfo = new QuizGameComplexInfo(
-    //   command.gameId,
-    //   game.player_1.id.toString(),
-    //   game.player_1.login,
-    //   game.status,
-    //   game.createdAt,
-    //   game.startedAt,
-    //   game.endedAt,
-    // );
-
-    // if (game.player_2) {
-
-    //   // let questionsAndUsersAnswers = await this.questionsInGameRepo.GetGameQuestionsInfoOrdered(
-    //   //   game.id,
-    //   //   game.player_1_id,
-    //   //   game.player_2_id,
-    //   // );
-
-    //   // gameInfo.setFirstPlayerProgress(
-    //   //   questionsAndUsersAnswers
-    //   //     .filter((qa) => qa.p1_answer !== null)
-    //   //     .map((qa) => {
-    //   //       return {
-    //   //         questionId: qa.questionId.toString(),
-    //   //         answerStatus: qa.answer.includes(qa.p1_answer) ? "Correct" : "Incorrect",
-    //   //         addedAt: qa.p1_answer_time,
-    //   //       };
-    //   //     }),
-    //   //   game.player_1_score,
-    //   // );
-
-    //   // gameInfo.SetSecondPlayerProgress(
-    //   //   game.player_2_id.toString(),
-    //   //   game.player_2.login,
-    //   //   questionsAndUsersAnswers
-    //   //     .filter((qa) => qa.p2_answer !== null)
-    //   //     .map((qa) => {
-    //   //       return {
-    //   //         questionId: qa.questionId.toString(),
-    //   //         answerStatus: qa.answer.includes(qa.p2_answer) ? "Correct" : "Incorrect",
-    //   //         addedAt: qa.p2_answer_time,
-    //   //       };
-    //   //     }),
-    //   //   game.player_2_score,
-    //   // );
-
-    //   // gameInfo.questions = questionsAndUsersAnswers.map((qa) => {
-    //   //   return {
-    //   //     id: qa.questionId.toString(),
-    //   //     body: qa.question,
-    //   //   };
-    //   // });
-    // }
-
     if (game.status == "PendingSecondPlayer") return this.PendingSecondPlayerScenario(game);
 
     let usersInfo = await this.userRepo.GetIdLogin(game.player_1_id, game.player_2_id);

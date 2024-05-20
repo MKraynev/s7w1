@@ -22,11 +22,7 @@ export class GameQuizRules {
 
     let lastResult = results.pop();
 
-    console.log("lastResult =>", lastResult);
-
     if (lastResult.p1_answer) {
-      console.log("in if statement");
-
       p2_correctAnswerCount += lastResult.answer.includes(lastAnswer) ? 1 : 0;
       p2_endTime = lastAnswerTime;
 
@@ -37,11 +33,6 @@ export class GameQuizRules {
 
       p2_endTime = lastResult.p2_answer_time;
     }
-
-    console.log("+new Date(p1_endTime) < +new Date(p2_endTime)", +new Date(p1_endTime) < +new Date(p2_endTime));
-    console.log("p1_correctAnswerCount", p1_correctAnswerCount);
-    console.log("p2_correctAnswerCount", p2_correctAnswerCount);
-    console.log("+new Date(p2_endTime) < +new Date(p1_endTime)", +new Date(p2_endTime) < +new Date(p1_endTime));
 
     if (+new Date(p1_endTime) < +new Date(p2_endTime) && p1_correctAnswerCount > 0) res.p1_points = 1;
     else if (+new Date(p2_endTime) < +new Date(p1_endTime) && p2_correctAnswerCount > 0) res.p2_points = 1;

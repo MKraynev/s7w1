@@ -34,11 +34,6 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
       userGame.player_2_id,
     );
 
-    //DEBUG
-    console.log("command ->", command);
-    console.log("q status: \n", gameQuestionsAndAnswersInfo);
-    console.log("game status before logic ->", userGame);
-
     let currentQuestion: QuizGameQuestionsExtendedInfoEntity;
 
     let userIsFirstPlayer = +command.userId === userGame.player_1_id;
@@ -49,9 +44,6 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
 
     if (userIsFirstPlayer) userGame.player_1_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
     else userGame.player_2_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
-
-    console.log("first player ->", userIsFirstPlayer);
-    console.log("current question status ->", currentQuestion);
 
     let savedAnswer = await this.answerRepo.Save(
       userGame.id.toString(),
@@ -67,14 +59,9 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
       let { p1_points, p2_points } = GameQuizRules.FinishExtraPoints(gameQuestionsAndAnswersInfo, command.answer, savedAnswer.createdAt);
       userGame.player_1_score += p1_points;
       userGame.player_2_score += p2_points;
-
-      console.log("both users answered right now");
     }
 
     await this.gameRepo.Save(userGame);
-
-    //DEBUG
-    console.log("game status before return ->", userGame);
 
     return new QuizGameAnswerResult(
       currentQuestion.questionId.toString(),
@@ -89,9 +76,6 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
   ): boolean {
     let firstPlayerUnansweredQuestionsCount = gameQuestionsAndAnswersInfo.filter((info) => info.p1_answer === null).length;
     let secondPlayerUnansweredQuestionsCount = gameQuestionsAndAnswersInfo.filter((info) => info.p2_answer === null).length;
-
-    console.log("first unanswered:", firstPlayerUnansweredQuestionsCount);
-    console.log("second unanswered:", secondPlayerUnansweredQuestionsCount);
 
     if (userIsFirstPlayer && firstPlayerUnansweredQuestionsCount === 1 && secondPlayerUnansweredQuestionsCount === 0) return true;
     else if (!userIsFirstPlayer && secondPlayerUnansweredQuestionsCount === 1 && firstPlayerUnansweredQuestionsCount === 0) return true;

@@ -25,11 +25,7 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
   ) {}
 
   async execute(command: QuizGameConnectToGameCommand): Promise<QuizGameInfo> {
-    console.log("User ->", command.userId, command.userLogin);
-
     let userCurrentGame = await this.gameRepo.GetUserCurrentGame(command.userId);
-
-    console.log("current user game ->", userCurrentGame);
 
     if (userCurrentGame) throw new ForbiddenException("Player already got active game");
 
@@ -37,10 +33,6 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
 
     if (activeSearchingGame) {
       let questionsForNewGame = await this.questionRepo.GetRandomQuesitons(GameQuizRules.GetGameQuestionCount());
-
-      //DEBUG
-      console.log("active game ->", activeSearchingGame);
-      console.log("random questions ->", questionsForNewGame);
 
       questionsForNewGame.forEach(
         async (gameQuestion, order) =>

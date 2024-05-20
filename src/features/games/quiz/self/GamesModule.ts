@@ -10,12 +10,16 @@ import { GameQuizAnswersRepoModule } from "../answers/repo/game.quiz.answers.rep
 import { GameQuizGetByIdUseCase } from "./service/use-cases/game.quiz.get.by.id.usecase";
 import { GameQuizAnswerTheQuestionUseCase } from "./service/use-cases/game.quiz.answer.the.question.usecase";
 import { QuizQuestRepoModule } from "../questions/repo/QuestionsRepoModule";
+import { GameQuizGetPairsMyUseCase } from "./service/use-cases/game.quiz.get.pairs.my.usecase";
+import { GameQuizGetMyStatisticUseCase } from "./service/use-cases/game.quiz.get.my.statistic.usecase";
 
 export const QuizGameUseCases = [
   GameQuizGetMyCurrentUseCase,
   QuizGameConnectToGameUseCase,
   GameQuizGetByIdUseCase,
   GameQuizAnswerTheQuestionUseCase,
+  GameQuizGetPairsMyUseCase,
+  GameQuizGetMyStatisticUseCase,
 ];
 
 @Module({

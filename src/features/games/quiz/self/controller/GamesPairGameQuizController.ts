@@ -9,6 +9,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
@@ -27,17 +28,59 @@ import {
   GameQuizAnswerTheQuestionUseCase,
 } from "../service/use-cases/game.quiz.answer.the.question.usecase";
 import { QuizGameAnswerResult } from "../service/entities/quiz.game.answer.result";
+import { QueryPaginator } from "../../../../../paginator/QueryPaginatorDecorator";
+import { InputPaginator } from "../../../../../paginator/entities/QueryPaginatorInputEntity";
+import { GameQuizGetPairsMyCommand, GameQuizGetPairsMyUseCase } from "../service/use-cases/game.quiz.get.pairs.my.usecase";
+import { OutputPaginator } from "../../../../../paginator/entities/QueryPaginatorUutputEntity";
+import { GameQuizGetMyStatisticCommand } from "../service/use-cases/game.quiz.get.my.statistic.usecase";
 
 @Controller("pair-game-quiz")
 export class GamesPairGameQuizController {
   constructor(private commandBus: CommandBus) {}
+
+  @Get("pairs/my")
+  @UseGuards(JwtAuthGuard)
+  public async GetAllMyGames(
+    @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
+    @Query("sortBy") sortBy: string = "pairCreatedDate",
+    @Query("sortDirection") sortDirecrion: "desc" | "asc" = "desc",
+    @QueryPaginator() paginator: InputPaginator,
+  ) {
+    let sortByKeyOf: keyof GamesRepoEntity;
+    switch (sortBy) {
+      case "pairCreatedDate":
+      default:
+        sortByKeyOf = "startedAt";
+    }
+
+    let games = await this.commandBus.execute<GameQuizGetPairsMyCommand, { count: number; games: QuizGameInfo[] }>(
+      new GameQuizGetPairsMyCommand(token, {
+        sortBy: sortByKeyOf,
+        sortDirection: sortDirecrion,
+        skip: paginator.skipElements,
+        limit: paginator.pageSize,
+      }),
+    );
+
+    let pagedGames = new OutputPaginator(games.count, games.games, paginator);
+    return pagedGames;
+  }
+
+  @Get("users/my-statistic")
+  @UseGuards(JwtAuthGuard)
+  public async GetMyStatistic(@ReadAccessToken() token: JwtServiceUserAccessTokenLoad) {
+    let statistic = await this.commandBus.execute<
+      GameQuizGetMyStatisticCommand,
+      { sumScore: number; avgScores: number; gamesCount: number; winsCount: number; lossesCount: number; drawsCount: number }
+    >(new GameQuizGetMyStatisticCommand(token));
+
+    return statistic;
+  }
+
   @Get("pairs/my-current")
   @UseGuards(JwtAuthGuard)
   public async GetCurrentUserGame(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad) {
-    console.log("token ->", tokenLoad);
     let game = await this.commandBus.execute<GameQuizGetMyCurrentCommand, GamesRepoEntity>(new GameQuizGetMyCurrentCommand(tokenLoad.id));
-
-    console.log("result", game);
 
     return game;
   }
@@ -49,27 +92,17 @@ export class GamesPairGameQuizController {
     @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
     @Body(new ValidateParameters()) userResponse: { answer: string },
   ) {
-    try {
-      let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
-        new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
-      );
+    let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
+      new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
+    );
 
-      console.log("result", answerResult);
-
-      return answerResult;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
+    return answerResult;
   }
 
   @Get("pairs/:id")
   @UseGuards(JwtAuthGuard)
   public async GetById(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad, @Param("id") id: string) {
-    console.log("token ->", tokenLoad);
     let game = await this.commandBus.execute<GameQuizGetByIdCommand, QuizGameInfo>(new GameQuizGetByIdCommand(id, tokenLoad.id));
-
-    console.log('@Get("pairs/:id") ->', game);
 
     return game;
   }
@@ -81,8 +114,6 @@ export class GamesPairGameQuizController {
     let newGame = await this.commandBus.execute<QuizGameConnectToGameCommand, QuizGameInfo>(
       new QuizGameConnectToGameCommand(tokenLoad.id, tokenLoad.login),
     );
-
-    console.log('@Post("pairs/connection") ->', newGame);
 
     return newGame;
   }

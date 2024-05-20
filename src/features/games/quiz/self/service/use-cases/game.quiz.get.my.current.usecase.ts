@@ -37,8 +37,6 @@ export class GameQuizGetMyCurrentUseCase implements ICommandHandler<GameQuizGetM
       currentGame.player_2_id,
     );
 
-    console.log("my current, qa ->", answersInfo);
-
     let answers = QuizGameQuestionsExtendedInfoEntity.GetPlayersAnswersInfo(answersInfo);
 
     let currentGameInfo: QuizGameInfo = new QuizGameInfo(
