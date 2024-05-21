@@ -44,6 +44,12 @@ export class GamesRepoService {
       take: limit,
     });
 
+    switch (sortBy) {
+      case "status":
+        games = games.reverse();
+        break;
+    }
+
     return { count: count, games: games };
   }
 
