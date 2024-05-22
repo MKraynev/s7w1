@@ -27,6 +27,17 @@ export class GamesRepoService {
     count: number;
     games: GamesRepoEntity[];
   }> {
+    let sortDirTwister = {
+      asc: "desc",
+      desk: "asc",
+    };
+
+    switch (sortBy) {
+      case "status":
+        sortDirection = sortDirTwister[sortBy];
+        break;
+    }
+
     let orderObj: FindOptionsOrder<GamesRepoEntity> = {};
     orderObj[sortBy] = sortDirection;
 
