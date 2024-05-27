@@ -1,0 +1,266 @@
+{
+  "expected": {
+    "pagesCount": 1,
+    "page": 1,
+    "pageSize": 10,
+    "totalCount": 4,
+    "items": [
+      {
+        "id": "625",
+        "firstPlayerProgress": { "answers": [], "player": { "id": "1291", "login": "8910lg" }, "score": 0 },
+        "secondPlayerProgress": { "answers": [], "player": { "id": "1290", "login": "8909lg" }, "score": 0 },
+        "questions": [
+          { "id": "3814", "body": "question body1 484271" },
+          { "id": "3817", "body": "question body4 487776" },
+          { "id": "3813", "body": "question body0 483122" },
+          { "id": "3816", "body": "question body3 486673" },
+          { "id": "3815", "body": "question body2 485467" }
+        ],
+        "status": "Active",
+        "pairCreatedDate": "2024-05-27T20:25:41.694Z",
+        "startGameDate": "2024-05-27T20:25:42.429Z",
+        "finishGameDate": null
+      },
+      {
+        "id": "624",
+        "firstPlayerProgress": {
+          "answers": [
+            { "addedAt": "2024-05-27T20:25:27.909Z", "answerStatus": "Correct", "questionId": "3815" },
+            { "addedAt": "2024-05-27T20:25:29.469Z", "answerStatus": "Incorrect", "questionId": "3813" },
+            { "addedAt": "2024-05-27T20:25:37.490Z", "answerStatus": "Correct", "questionId": "3814" },
+            { "addedAt": "2024-05-27T20:25:39.013Z", "answerStatus": "Correct", "questionId": "3816" },
+            { "addedAt": "2024-05-27T20:25:40.589Z", "answerStatus": "Incorrect", "questionId": "3817" }
+          ],
+          "player": { "id": "1291", "login": "8910lg" },
+          "score": 3
+        },
+        "secondPlayerProgress": {
+          "answers": [
+            { "addedAt": "2024-05-27T20:25:30.710Z", "answerStatus": "Correct", "questionId": "3815" },
+            { "addedAt": "2024-05-27T20:25:32.261Z", "answerStatus": "Incorrect", "questionId": "3813" },
+            { "addedAt": "2024-05-27T20:25:33.734Z", "answerStatus": "Incorrect", "questionId": "3814" },
+            { "addedAt": "2024-05-27T20:25:34.978Z", "answerStatus": "Incorrect", "questionId": "3816" },
+            { "addedAt": "2024-05-27T20:25:36.217Z", "answerStatus": "Incorrect", "questionId": "3817" }
+          ],
+          "player": { "id": "1290", "login": "8909lg" },
+          "score": 2
+        },
+        "questions": [
+          { "id": "3815", "body": "question body2 485467" },
+          { "id": "3813", "body": "question body0 483122" },
+          { "id": "3814", "body": "question body1 484271" },
+          { "id": "3816", "body": "question body3 486673" },
+          { "id": "3817", "body": "question body4 487776" }
+        ],
+        "status": "Finished",
+        "pairCreatedDate": "2024-05-27T20:25:25.761Z",
+        "startGameDate": "2024-05-27T20:25:26.465Z",
+        "finishGameDate": "Any<String(ISODate)>"
+      },
+      {
+        "id": "623",
+        "firstPlayerProgress": {
+          "answers": [
+            { "addedAt": "2024-05-27T20:25:12.384Z", "answerStatus": "Correct", "questionId": "3815" },
+            { "addedAt": "2024-05-27T20:25:13.936Z", "answerStatus": "Incorrect", "questionId": "3816" },
+            { "addedAt": "2024-05-27T20:25:21.490Z", "answerStatus": "Correct", "questionId": "3817" },
+            { "addedAt": "2024-05-27T20:25:23.045Z", "answerStatus": "Correct", "questionId": "3813" },
+            { "addedAt": "2024-05-27T20:25:24.606Z", "answerStatus": "Incorrect", "questionId": "3814" }
+          ],
+          "player": { "id": "1290", "login": "8909lg" },
+          "score": 3
+        },
+        "secondPlayerProgress": {
+          "answers": [
+            { "addedAt": "2024-05-27T20:25:15.095Z", "answerStatus": "Correct", "questionId": "3815" },
+            { "addedAt": "2024-05-27T20:25:16.547Z", "answerStatus": "Incorrect", "questionId": "3816" },
+            { "addedAt": "2024-05-27T20:25:17.797Z", "answerStatus": "Incorrect", "questionId": "3817" },
+            { "addedAt": "2024-05-27T20:25:19.037Z", "answerStatus": "Incorrect", "questionId": "3813" },
+            { "addedAt": "2024-05-27T20:25:20.215Z", "answerStatus": "Incorrect", "questionId": "3814" }
+          ],
+          "player": { "id": "1291", "login": "8910lg" },
+          "score": 2
+        },
+        "questions": [
+          { "id": "3815", "body": "question body2 485467" },
+          { "id": "3816", "body": "question body3 486673" },
+          { "id": "3817", "body": "question body4 487776" },
+          { "id": "3813", "body": "question body0 483122" },
+          { "id": "3814", "body": "question body1 484271" }
+        ],
+        "status": "Finished",
+        "pairCreatedDate": "2024-05-27T20:25:10.047Z",
+        "startGameDate": "2024-05-27T20:25:10.747Z",
+        "finishGameDate": "Any<String(ISODate)>"
+      },
+      {
+        "id": "622",
+        "firstPlayerProgress": {
+          "answers": [
+            { "addedAt": "2024-05-27T20:24:57.159Z", "answerStatus": "Correct", "questionId": "3814" },
+            { "addedAt": "2024-05-27T20:24:58.682Z", "answerStatus": "Incorrect", "questionId": "3817" },
+            { "addedAt": "2024-05-27T20:25:06.153Z", "answerStatus": "Correct", "questionId": "3816" },
+            { "addedAt": "2024-05-27T20:25:07.538Z", "answerStatus": "Correct", "questionId": "3815" },
+            { "addedAt": "2024-05-27T20:25:08.982Z", "answerStatus": "Incorrect", "questionId": "3813" }
+          ],
+          "player": { "id": "1290", "login": "8909lg" },
+          "score": 3
+        },
+        "secondPlayerProgress": {
+          "answers": [
+            { "addedAt": "2024-05-27T20:24:59.954Z", "answerStatus": "Correct", "questionId": "3814" },
+            { "addedAt": "2024-05-27T20:25:01.449Z", "answerStatus": "Incorrect", "questionId": "3817" },
+            { "addedAt": "2024-05-27T20:25:02.612Z", "answerStatus": "Incorrect", "questionId": "3816" },
+            { "addedAt": "2024-05-27T20:25:03.804Z", "answerStatus": "Incorrect", "questionId": "3815" },
+            { "addedAt": "2024-05-27T20:25:05.010Z", "answerStatus": "Incorrect", "questionId": "3813" }
+          ],
+          "player": { "id": "1291", "login": "8910lg" },
+          "score": 2
+        },
+        "questions": [
+          { "id": "3814", "body": "question body1 484271" },
+          { "id": "3817", "body": "question body4 487776" },
+          { "id": "3816", "body": "question body3 486673" },
+          { "id": "3815", "body": "question body2 485467" },
+          { "id": "3813", "body": "question body0 483122" }
+        ],
+        "status": "Finished",
+        "pairCreatedDate": "2024-05-27T20:24:54.980Z",
+        "startGameDate": "2024-05-27T20:24:55.678Z",
+        "finishGameDate": "Any<String(ISODate)>"
+      }
+    ]
+  },
+  "received": {
+    "pagesCount": 1,
+    "page": 1,
+    "pageSize": 10,
+    "totalCount": 4,
+    "items": [
+      {
+        "id": "625",
+        "firstPlayerProgress": { "answers": [], "player": { "id": "1291", "login": "8910lg" }, "score": 0 },
+        "secondPlayerProgress": { "answers": [], "player": { "id": "1290", "login": "8909lg" }, "score": 0 },
+        "questions": [
+          { "id": "3814", "body": "question body1 484271" },
+          { "id": "3817", "body": "question body4 487776" },
+          { "id": "3813", "body": "question body0 483122" },
+          { "id": "3816", "body": "question body3 486673" },
+          { "id": "3815", "body": "question body2 485467" }
+        ],
+        "status": "Active",
+        "pairCreatedDate": "2024-05-27T20:25:41.694Z",
+        "startGameDate": "2024-05-27T20:25:42.429Z",
+        "finishGameDate": null
+      },
+      {
+        "id": "622",
+        "firstPlayerProgress": {
+          "answers": [
+            { "questionId": "3814", "addedAt": "2024-05-27T20:24:57.159Z", "answerStatus": "Correct" },
+            { "questionId": "3817", "addedAt": "2024-05-27T20:24:58.682Z", "answerStatus": "Incorrect" },
+            { "questionId": "3816", "addedAt": "2024-05-27T20:25:06.153Z", "answerStatus": "Correct" },
+            { "questionId": "3815", "addedAt": "2024-05-27T20:25:07.538Z", "answerStatus": "Correct" },
+            { "questionId": "3813", "addedAt": "2024-05-27T20:25:08.982Z", "answerStatus": "Incorrect" }
+          ],
+          "player": { "id": "1290", "login": "8909lg" },
+          "score": 3
+        },
+        "secondPlayerProgress": {
+          "answers": [
+            { "questionId": "3814", "addedAt": "2024-05-27T20:24:59.954Z", "answerStatus": "Correct" },
+            { "questionId": "3817", "addedAt": "2024-05-27T20:25:01.449Z", "answerStatus": "Incorrect" },
+            { "questionId": "3816", "addedAt": "2024-05-27T20:25:02.612Z", "answerStatus": "Incorrect" },
+            { "questionId": "3815", "addedAt": "2024-05-27T20:25:03.804Z", "answerStatus": "Incorrect" },
+            { "questionId": "3813", "addedAt": "2024-05-27T20:25:05.010Z", "answerStatus": "Incorrect" }
+          ],
+          "player": { "id": "1291", "login": "8910lg" },
+          "score": 2
+        },
+        "questions": [
+          { "id": "3814", "body": "question body1 484271" },
+          { "id": "3817", "body": "question body4 487776" },
+          { "id": "3816", "body": "question body3 486673" },
+          { "id": "3815", "body": "question body2 485467" },
+          { "id": "3813", "body": "question body0 483122" }
+        ],
+        "status": "Finished",
+        "pairCreatedDate": "2024-05-27T20:24:54.980Z",
+        "startGameDate": "2024-05-27T20:24:55.678Z",
+        "finishGameDate": "2024-05-27T20:25:08.982Z"
+      },
+      {
+        "id": "623",
+        "firstPlayerProgress": {
+          "answers": [
+            { "questionId": "3815", "addedAt": "2024-05-27T20:25:12.384Z", "answerStatus": "Correct" },
+            { "questionId": "3816", "addedAt": "2024-05-27T20:25:13.936Z", "answerStatus": "Incorrect" },
+            { "questionId": "3817", "addedAt": "2024-05-27T20:25:21.490Z", "answerStatus": "Correct" },
+            { "questionId": "3813", "addedAt": "2024-05-27T20:25:23.045Z", "answerStatus": "Correct" },
+            { "questionId": "3814", "addedAt": "2024-05-27T20:25:24.606Z", "answerStatus": "Incorrect" }
+          ],
+          "player": { "id": "1290", "login": "8909lg" },
+          "score": 3
+        },
+        "secondPlayerProgress": {
+          "answers": [
+            { "questionId": "3815", "addedAt": "2024-05-27T20:25:15.095Z", "answerStatus": "Correct" },
+            { "questionId": "3816", "addedAt": "2024-05-27T20:25:16.547Z", "answerStatus": "Incorrect" },
+            { "questionId": "3817", "addedAt": "2024-05-27T20:25:17.797Z", "answerStatus": "Incorrect" },
+            { "questionId": "3813", "addedAt": "2024-05-27T20:25:19.037Z", "answerStatus": "Incorrect" },
+            { "questionId": "3814", "addedAt": "2024-05-27T20:25:20.215Z", "answerStatus": "Incorrect" }
+          ],
+          "player": { "id": "1291", "login": "8910lg" },
+          "score": 2
+        },
+        "questions": [
+          { "id": "3815", "body": "question body2 485467" },
+          { "id": "3816", "body": "question body3 486673" },
+          { "id": "3817", "body": "question body4 487776" },
+          { "id": "3813", "body": "question body0 483122" },
+          { "id": "3814", "body": "question body1 484271" }
+        ],
+        "status": "Finished",
+        "pairCreatedDate": "2024-05-27T20:25:10.047Z",
+        "startGameDate": "2024-05-27T20:25:10.747Z",
+        "finishGameDate": "2024-05-27T20:25:24.606Z"
+      },
+      {
+        "id": "624",
+        "firstPlayerProgress": {
+          "answers": [
+            { "questionId": "3815", "addedAt": "2024-05-27T20:25:27.909Z", "answerStatus": "Correct" },
+            { "questionId": "3813", "addedAt": "2024-05-27T20:25:29.469Z", "answerStatus": "Incorrect" },
+            { "questionId": "3814", "addedAt": "2024-05-27T20:25:37.490Z", "answerStatus": "Correct" },
+            { "questionId": "3816", "addedAt": "2024-05-27T20:25:39.013Z", "answerStatus": "Correct" },
+            { "questionId": "3817", "addedAt": "2024-05-27T20:25:40.589Z", "answerStatus": "Incorrect" }
+          ],
+          "player": { "id": "1291", "login": "8910lg" },
+          "score": 3
+        },
+        "secondPlayerProgress": {
+          "answers": [
+            { "questionId": "3815", "addedAt": "2024-05-27T20:25:30.710Z", "answerStatus": "Correct" },
+            { "questionId": "3813", "addedAt": "2024-05-27T20:25:32.261Z", "answerStatus": "Incorrect" },
+            { "questionId": "3814", "addedAt": "2024-05-27T20:25:33.734Z", "answerStatus": "Incorrect" },
+            { "questionId": "3816", "addedAt": "2024-05-27T20:25:34.978Z", "answerStatus": "Incorrect" },
+            { "questionId": "3817", "addedAt": "2024-05-27T20:25:36.217Z", "answerStatus": "Incorrect" }
+          ],
+          "player": { "id": "1290", "login": "8909lg" },
+          "score": 2
+        },
+        "questions": [
+          { "id": "3815", "body": "question body2 485467" },
+          { "id": "3813", "body": "question body0 483122" },
+          { "id": "3814", "body": "question body1 484271" },
+          { "id": "3816", "body": "question body3 486673" },
+          { "id": "3817", "body": "question body4 487776" }
+        ],
+        "status": "Finished",
+        "pairCreatedDate": "2024-05-27T20:25:25.761Z",
+        "startGameDate": "2024-05-27T20:25:26.465Z",
+        "finishGameDate": "2024-05-27T20:25:40.589Z"
+      }
+    ]
+  }
+}

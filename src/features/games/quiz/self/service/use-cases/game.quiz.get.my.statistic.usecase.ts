@@ -31,7 +31,7 @@ export class GameQuizGetMyStatisticUseCase
     console.log("found values", sscore, gcount, wcount, lcount, dcount);
     return {
       sumScore: sscore,
-      avgScores: gcount !== 0 ? +(sscore / gcount).toFixed().replace(".00", "") : 0,
+      avgScores: gcount !== 0 ? +(sscore / gcount).toFixed(2).replace(".00", "") : 0,
       gamesCount: gcount,
       winsCount: wcount,
       lossesCount: lcount,
