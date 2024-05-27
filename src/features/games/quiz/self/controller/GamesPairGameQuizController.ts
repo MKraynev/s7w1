@@ -29,6 +29,8 @@ export class GamesPairGameQuizController {
     @Query("sortDirection") sortDirecrion: "desc" | "asc" = "desc",
     @QueryPaginator() paginator: InputPaginator,
   ) {
+    console.log("input values:", token, sortBy, sortDirecrion, paginator);
+
     let games = await this.commandBus.execute<GameQuizGetPairsMyCommand, { count: number; games: QuizGameInfo[] }>(
       new GameQuizGetPairsMyCommand(token, {
         sortBy: sortBy,
@@ -45,6 +47,7 @@ export class GamesPairGameQuizController {
   @Get("users/my-statistic")
   @UseGuards(JwtAuthGuard)
   public async GetMyStatistic(@ReadAccessToken() token: JwtServiceUserAccessTokenLoad) {
+    console.log("input values:", token);
     let statistic = await this.commandBus.execute<
       GameQuizGetMyStatisticCommand,
       { sumScore: number; avgScores: number; gamesCount: number; winsCount: number; lossesCount: number; drawsCount: number }

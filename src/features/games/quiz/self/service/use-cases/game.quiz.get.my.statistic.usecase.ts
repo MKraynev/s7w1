@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Scope } from "@nestjs/common";
 import { JwtServiceUserAccessTokenLoad } from "../../../../../../jwt/entities/JwtServiceAccessTokenLoad";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { GamesRepoService } from "../../repo/GamesRepoService";
@@ -28,7 +28,7 @@ export class GameQuizGetMyStatisticUseCase
       await this.gameRepo.CountPlayerLoseGames(command.userToken.id),
       await this.gameRepo.CountPlayerDrawGames(command.userToken.id),
     ]);
-
+    console.log("found values", Scope, gcount, wcount, lcount, dcount);
     return {
       sumScore: sscore,
       avgScores: gcount !== 0 ? +(sscore / gcount).toFixed().replace(".00", "") : 0,

@@ -27,17 +27,6 @@ export class GamesRepoService {
     count: number;
     games: GamesRepoEntity[];
   }> {
-    let sortDirTwister = {
-      asc: "desc",
-      desk: "asc",
-    };
-
-    switch (sortBy) {
-      case "status":
-        sortDirection = sortDirTwister[sortBy];
-        break;
-    }
-
     let orderObj: FindOptionsOrder<GamesRepoEntity> = {};
     orderObj[sortBy] = sortDirection;
 
@@ -48,13 +37,14 @@ export class GamesRepoService {
 
     let count = await this.repo.count({ where: wherePattern });
 
+    console.log("repo params:", wherePattern, orderObj, skip, limit);
     let games = await this.repo.find({
       where: wherePattern,
       order: orderObj,
       skip: skip,
       take: limit,
     });
-
+    console.log("found:", games);
     return { count: count, games: games };
   }
 
