@@ -36,7 +36,7 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
       userGame.player_1_id,
       userGame.player_2_id,
     );
-
+    console.log("betweeen 1 and 2:", gameQuestionsAndAnswersInfo);
     let currentQuestion: QuizGameQuestionsExtendedInfoEntity;
 
     let userIsFirstPlayer = +command.userId === userGame.player_1_id;
