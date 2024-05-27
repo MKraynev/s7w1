@@ -25,20 +25,13 @@ export class GamesPairGameQuizController {
   @UseGuards(JwtAuthGuard)
   public async GetAllMyGames(
     @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
-    @Query("sortBy") sortBy: string = "pairCreatedDate",
+    @Query("sortBy") sortBy: keyof GamesRepoEntity = "startedAt",
     @Query("sortDirection") sortDirecrion: "desc" | "asc" = "desc",
     @QueryPaginator() paginator: InputPaginator,
   ) {
-    let sortByKeyOf: keyof GamesRepoEntity;
-    switch (sortBy) {
-      case "pairCreatedDate":
-      default:
-        sortByKeyOf = "startedAt";
-    }
-
     let games = await this.commandBus.execute<GameQuizGetPairsMyCommand, { count: number; games: QuizGameInfo[] }>(
       new GameQuizGetPairsMyCommand(token, {
-        sortBy: sortByKeyOf,
+        sortBy: sortBy,
         sortDirection: sortDirecrion,
         skip: paginator.skipElements,
         limit: paginator.pageSize,
@@ -75,6 +68,8 @@ export class GamesPairGameQuizController {
     @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
     @Body(new ValidateParameters()) userResponse: { answer: string },
   ) {
+    console.log("Input values:", token, userResponse);
+
     let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
       new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
     );
@@ -94,6 +89,8 @@ export class GamesPairGameQuizController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   public async ConnectToGame(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad) {
+    console.log("input data:", tokenLoad);
+
     let newGame = await this.commandBus.execute<QuizGameConnectToGameCommand, QuizGameInfo>(
       new QuizGameConnectToGameCommand(tokenLoad.id, tokenLoad.login),
     );
