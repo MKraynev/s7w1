@@ -29,6 +29,7 @@ export class GamesRepoService {
   }> {
     let orderObj: FindOptionsOrder<GamesRepoEntity> = {};
     orderObj[sortBy] = sortDirection;
+    orderObj["id"] = "desc";
 
     let userId_num = +userId;
 
