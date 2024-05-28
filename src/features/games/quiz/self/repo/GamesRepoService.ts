@@ -27,6 +27,7 @@ export class GamesRepoService {
     count: number;
     games: GamesRepoEntity[];
   }> {
+    //TODO собрать в один запрос findAndCount
     let orderObj: FindOptionsOrder<GamesRepoEntity> = {};
     orderObj[sortBy] = sortDirection;
     orderObj["id"] = "desc";

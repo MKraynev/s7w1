@@ -21,6 +21,13 @@ import { GameQuizGetMyStatisticCommand } from "../service/use-cases/game.quiz.ge
 export class GamesPairGameQuizController {
   constructor(private commandBus: CommandBus) {}
 
+  @Get("users/top")
+  @UseGuards(JwtAuthGuard)
+  public async GetTopUsers(@ReadAccessToken() token: JwtServiceUserAccessTokenLoad, @Query("sort") sort: string[]) {
+    console.log("input data:", token, sort);
+    return "kokoko";
+  }
+
   @Get("pairs/my")
   @UseGuards(JwtAuthGuard)
   public async GetAllMyGames(
