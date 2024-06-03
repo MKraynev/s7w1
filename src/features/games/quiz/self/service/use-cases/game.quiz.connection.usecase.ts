@@ -37,7 +37,7 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
     if (activeSearchingGame) {
       let questionsForNewGame = await this.questionRepo.GetRandomQuesitons(GameQuizRules.GetGameQuestionCount());
 
-      questionsForNewGame.forEach(
+      await questionsForNewGame.forEach(
         async (gameQuestion, order) =>
           await this.questionsInGameRepo.Save(activeSearchingGame.id.toString(), gameQuestion.id.toString(), order),
       );

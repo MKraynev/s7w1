@@ -52,7 +52,7 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     else currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p2_answer === null)[0];
 
     if (!currentQuestion) {
-      console.log("second 403, !currentQuestion", !currentQuestion);
+      console.log("second 403, !currentQuestion", currentQuestion);
       throw new ForbiddenException(); //player answered all questions
     }
 
