@@ -27,9 +27,10 @@ export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameCon
   async execute(command: QuizGameConnectToGameCommand): Promise<QuizGameInfo> {
     let userCurrentGame = await this.gameRepo.GetUserCurrentGame(command.userId);
 
-    console.log("first if value:", userCurrentGame);
-
-    if (userCurrentGame) throw new ForbiddenException("Player already got active game");
+    if (userCurrentGame) {
+      console.log("throw 403, userCurrentGame:", userCurrentGame);
+      throw new ForbiddenException("Player already got active game");
+    }
 
     let activeSearchingGame = await this.gameRepo.GetSearchingGame(command.userId);
 

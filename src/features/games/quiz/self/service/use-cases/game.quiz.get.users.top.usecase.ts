@@ -36,9 +36,16 @@ export class GameQuizGetUsersTopUseCase
     let result = {
       count: winners.count,
       winners: winners.winners.map((winner) => {
-        Object.defineProperty(winner, "player", { value: { id: winner.player.id.toString(), login: winner.player.login } });
-        delete winner.player;
+        // Object.defineProperty(winner, "player", { value: { id: winner.user.id.toString(), login: winner.user.login } });
+
+        winner["player"] = {
+          id: winner.user.id.toString(),
+          login: winner.user.login,
+        };
+
+        delete winner.user;
         delete winner.playerId;
+        delete winner.id;
 
         return winner;
       }),

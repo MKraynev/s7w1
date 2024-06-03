@@ -34,7 +34,10 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     //TODO обернуть все в транзакцию
     let userGame = await this.gameRepo.GetUserCurrentGame(command.userId);
 
-    if (!userGame || userGame.status !== "Active") throw new ForbiddenException();
+    if (!userGame || userGame.status !== "Active") {
+      console.log("first if: !userGame || userGame.status !== Active", !userGame || userGame.status !== "Active");
+      throw new ForbiddenException();
+    }
 
     let gameQuestionsAndAnswersInfo = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
       userGame.id,
@@ -48,7 +51,10 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     if (userIsFirstPlayer) currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p1_answer === null)[0];
     else currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p2_answer === null)[0];
 
-    if (!currentQuestion) throw new ForbiddenException(); //player answered all questions
+    if (!currentQuestion) {
+      console.log("second 403, !currentQuestion", !currentQuestion);
+      throw new ForbiddenException(); //player answered all questions
+    }
 
     if (userIsFirstPlayer) userGame.player_1_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);
     else userGame.player_2_score += GameQuizRules.ConvertAnswersToScores(command.answer, currentQuestion.answer);

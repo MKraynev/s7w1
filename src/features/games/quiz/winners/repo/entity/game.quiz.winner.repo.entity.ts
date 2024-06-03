@@ -14,7 +14,7 @@ export class GameQuizWinnerRepoEntity {
 
   @OneToOne(() => UserRepoEntity, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "playerId" })
-  player: UserRepoEntity;
+  user: UserRepoEntity;
   @Column({ nullable: true })
   playerId: number;
 

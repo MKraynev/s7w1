@@ -39,7 +39,7 @@ export class GameQuizWinnersRepoService {
       order: orderObj,
       skip: skip,
       take: limit,
-      relations: { player: loadUser },
+      relations: { user: loadUser },
     });
 
     return { count: winnersCount, winners: winners };

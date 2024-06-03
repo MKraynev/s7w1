@@ -29,6 +29,9 @@ export class GamesPairGameQuizController {
     let sortUnits: { sortBy: keyof GameQuizWinnerRepoEntity; sortDirection: "asc" | "desc" }[] = [];
     let availableKeys = Object.keys(GameQuizWinnerRepoEntity);
     let availableDir = ["asc", "desc"];
+
+    console.log("input sort data:", sort);
+
     sort.forEach((s) => {
       let [key, dir] = s.split(" ");
       if (!availableKeys.includes(key)) return;
