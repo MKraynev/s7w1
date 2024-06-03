@@ -34,8 +34,6 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
     //TODO обернуть все в транзакцию
     let userGame = await this.gameRepo.GetUserCurrentGame(command.userId);
 
-    console.log("first if value:", userGame);
-
     if (!userGame || userGame.status !== "Active") throw new ForbiddenException();
 
     let gameQuestionsAndAnswersInfo = await this.quizGameQuestionRepo.GetGameQuestionsInfoOrdered(
@@ -43,14 +41,12 @@ export class GameQuizAnswerTheQuestionUseCase implements ICommandHandler<GameQui
       userGame.player_1_id,
       userGame.player_2_id,
     );
-    console.log("betweeen 1 and 2:", gameQuestionsAndAnswersInfo);
+
     let currentQuestion: QuizGameQuestionsExtendedInfoEntity;
 
     let userIsFirstPlayer = +command.userId === userGame.player_1_id;
     if (userIsFirstPlayer) currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p1_answer === null)[0];
     else currentQuestion = gameQuestionsAndAnswersInfo.filter((info) => info.p2_answer === null)[0];
-
-    console.log("second if value:", currentQuestion);
 
     if (!currentQuestion) throw new ForbiddenException(); //player answered all questions
 
