@@ -9,13 +9,13 @@ export class GameQuizQuestionsInGameRepoEntity {
   @ManyToOne(() => GamesRepoEntity, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "gameId" })
   game: GamesRepoEntity;
-  @Column()
+  @Column({ nullable: true })
   gameId: number;
 
-  @ManyToOne(() => QuizQuestionEntity)
+  @ManyToOne(() => QuizQuestionEntity, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "questionId" })
   question: QuizQuestionEntity;
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   questionId: number;
 
   @Column()

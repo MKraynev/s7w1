@@ -1,18 +1,10 @@
 //TODO доделать one->many   many->one
 
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { RequestDeviceEntity } from '../../decorators/entity/RequestDeviceEntity';
-import { UserRepoEntity } from '../../../users/repo/entities/UsersRepoEntity';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { RequestDeviceEntity } from "../../decorators/entity/RequestDeviceEntity";
+import { UserRepoEntity } from "../../../users/repo/entities/UsersRepoEntity";
 
-@Entity('Devices')
+@Entity("Devices")
 export class DeviceRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -24,8 +16,8 @@ export class DeviceRepoEntity {
   ip: string;
 
   @ManyToOne(() => UserRepoEntity, (user) => user.devices, {
-    nullable: false,
-    onDelete: 'CASCADE',
+    nullable: true,
+    onDelete: "CASCADE",
   })
   @JoinColumn()
   user: UserRepoEntity;
@@ -35,10 +27,10 @@ export class DeviceRepoEntity {
   @Column({ nullable: true })
   refreshTime: Date;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ type: "timestamptz" })
   updatedAt: Date;
 
   public static Init(inputDeviceData: RequestDeviceEntity): DeviceRepoEntity {

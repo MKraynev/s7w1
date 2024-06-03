@@ -1,22 +1,10 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import {
-  PostCreateEntity,
-  PostWithExpectedBlogIdCreateEntity,
-} from '../../controller/entities/SuperAdminCreatePostEntity';
-import { BlogRepoEntity } from '../../../blogs/repo/entities/blogs.repo.entity';
-import { CommentRepoEntity } from '../../../comments/repo/entities/CommentsRepoEntity';
-import { LikeForPostRepoEntity } from '../../../likes/postLikes/repo/entity/LikeForPostsRepoEntity';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { PostCreateEntity, PostWithExpectedBlogIdCreateEntity } from "../../controller/entities/SuperAdminCreatePostEntity";
+import { BlogRepoEntity } from "../../../blogs/repo/entities/blogs.repo.entity";
+import { CommentRepoEntity } from "../../../comments/repo/entities/CommentsRepoEntity";
+import { LikeForPostRepoEntity } from "../../../likes/postLikes/repo/entity/LikeForPostsRepoEntity";
 
-@Entity('Posts')
+@Entity("Posts")
 export class PostRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -35,8 +23,8 @@ export class PostRepoEntity {
   comments: CommentRepoEntity[];
 
   @ManyToOne(() => BlogRepoEntity, (blog) => blog.posts, {
-    nullable: false,
-    onDelete: 'CASCADE',
+    nullable: true,
+    onDelete: "CASCADE",
   })
   @JoinColumn()
   blog: BlogRepoEntity;
@@ -49,16 +37,13 @@ export class PostRepoEntity {
   @Column()
   blogName: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ type: "timestamptz" })
   updatedAt: Date;
 
-  public static Init(
-    postData: PostCreateEntity | PostWithExpectedBlogIdCreateEntity,
-    blogId?: number,
-  ): PostRepoEntity {
+  public static Init(postData: PostCreateEntity | PostWithExpectedBlogIdCreateEntity, blogId?: number): PostRepoEntity {
     let post = new PostRepoEntity();
     post.title = postData.title;
     post.shortDescription = postData.shortDescription;

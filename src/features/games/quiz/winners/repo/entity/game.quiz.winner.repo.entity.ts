@@ -9,10 +9,13 @@ export enum QuizGameStatus {
 
 @Entity("GameQuizWinner")
 export class GameQuizWinnerRepoEntity {
-  @OneToOne(() => UserRepoEntity, { nullable: false })
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToOne(() => UserRepoEntity, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "playerId" })
   player: UserRepoEntity;
-  @PrimaryColumn()
+  @Column({ nullable: true })
   playerId: number;
 
   @Column()

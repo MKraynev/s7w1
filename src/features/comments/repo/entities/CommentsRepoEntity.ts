@@ -8,55 +8,51 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { UserRepoEntity } from '../../../users/repo/entities/UsersRepoEntity';
-import { PostRepoEntity } from '../../../posts/repo/entity/PostsRepoEntity';
-import { LikeForCommentRepoEntity } from '../../../likes/commentLikes/repo/entity/LikeForCommentsRepoEntity';
+} from "typeorm";
+import { UserRepoEntity } from "../../../users/repo/entities/UsersRepoEntity";
+import { PostRepoEntity } from "../../../posts/repo/entity/PostsRepoEntity";
+import { LikeForCommentRepoEntity } from "../../../likes/commentLikes/repo/entity/LikeForCommentsRepoEntity";
 
-@Entity('Comments')
+@Entity("Comments")
 export class CommentRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @ManyToOne(() => UserRepoEntity, {
-    nullable: false,
-    onDelete: 'CASCADE',
+    nullable: true,
+    onDelete: "CASCADE",
   })
-  @JoinColumn()
+  @JoinColumn({ name: "userId" })
   user: UserRepoEntity;
-  @Column()
+  @Column({ nullable: true })
   userId: number;
 
   @Column({ nullable: false })
   userLogin: string;
 
   @ManyToOne(() => PostRepoEntity, (post) => post.comments, {
-    nullable: false,
-    onDelete: 'CASCADE',
+    nullable: true,
+    onDelete: "CASCADE",
   })
-  @JoinColumn()
+  @JoinColumn({ name: "postId" })
   post: PostRepoEntity;
-  @Column()
+  @Column({ nullable: true })
   postId: number;
 
-  @OneToMany(() => LikeForCommentRepoEntity, (like) => like.comment)
+  @OneToMany(() => LikeForCommentRepoEntity, (like) => like.comment, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn()
   likes: LikeForCommentRepoEntity[];
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   content: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ type: "timestamptz" })
   updatedAt: Date;
 
-  public static Init(
-    user: UserRepoEntity,
-    post: PostRepoEntity,
-    content: string,
-  ) {
+  public static Init(user: UserRepoEntity, post: PostRepoEntity, content: string) {
     let comment = new CommentRepoEntity();
     comment.user = user;
     comment.userId = user.id;
