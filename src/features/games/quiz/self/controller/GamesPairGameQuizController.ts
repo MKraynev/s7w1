@@ -16,15 +16,39 @@ import { InputPaginator } from "../../../../../paginator/entities/QueryPaginator
 import { GameQuizGetPairsMyCommand, GameQuizGetPairsMyUseCase } from "../service/use-cases/game.quiz.get.pairs.my.usecase";
 import { OutputPaginator } from "../../../../../paginator/entities/QueryPaginatorUutputEntity";
 import { GameQuizGetMyStatisticCommand } from "../service/use-cases/game.quiz.get.my.statistic.usecase";
+import { GameQuizGetUsersTopCommand } from "../service/use-cases/game.quiz.get.users.top.usecase";
+import { GameQuizWinnerRepoEntity } from "../../winners/repo/entity/game.quiz.winner.repo.entity";
 
 @Controller("pair-game-quiz")
 export class GamesPairGameQuizController {
   constructor(private commandBus: CommandBus) {}
 
   @Get("users/top")
-  public async GetTopUsers(@ReadAccessToken() token: JwtServiceUserAccessTokenLoad, @Query("sort") sort: string[]) {
-    console.log("input data:", token, sort);
-    return "kokoko";
+  public async GetTopUsers(@Query("sort") sort: string[], @QueryPaginator() paginator: InputPaginator) {
+    //input data: undefined [ 'sumScore desc', 'avgScores desc' ]
+    let sortUnits: { sortBy: keyof GameQuizWinnerRepoEntity; sortDirection: "asc" | "desc" }[] = [];
+    let availableKeys = Object.keys(GameQuizWinnerRepoEntity);
+    let availableDir = ["asc", "desc"];
+    sort.forEach((s) => {
+      let [key, dir] = s.split(" ");
+      if (!availableKeys.includes(key)) return;
+      if (!availableDir.includes(dir)) return;
+
+      sortUnits.push({ sortBy: key as keyof GameQuizWinnerRepoEntity, sortDirection: dir as "asc" | "desc" });
+    });
+
+    console.log("{sorter: sortUnits, skip: paginator.skipElements, limit: paginator.pageSize}", {
+      sorter: sortUnits,
+      skip: paginator.skipElements,
+      limit: paginator.pageSize,
+    });
+    let data = await this.commandBus.execute<GameQuizGetUsersTopCommand, { count: number; winners: Array<GameQuizWinnerRepoEntity> }>(
+      new GameQuizGetUsersTopCommand({ sorter: sortUnits, skip: paginator.skipElements, limit: paginator.pageSize }),
+    );
+
+    console.log("data", data);
+
+    return new OutputPaginator(data.count, data.winners, paginator);
   }
 
   @Get("pairs/my")

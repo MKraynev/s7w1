@@ -12,6 +12,8 @@ import { GameQuizAnswerTheQuestionUseCase } from "./service/use-cases/game.quiz.
 import { QuizQuestRepoModule } from "../questions/repo/QuestionsRepoModule";
 import { GameQuizGetPairsMyUseCase } from "./service/use-cases/game.quiz.get.pairs.my.usecase";
 import { GameQuizGetMyStatisticUseCase } from "./service/use-cases/game.quiz.get.my.statistic.usecase";
+import { GameQuizWinnersRepoModule } from "../winners/repo/game.quiz.winners.repo.module";
+import { GameQuizGetUsersTopUseCase } from "./service/use-cases/game.quiz.get.users.top.usecase";
 
 export const QuizGameUseCases = [
   GameQuizGetMyCurrentUseCase,
@@ -20,10 +22,19 @@ export const QuizGameUseCases = [
   GameQuizAnswerTheQuestionUseCase,
   GameQuizGetPairsMyUseCase,
   GameQuizGetMyStatisticUseCase,
+  GameQuizGetUsersTopUseCase,
 ];
 
 @Module({
-  imports: [GameQuizRepoModule, GameQuizAnswersRepoModule, UsersRepoModule, QuizGameQuestionsInGameModule, CqrsModule, QuizQuestRepoModule],
+  imports: [
+    GameQuizWinnersRepoModule,
+    GameQuizRepoModule,
+    GameQuizAnswersRepoModule,
+    UsersRepoModule,
+    QuizGameQuestionsInGameModule,
+    CqrsModule,
+    QuizQuestRepoModule,
+  ],
   controllers: [GamesPairGameQuizController],
   providers: [...QuizGameUseCases],
   exports: [...QuizGameUseCases],
