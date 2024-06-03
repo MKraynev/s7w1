@@ -12,6 +12,7 @@ import { GameQuizRepoModule } from "../features/games/quiz/self/repo/GamesRepoMo
 import { BlogsRepoModule } from "../features/blogs/repo/blogs.repo.module";
 import { GameQuizAnswersRepoModule } from "../features/games/quiz/answers/repo/game.quiz.answers.repo.module";
 import { QuizGameQuestionsInGameModule } from "../features/games/quiz/questions.in.game/repo/game.quiz.questions.in.game.repo.module";
+import { GameQuizWinnersRepoModule } from "../features/games/quiz/winners/repo/game.quiz.winners.repo.module";
 
 const adaminControllers = [AdminTestingController, SuperAdminBlogController];
 const adminImports = [
@@ -26,6 +27,7 @@ const adminImports = [
   GameQuizRepoModule,
   GameQuizAnswersRepoModule,
   QuizGameQuestionsInGameModule,
+  GameQuizWinnersRepoModule,
 ];
 @Module({
   imports: [...adminImports],

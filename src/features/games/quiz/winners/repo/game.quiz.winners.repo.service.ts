@@ -44,4 +44,7 @@ export class GameQuizWinnersRepoService {
 
     return { count: winnersCount, winners: winners };
   }
+  public async DeleteAll() {
+    await this.repo.delete({});
+  }
 }

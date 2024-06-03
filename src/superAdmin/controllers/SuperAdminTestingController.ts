@@ -10,6 +10,7 @@ import { QuizQuestionRepoService } from "../../features/games/quiz/questions/rep
 import { GamesRepoService } from "../../features/games/quiz/self/repo/GamesRepoService";
 import { GameQuizAnswersRepoService } from "../../features/games/quiz/answers/repo/game.quiz.answers.repo.service";
 import { GameQuizQuestionsInGameService } from "../../features/games/quiz/questions.in.game/repo/game.quiz.questions.in.game.repo.service";
+import { GameQuizWinnersRepoService } from "../../features/games/quiz/winners/repo/game.quiz.winners.repo.service";
 
 @Controller("testing/all-data")
 export class AdminTestingController {
@@ -25,22 +26,26 @@ export class AdminTestingController {
     private quizQuestionsInGameRepo: GameQuizQuestionsInGameService,
     private quizGameRepo: GamesRepoService,
     private answersRepo: GameQuizAnswersRepoService,
+    private winnerRepo: GameQuizWinnersRepoService,
   ) {}
 
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   async DeleteAll() {
-    await this.quizGameRepo.DeleteAll();
-    await this.blogRepo.DeleteAll();
-    await this.userRepo.DeleteAll();
-    await this.postRepo.DeleteAll();
-    await this.commentRepo.DeleteAll();
-    await this.likeForPost.DeleteAll();
-    await this.likeForComments.DeleteAll();
-    await this.deviceRepo.DeleteAll();
-    await this.quizQuestionsRepo.DeleteAll();
-    await this.answersRepo.DeleteAll();
-    await this.quizQuestionsInGameRepo.DeleteAll();
+    await Promise.all([
+      await this.quizGameRepo.DeleteAll(),
+      await this.blogRepo.DeleteAll(),
+      await this.userRepo.DeleteAll(),
+      await this.postRepo.DeleteAll(),
+      await this.commentRepo.DeleteAll(),
+      await this.likeForPost.DeleteAll(),
+      await this.likeForComments.DeleteAll(),
+      await this.deviceRepo.DeleteAll(),
+      await this.quizQuestionsRepo.DeleteAll(),
+      await this.answersRepo.DeleteAll(),
+      await this.quizQuestionsInGameRepo.DeleteAll(),
+      await this.winnerRepo.DeleteAll(),
+    ]);
 
     return;
   }
