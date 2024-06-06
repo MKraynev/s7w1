@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, ForbiddenException, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { GamesRepoEntity } from "../repo/entities/GamesRepoEntity";
 import { QuizGameInfo } from "./entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity";
@@ -106,11 +106,16 @@ export class GamesPairGameQuizController {
   ) {
     console.log("Input values:", token, userResponse);
 
-    let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
-      new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
-    );
+    try {
+      let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
+        new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
+      );
 
-    return answerResult;
+      return answerResult;
+    } catch (e) {
+      console.log(e);
+      throw new ForbiddenException();
+    }
   }
 
   @Get("pairs/:id")
