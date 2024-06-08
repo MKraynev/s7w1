@@ -14,10 +14,12 @@ import { GameQuizGetPairsMyUseCase } from "./service/use-cases/game.quiz.get.pai
 import { GameQuizGetMyStatisticUseCase } from "./service/use-cases/game.quiz.get.my.statistic.usecase";
 import { GameQuizWinnersRepoModule } from "../winners/repo/game.quiz.winners.repo.module";
 import { GameQuizGetUsersTopUseCase } from "./service/use-cases/game.quiz.get.users.top.usecase";
+import { GameQuizConnectionV2UseCase } from "./service/use-cases/game.quiz.connection.v2.usecase";
 
 export const QuizGameUseCases = [
   GameQuizGetMyCurrentUseCase,
   QuizGameConnectToGameUseCase,
+  GameQuizConnectionV2UseCase,
   GameQuizGetByIdUseCase,
   GameQuizAnswerTheQuestionUseCase,
   GameQuizGetPairsMyUseCase,
