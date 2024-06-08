@@ -42,4 +42,12 @@ export class GameQuizRules {
   public static GetGameQuestionCount() {
     return 5;
   }
+
+  public static GameIsReady(obj: Object) {
+    return false;
+  }
+
+  public static AllPlayersAreReady(obj: Object) {
+    return false;
+  }
 }

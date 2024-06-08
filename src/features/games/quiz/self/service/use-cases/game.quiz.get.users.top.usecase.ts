@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { JwtServiceUserAccessTokenLoad } from "../../../../../../jwt/entities/JwtServiceAccessTokenLoad";
 import { Injectable } from "@nestjs/common";
 import { GameQuizWinnersRepoService } from "../../../winners/repo/game.quiz.winners.repo.service";
-import { GameQuizWinnerRepoEntity } from "../../../winners/repo/entity/game.quiz.winner.repo.entity";
+import { GameQuizPlayerRepoEntity } from "../../../winners/repo/entity/game.quiz.winner.repo.entity";
 import { count } from "console";
 type PlayerStatistic = {
   sumScore: number;
@@ -16,7 +16,7 @@ type PlayerStatistic = {
 export class GameQuizGetUsersTopCommand {
   constructor(
     public paginator: {
-      sorter: { sortBy: keyof GameQuizWinnerRepoEntity; sortDirection: "desc" | "asc" }[];
+      sorter: { sortBy: keyof GameQuizPlayerRepoEntity; sortDirection: "desc" | "asc" }[];
       skip: number;
       limit: number;
     },
@@ -26,11 +26,11 @@ export class GameQuizGetUsersTopCommand {
 @Injectable()
 @CommandHandler(GameQuizGetUsersTopCommand)
 export class GameQuizGetUsersTopUseCase
-  implements ICommandHandler<GameQuizGetUsersTopCommand, { count: number; winners: Array<GameQuizWinnerRepoEntity> }>
+  implements ICommandHandler<GameQuizGetUsersTopCommand, { count: number; winners: Array<GameQuizPlayerRepoEntity> }>
 {
   constructor(private winnersRepo: GameQuizWinnersRepoService) {}
 
-  async execute(command: GameQuizGetUsersTopCommand): Promise<{ count: number; winners: Array<GameQuizWinnerRepoEntity> }> {
+  async execute(command: GameQuizGetUsersTopCommand): Promise<{ count: number; winners: Array<GameQuizPlayerRepoEntity> }> {
     let winners = await this.winnersRepo.CountAndReadMany(command.paginator.sorter, command.paginator.skip, command.paginator.limit);
 
     let result = {

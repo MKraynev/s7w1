@@ -17,7 +17,7 @@ import { GameQuizGetPairsMyCommand, GameQuizGetPairsMyUseCase } from "../service
 import { OutputPaginator } from "../../../../../paginator/entities/QueryPaginatorUutputEntity";
 import { GameQuizGetMyStatisticCommand } from "../service/use-cases/game.quiz.get.my.statistic.usecase";
 import { GameQuizGetUsersTopCommand } from "../service/use-cases/game.quiz.get.users.top.usecase";
-import { GameQuizWinnerRepoEntity } from "../../winners/repo/entity/game.quiz.winner.repo.entity";
+import { GameQuizPlayerRepoEntity } from "../../winners/repo/entity/game.quiz.winner.repo.entity";
 
 @Controller("pair-game-quiz")
 export class GamesPairGameQuizController {
@@ -26,8 +26,8 @@ export class GamesPairGameQuizController {
   @Get("users/top")
   public async GetTopUsers(@Query("sort") sort: string[], @QueryPaginator() paginator: InputPaginator) {
     //input data: undefined [ 'sumScore desc', 'avgScores desc' ]
-    let sortUnits: { sortBy: keyof GameQuizWinnerRepoEntity; sortDirection: "asc" | "desc" }[] = [];
-    let availableKeys = Object.keys(GameQuizWinnerRepoEntity);
+    let sortUnits: { sortBy: keyof GameQuizPlayerRepoEntity; sortDirection: "asc" | "desc" }[] = [];
+    let availableKeys = Object.keys(GameQuizPlayerRepoEntity);
     let availableDir = ["asc", "desc"];
 
     console.log("input sort data:", sort);
@@ -37,7 +37,7 @@ export class GamesPairGameQuizController {
       if (!availableKeys.includes(key)) return;
       if (!availableDir.includes(dir)) return;
 
-      sortUnits.push({ sortBy: key as keyof GameQuizWinnerRepoEntity, sortDirection: dir as "asc" | "desc" });
+      sortUnits.push({ sortBy: key as keyof GameQuizPlayerRepoEntity, sortDirection: dir as "asc" | "desc" });
     });
 
     console.log("{sorter: sortUnits, skip: paginator.skipElements, limit: paginator.pageSize}", {
@@ -45,7 +45,7 @@ export class GamesPairGameQuizController {
       skip: paginator.skipElements,
       limit: paginator.pageSize,
     });
-    let data = await this.commandBus.execute<GameQuizGetUsersTopCommand, { count: number; winners: Array<GameQuizWinnerRepoEntity> }>(
+    let data = await this.commandBus.execute<GameQuizGetUsersTopCommand, { count: number; winners: Array<GameQuizPlayerRepoEntity> }>(
       new GameQuizGetUsersTopCommand({ sorter: sortUnits, skip: paginator.skipElements, limit: paginator.pageSize }),
     );
 

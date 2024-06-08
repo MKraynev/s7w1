@@ -12,6 +12,7 @@ import {
 import { QuizGameAnswerRepoEntity } from "../../../answers/repo/entities/GamesAnswersRepoEntity";
 import { QuizGameStatus } from "../../controller/entities/QuizGameGetMyCurrent/QuizGameStatusEnum";
 import { UserRepoEntity } from "../../../../../users/repo/entities/UsersRepoEntity";
+import { GameQuizQuestionsInGameRepoEntity } from "../../../questions.in.game/repo/entity/game.quiz.questions.in.game.repo.entity";
 
 @Entity("Games")
 export class GamesRepoEntity {
@@ -24,6 +25,12 @@ export class GamesRepoEntity {
   @Column({ nullable: true })
   player_1_id: number;
 
+  @OneToMany(() => QuizGameAnswerRepoEntity, (answer) => answer.game)
+  answers_p1: QuizGameAnswerRepoEntity[];
+
+  @Column({ nullable: true })
+  player_1_score: number;
+
   @ManyToOne(() => UserRepoEntity, { nullable: true })
   @JoinColumn({ name: "player_2_id" })
   player_2: UserRepoEntity;
@@ -31,16 +38,13 @@ export class GamesRepoEntity {
   player_2_id: number;
 
   @OneToMany(() => QuizGameAnswerRepoEntity, (answer) => answer.game)
-  answers_p1: QuizGameAnswerRepoEntity[];
-
-  @OneToMany(() => QuizGameAnswerRepoEntity, (answer) => answer.game)
   answers_p2: QuizGameAnswerRepoEntity[];
 
   @Column({ nullable: true })
-  player_1_score: number;
-
-  @Column({ nullable: true })
   player_2_score: number;
+
+  @ManyToOne(() => GameQuizQuestionsInGameRepoEntity, { nullable: true })
+  questions: GameQuizQuestionsInGameRepoEntity[];
 
   @Column({ nullable: false })
   status: QuizGameStatus;
@@ -65,4 +69,6 @@ export class GamesRepoEntity {
 
     return game;
   }
+
+  public static QuestionCount = () => 5;
 }

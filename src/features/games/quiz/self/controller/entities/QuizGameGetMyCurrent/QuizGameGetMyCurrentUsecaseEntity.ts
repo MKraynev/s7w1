@@ -43,4 +43,8 @@ export class QuizGameInfo {
       null,
     );
   }
+
+  public static Get(game: GamesRepoEntity) {
+    return this.InitGame(game, []);
+  }
 }

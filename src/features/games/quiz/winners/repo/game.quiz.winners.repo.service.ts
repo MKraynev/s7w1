@@ -1,19 +1,19 @@
 import { Injectable } from "@nestjs/common";
 import { FindOptionsOrder, Repository } from "typeorm";
-import { GameQuizWinnerRepoEntity, QuizGameStatus } from "./entity/game.quiz.winner.repo.entity";
+import { GameQuizPlayerRepoEntity, QuizGameStatus } from "./entity/game.quiz.winner.repo.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class GameQuizWinnersRepoService {
   constructor(
-    @InjectRepository(GameQuizWinnerRepoEntity)
-    private repo: Repository<GameQuizWinnerRepoEntity>,
+    @InjectRepository(GameQuizPlayerRepoEntity)
+    private repo: Repository<GameQuizPlayerRepoEntity>,
   ) {}
 
   public async Update(userId: number, gameStatus: QuizGameStatus, scores: number) {
     let winner = await this.repo.findOne({ where: { playerId: userId } });
 
-    if (!winner) winner = GameQuizWinnerRepoEntity.Init(userId);
+    if (!winner) winner = GameQuizPlayerRepoEntity.Init(userId);
 
     winner.AddScores(scores, gameStatus);
 
@@ -22,7 +22,7 @@ export class GameQuizWinnersRepoService {
 
   public async CountAndReadMany(
     sorts: {
-      sortBy: keyof GameQuizWinnerRepoEntity;
+      sortBy: keyof GameQuizPlayerRepoEntity;
       sortDirection: "asc" | "desc";
     }[] = [{ sortBy: "avgScores", sortDirection: "desc" }],
     skip: number = 0,
@@ -30,9 +30,9 @@ export class GameQuizWinnersRepoService {
     loadUser: boolean = true,
   ): Promise<{
     count: number;
-    winners: GameQuizWinnerRepoEntity[];
+    winners: GameQuizPlayerRepoEntity[];
   }> {
-    let orderObj: FindOptionsOrder<GameQuizWinnerRepoEntity> = {};
+    let orderObj: FindOptionsOrder<GameQuizPlayerRepoEntity> = {};
     sorts.forEach((sort) => (orderObj[sort.sortBy.toString()] = sort.sortDirection));
 
     let [winners, winnersCount] = await this.repo.findAndCount({

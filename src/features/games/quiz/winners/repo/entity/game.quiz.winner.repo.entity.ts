@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { UserRepoEntity } from "../../../../../users/repo/entities/UsersRepoEntity";
+import { GamesRepoEntity } from "../../../self/repo/entities/GamesRepoEntity";
 
 export enum QuizGameStatus {
   win,
@@ -7,8 +8,8 @@ export enum QuizGameStatus {
   draw,
 }
 
-@Entity("GameQuizWinner")
-export class GameQuizWinnerRepoEntity {
+@Entity("GameQuizPlayer")
+export class GameQuizPlayerRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,6 +18,12 @@ export class GameQuizWinnerRepoEntity {
   user: UserRepoEntity;
   @Column({ nullable: true })
   playerId: number;
+
+  @OneToOne(() => GamesRepoEntity, { nullable: true, onDelete: "CASCADE" })
+  currentGame: GamesRepoEntity;
+  @JoinColumn({ name: "currentGameId" })
+  @Column({ nullable: true })
+  currentGameId: number | null;
 
   @Column()
   sumScore: number;
@@ -37,17 +44,18 @@ export class GameQuizWinnerRepoEntity {
   drawsCount: number;
 
   public static Init(id: number) {
-    let winner = new GameQuizWinnerRepoEntity();
+    let player = new GameQuizPlayerRepoEntity();
 
-    winner.playerId = id;
-    winner.sumScore = 0;
-    winner.avgScores = 0;
-    winner.gamesCount = 0;
-    winner.winsCount = 0;
-    winner.lossesCount = 0;
-    winner.drawsCount = 0;
+    player.playerId = id;
+    player.sumScore = 0;
+    player.avgScores = 0;
+    player.gamesCount = 0;
+    player.winsCount = 0;
+    player.lossesCount = 0;
+    player.drawsCount = 0;
+    player.currentGame = null;
 
-    return winner;
+    return player;
   }
 
   public AddScores(scores: number, gameStatus: QuizGameStatus) {

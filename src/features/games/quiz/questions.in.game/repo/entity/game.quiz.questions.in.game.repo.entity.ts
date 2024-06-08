@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { QuizQuestionEntity } from "../../../questions/repo/entity/QuestionsRepoEntity";
 import { GamesRepoEntity } from "../../../self/repo/entities/GamesRepoEntity";
+
 @Entity("QuizGameQuestion")
 export class GameQuizQuestionsInGameRepoEntity {
   @PrimaryGeneratedColumn()
