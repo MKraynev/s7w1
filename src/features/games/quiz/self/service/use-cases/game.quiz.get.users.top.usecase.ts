@@ -33,20 +33,15 @@ export class GameQuizGetUsersTopUseCase
   constructor(private playersRepo: GameQuizWinnersRepoService) {}
 
   async execute(command: GameQuizGetUsersTopCommand): Promise<{ count: number; winners: Array<PlayerStatistic> }> {
-    try {
-      let users = await this.playersRepo.CountAndReadMany(command.paginator.sorter, command.paginator.skip, command.paginator.limit);
-      return {
-        count: users.count,
-        winners: users.winners.map((player) => {
-          let { id, user, playerId, ...rest } = player;
+    let users = await this.playersRepo.CountAndReadMany(command.paginator.sorter, command.paginator.skip, command.paginator.limit);
+    return {
+      count: users.count,
+      winners: users.winners.map((player) => {
+        let { id, user, playerId, ...rest } = player;
 
-          let result: PlayerStatistic = { ...rest, player: { id: user.id.toString(), login: user.login } };
-          return result;
-        }),
-      };
-    } catch (e) {
-      console.log(e);
-      return { count: 0, winners: [] };
-    }
+        let result: PlayerStatistic = { ...rest, player: { id: user.id.toString(), login: user.login } };
+        return result;
+      }),
+    };
   }
 }

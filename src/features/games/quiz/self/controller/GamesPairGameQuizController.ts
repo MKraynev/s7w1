@@ -32,23 +32,27 @@ export class GamesPairGameQuizController {
 
     console.log("input sort data:", sort);
 
-    sort.forEach((s) => {
-      let [key, dir] = s.split(" ");
-      if (!availableKeys.includes(key)) return;
-      if (!availableDir.includes(dir)) return;
+    try {
+      sort.forEach((s) => {
+        let [key, dir] = s.split(" ");
+        if (!availableKeys.includes(key)) return;
+        if (!availableDir.includes(dir)) return;
 
-      sortUnits.push({ sortBy: key as keyof GameQuizPlayerRepoEntity, sortDirection: dir as "asc" | "desc" });
-    });
+        sortUnits.push({ sortBy: key as keyof GameQuizPlayerRepoEntity, sortDirection: dir as "asc" | "desc" });
+      });
 
-    console.log("sortUnits:", sortUnits);
+      console.log("sortUnits:", sortUnits);
 
-    let data = await this.commandBus.execute<GameQuizGetUsersTopCommand, { count: number; winners: Array<GameQuizPlayerRepoEntity> }>(
-      new GameQuizGetUsersTopCommand({ sorter: sortUnits, skip: paginator.skipElements, limit: paginator.pageSize }),
-    );
+      let data = await this.commandBus.execute<GameQuizGetUsersTopCommand, { count: number; winners: Array<GameQuizPlayerRepoEntity> }>(
+        new GameQuizGetUsersTopCommand({ sorter: sortUnits, skip: paginator.skipElements, limit: paginator.pageSize }),
+      );
 
-    console.log("data", data);
-
-    return new OutputPaginator(data.count, data.winners, paginator);
+      console.log("data", data);
+      return new OutputPaginator(data.count, data.winners, paginator);
+    } catch (e) {
+      console.log(e);
+      return new OutputPaginator(0, [], paginator);
+    }
   }
 
   @Get("pairs/my")
