@@ -22,7 +22,7 @@ export class GameQuizPlayerRepoEntity {
   @Column()
   sumScore: number;
 
-  @Column()
+  @Column({ type: "decimal", precision: 2 })
   avgScores: number;
 
   @Column()
