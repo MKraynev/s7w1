@@ -27,14 +27,19 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
       if (userNotExist) throw new UnauthorizedException();
 
       let currentGame = await this.FindUserCurrentGame(command.userId, queryRunner);
-      if (!currentGame || currentGame.status !== "Active") throw new ForbiddenException();
+      if (!currentGame || currentGame.status !== "Active") {
+        console.log("currentGame:", currentGame);
+        throw new ForbiddenException();
+      }
 
       let gameQuestions = await this.GameQuestions(currentGame.id, queryRunner);
 
-      //   let userAlreadyAnswered = await this.PlayerAnsweredCount(command.userId, currentGame.id, queryRunner);
       let userAlreadyAnswered = currentGame.player_1_id === user.id ? currentGame.player_1_answerCount : currentGame.player_2_answerCount;
 
-      if (gameQuestions.length === userAlreadyAnswered) throw new ForbiddenException(); //player answered all questions
+      if (gameQuestions.length === userAlreadyAnswered) {
+        console.log("gameQuestions.length === userAlreadyAnswered", gameQuestions.length, userAlreadyAnswered);
+        throw new ForbiddenException(); //player answered all questions
+      }
 
       let currentQuestion = gameQuestions[userAlreadyAnswered];
 
@@ -140,9 +145,11 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
 
   private async UpdatePlayersStats(currentGame: GamesRepoEntity, qr: QueryRunner) {
     let [p1_stats, p2_stats] = await Promise.all([
-      await qr.manager.findOne(GameQuizPlayerRepoEntity, { where: { playerId: currentGame.player_1_id } }),
-      await qr.manager.findOne(GameQuizPlayerRepoEntity, { where: { playerId: currentGame.player_2_id } }),
+      qr.manager.findOne(GameQuizPlayerRepoEntity, { where: { playerId: currentGame.player_1_id } }),
+      qr.manager.findOne(GameQuizPlayerRepoEntity, { where: { playerId: currentGame.player_2_id } }),
     ]);
+
+    console.log("found stats p1, p2", p1_stats, p2_stats);
 
     if (!p1_stats) p1_stats = GameQuizPlayerRepoEntity.Init(currentGame.player_1_id);
     if (!p2_stats) p2_stats = GameQuizPlayerRepoEntity.Init(currentGame.player_1_id);
