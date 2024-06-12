@@ -69,6 +69,9 @@ export class GameQuizPlayerRepoEntity {
         break;
     }
 
-    this.avgScores = +(this.sumScore / this.gamesCount).toFixed(2).replace(".00", "");
+    let avg = (this.sumScore / this.gamesCount).toFixed(2).replace(".00", "");
+    this.avgScores = +avg;
+
+    console.log("addScores result:", this);
   }
 }
