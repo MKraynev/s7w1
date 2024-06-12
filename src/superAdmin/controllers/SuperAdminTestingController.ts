@@ -33,18 +33,18 @@ export class AdminTestingController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async DeleteAll() {
     await Promise.all([
-      await this.quizGameRepo.DeleteAll(),
-      await this.blogRepo.DeleteAll(),
-      await this.userRepo.DeleteAll(),
-      await this.postRepo.DeleteAll(),
-      await this.commentRepo.DeleteAll(),
-      await this.likeForPost.DeleteAll(),
-      await this.likeForComments.DeleteAll(),
-      await this.deviceRepo.DeleteAll(),
-      await this.quizQuestionsRepo.DeleteAll(),
-      await this.answersRepo.DeleteAll(),
-      await this.quizQuestionsInGameRepo.DeleteAll(),
-      await this.winnerRepo.DeleteAll(),
+      this.blogRepo.DeleteAll(),
+      this.quizGameRepo.DeleteAll(),
+      this.userRepo.DeleteAll(),
+      this.postRepo.DeleteAll(),
+      this.commentRepo.DeleteAll(),
+      this.likeForPost.DeleteAll(),
+      this.likeForComments.DeleteAll(),
+      this.deviceRepo.DeleteAll(),
+      this.quizQuestionsRepo.DeleteAll(),
+      this.answersRepo.DeleteAll(),
+      this.quizQuestionsInGameRepo.DeleteAll(),
+      this.winnerRepo.DeleteAll(),
     ]);
 
     return;
