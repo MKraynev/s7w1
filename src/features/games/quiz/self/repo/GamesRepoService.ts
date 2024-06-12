@@ -39,14 +39,13 @@ export class GamesRepoService {
 
     let count = await this.repo.count({ where: wherePattern });
 
-    console.log("repo params:", wherePattern, orderObj, skip, limit);
     let games = await this.repo.find({
       where: wherePattern,
       order: orderObj,
       skip: skip,
       take: limit,
     });
-    console.log("found:", games);
+
     return { count: count, games: games };
   }
 
