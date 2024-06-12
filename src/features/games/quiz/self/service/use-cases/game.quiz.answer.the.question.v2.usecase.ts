@@ -144,10 +144,8 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
   }
 
   private async UpdatePlayersStats(currentGame: GamesRepoEntity, qr: QueryRunner) {
-    let [p1_stats, p2_stats] = await Promise.all([
-      qr.manager.findOne(GameQuizPlayerRepoEntity, { where: { playerId: currentGame.player_1_id } }),
-      qr.manager.findOne(GameQuizPlayerRepoEntity, { where: { playerId: currentGame.player_2_id } }),
-    ]);
+    let p1_stats = await qr.manager.findOne(GameQuizPlayerRepoEntity, { where: { playerId: currentGame.player_1_id } });
+    let p2_stats = await qr.manager.findOne(GameQuizPlayerRepoEntity, { where: { playerId: currentGame.player_2_id } });
 
     console.log("found stats p1, p2", p1_stats, p2_stats);
 
@@ -176,6 +174,7 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
     p1_stats.AddScores(currentGame.player_1_score, p1_gameStatus);
     p2_stats.AddScores(currentGame.player_2_score, p2_gameStatus);
 
-    await Promise.all([qr.manager.save(GameQuizPlayerRepoEntity, p1_stats), qr.manager.save(GameQuizPlayerRepoEntity, p2_stats)]);
+    await qr.manager.save(GameQuizPlayerRepoEntity, p1_stats);
+    await qr.manager.save(GameQuizPlayerRepoEntity, p2_stats);
   }
 }
