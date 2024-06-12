@@ -42,20 +42,20 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
       }
 
       let currentQuestion = gameQuestions[userAlreadyAnswered];
+      //save answer
+      let savedAnswer = await queryRunner.manager.save(
+        QuizGameAnswerRepoEntity,
+        QuizGameAnswerRepoEntity.Init(currentGame.id, currentQuestion.id, user.id, command.answer),
+      );
 
       //add scores for answer
       this.AddScores(currentGame, user.id, command.answer, currentQuestion.correctAnswers);
 
       if (this.PlayersAnsweredAllQuesitons(currentGame)) {
         this.CloseGame(currentGame);
+        await this.AddExtraPoints(currentGame, queryRunner);
         await this.UpdatePlayersStats(currentGame, queryRunner);
       }
-
-      //save answer
-      let savedAnswer = await queryRunner.manager.save(
-        QuizGameAnswerRepoEntity,
-        QuizGameAnswerRepoEntity.Init(currentGame.id, currentQuestion.id, user.id, command.answer),
-      );
 
       //update game stats
       await queryRunner.manager.save(GamesRepoEntity, currentGame);
@@ -121,10 +121,6 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
         ORDER BY qg."orderNum" ASC`)) as Array<{ id: number; body: string; correctAnswers: Array<string> }>;
   }
 
-  private async PlayerAnsweredCount(userId: string, gameId: number, qr: QueryRunner) {
-    return await qr.manager.count(QuizGameAnswerRepoEntity, { where: { userId: +userId, gameId: gameId } });
-  }
-
   private AddScores(currentGame: GamesRepoEntity, userId: number, userAnswer: string, correctAnswer: string[]) {
     if (currentGame.player_1_id === userId) {
       currentGame.player_1_score += GameQuizRules.ConvertAnswersToScores(userAnswer, correctAnswer);
@@ -181,5 +177,27 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
     console.log("data to save", p1_stats, p2_stats);
 
     await Promise.all([qr.manager.save(GameQuizPlayerRepoEntity, p1_stats), qr.manager.save(GameQuizPlayerRepoEntity, p2_stats)]);
+  }
+
+  private async AddExtraPoints(game: GamesRepoEntity, qr: QueryRunner) {
+    console.log("game stats before exta:", game);
+
+    let p1_lastAnswer: QuizGameAnswerRepoEntity = await qr.manager.find(QuizGameAnswerRepoEntity, {
+      where: { gameId: game.id, userId: game.player_1_id },
+      order: { createdAt: "DESC" },
+      take: 1,
+    })[0];
+
+    let p2_lastAnswer: QuizGameAnswerRepoEntity = await qr.manager.find(QuizGameAnswerRepoEntity, {
+      where: { gameId: game.id, userId: game.player_2_id },
+      order: { createdAt: "DESC" },
+      take: 1,
+    })[0];
+
+    if (+new Date(p1_lastAnswer.createdAt) < +new Date(p2_lastAnswer.createdAt) && game.player_1_score > 0) game.player_1_score += 1;
+    else if (+new Date(p2_lastAnswer.createdAt) < +new Date(p1_lastAnswer.createdAt) && game.player_2_score > 0) game.player_2_score += 1;
+
+    console.log("last answers p1, p2:", p1_lastAnswer, p2_lastAnswer);
+    console.log("game stats after exta:", game);
   }
 }
