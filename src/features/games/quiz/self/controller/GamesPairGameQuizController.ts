@@ -40,11 +40,8 @@ export class GamesPairGameQuizController {
       sortUnits.push({ sortBy: key as keyof GameQuizPlayerRepoEntity, sortDirection: dir as "asc" | "desc" });
     });
 
-    console.log("{sorter: sortUnits, skip: paginator.skipElements, limit: paginator.pageSize}", {
-      sorter: sortUnits,
-      skip: paginator.skipElements,
-      limit: paginator.pageSize,
-    });
+    console.log("sortUnits:", sortUnits);
+
     let data = await this.commandBus.execute<GameQuizGetUsersTopCommand, { count: number; winners: Array<GameQuizPlayerRepoEntity> }>(
       new GameQuizGetUsersTopCommand({ sorter: sortUnits, skip: paginator.skipElements, limit: paginator.pageSize }),
     );
