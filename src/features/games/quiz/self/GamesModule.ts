@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { GameQuizGetMyCurrentUseCase } from "./service/use-cases/game.quiz.get.my.current.usecase";
 import { CqrsModule } from "@nestjs/cqrs";
-import { QuizGameConnectToGameUseCase } from "./service/use-cases/game.quiz.connection.usecase";
 import { GameQuizRepoModule } from "./repo/GamesRepoModule";
 import { UsersRepoModule } from "../../../users/repo/UsersRepoModule";
 import { GamesPairGameQuizController } from "./controller/GamesPairGameQuizController";
@@ -18,7 +17,6 @@ import { GameQuizConnectionV2UseCase } from "./service/use-cases/game.quiz.conne
 
 export const QuizGameUseCases = [
   GameQuizGetMyCurrentUseCase,
-  QuizGameConnectToGameUseCase,
   GameQuizConnectionV2UseCase,
   GameQuizGetByIdUseCase,
   GameQuizAnswerTheQuestionUseCase,

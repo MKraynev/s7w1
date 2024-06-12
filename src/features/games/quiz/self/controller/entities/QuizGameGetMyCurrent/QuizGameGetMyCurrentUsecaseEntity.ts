@@ -45,6 +45,12 @@ export class QuizGameInfo {
   }
 
   public static Get(game: GamesRepoEntity) {
-    return this.InitGame(game, []);
+    if (game.player_2 && game.questionEntities.length > 0)
+      return this.InitGame(
+        game,
+        game.questionEntities.map((q) => new QuizGameQuestionInfoEntity(q.id.toString(), q.body)),
+      );
+
+    return this.InitNewGame(game.id.toString(), game.player_1_id.toString(), game.player_1.login, game.createdAt);
   }
 }

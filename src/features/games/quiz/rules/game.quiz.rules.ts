@@ -1,3 +1,4 @@
+import { GamesRepoEntity } from "../self/repo/entities/GamesRepoEntity";
 import { QuizGameQuestionsExtendedInfoEntity } from "../self/repo/entities/QuizGameQuestionsExtendedInfoEntity";
 
 export class GameQuizRules {
@@ -47,7 +48,7 @@ export class GameQuizRules {
     return false;
   }
 
-  public static AllPlayersAreReady(obj: Object) {
-    return false;
+  public static AllPlayersAreReady(game: GamesRepoEntity) {
+    return game.player_1 && game.player_2;
   }
 }

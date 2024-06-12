@@ -13,13 +13,14 @@ import { QuizGameAnswerRepoEntity } from "../../../answers/repo/entities/GamesAn
 import { QuizGameStatus } from "../../controller/entities/QuizGameGetMyCurrent/QuizGameStatusEnum";
 import { UserRepoEntity } from "../../../../../users/repo/entities/UsersRepoEntity";
 import { GameQuizQuestionsInGameRepoEntity } from "../../../questions.in.game/repo/entity/game.quiz.questions.in.game.repo.entity";
+import { QuizQuestionEntity } from "../../../questions/repo/entity/QuestionsRepoEntity";
 
 @Entity("Games")
 export class GamesRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserRepoEntity, { nullable: true })
+  @ManyToOne(() => UserRepoEntity, { nullable: true, onDelete: "SET NULL" })
   @JoinColumn({ name: "player_1_id" })
   player_1: UserRepoEntity;
   @Column({ nullable: true })
@@ -31,7 +32,7 @@ export class GamesRepoEntity {
   @Column({ nullable: true })
   player_1_score: number;
 
-  @ManyToOne(() => UserRepoEntity, { nullable: true })
+  @ManyToOne(() => UserRepoEntity, { nullable: true, onDelete: "SET NULL" })
   @JoinColumn({ name: "player_2_id" })
   player_2: UserRepoEntity;
   @Column({ nullable: true })
@@ -61,11 +62,13 @@ export class GamesRepoEntity {
   @UpdateDateColumn({ type: "timestamptz" })
   updatedAt: Date;
 
-  public static Init(hostPlayerId: number, status: QuizGameStatus = "PendingSecondPlayer") {
+  public questionEntities: QuizQuestionEntity[] = [];
+
+  public static Init(hostPlayerId: number, fill = true) {
     let game = new GamesRepoEntity();
 
-    game.player_1_id = hostPlayerId;
-    game.status = status;
+    if (fill) game.player_1_id = hostPlayerId;
+    game.status = "PendingSecondPlayer";
 
     return game;
   }

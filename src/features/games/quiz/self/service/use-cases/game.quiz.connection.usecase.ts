@@ -15,56 +15,56 @@ export class QuizGameConnectToGameCommand {
   ) {}
 }
 
-@CommandHandler(QuizGameConnectToGameCommand)
-@Injectable()
-export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameConnectToGameCommand, QuizGameInfo> {
-  constructor(
-    private gameRepo: GamesRepoService,
-    private questionRepo: QuizQuestionRepoService,
-    private questionsInGameRepo: GameQuizQuestionsInGameService,
-  ) {}
+// @CommandHandler(QuizGameConnectToGameCommand)
+// @Injectable()
+// export class QuizGameConnectToGameUseCase implements ICommandHandler<QuizGameConnectToGameCommand, QuizGameInfo> {
+//   constructor(
+//     private gameRepo: GamesRepoService,
+//     private questionRepo: QuizQuestionRepoService,
+//     private questionsInGameRepo: GameQuizQuestionsInGameService,
+//   ) {}
 
-  async execute(command: QuizGameConnectToGameCommand): Promise<QuizGameInfo> {
-    let userCurrentGame = await this.gameRepo.GetUserCurrentGame(command.userId);
+//   async execute(command: QuizGameConnectToGameCommand): Promise<QuizGameInfo> {
+//     let userCurrentGame = await this.gameRepo.GetUserCurrentGame(command.userId);
 
-    if (userCurrentGame) {
-      console.log("throw 403, userCurrentGame:", userCurrentGame);
-      throw new ForbiddenException("Player already got active game");
-    }
+//     if (userCurrentGame) {
+//       console.log("throw 403, userCurrentGame:", userCurrentGame);
+//       throw new ForbiddenException("Player already got active game");
+//     }
 
-    let activeSearchingGame = await this.gameRepo.GetSearchingGame(command.userId);
+//     let activeSearchingGame = await this.gameRepo.GetSearchingGame(command.userId);
 
-    if (activeSearchingGame) {
-      let questionsForNewGame = await this.questionRepo.GetRandomQuesitons(GameQuizRules.GetGameQuestionCount());
+//     if (activeSearchingGame) {
+//       let questionsForNewGame = await this.questionRepo.GetRandomQuesitons(GameQuizRules.GetGameQuestionCount());
 
-      await questionsForNewGame.forEach(
-        async (gameQuestion, order) =>
-          await this.questionsInGameRepo.Save(activeSearchingGame.id.toString(), gameQuestion.id.toString(), order),
-      );
+//       await questionsForNewGame.forEach(
+//         async (gameQuestion, order) =>
+//           await this.questionsInGameRepo.Save(activeSearchingGame.id.toString(), gameQuestion.id.toString(), order),
+//       );
 
-      activeSearchingGame = this.AssemblyGame(activeSearchingGame, command.userId);
+//       activeSearchingGame = this.AssemblyGame(activeSearchingGame, command.userId);
 
-      await this.gameRepo.Save(activeSearchingGame);
-      let savedGame = await this.gameRepo.FindOneById(activeSearchingGame.id.toString(), true);
-      return QuizGameInfo.InitGame(
-        savedGame,
-        questionsForNewGame.map((question) => new QuizGameQuestionInfoEntity(question.id.toString(), question.body)),
-      );
-    }
+//       await this.gameRepo.Save(activeSearchingGame);
+//       let savedGame = await this.gameRepo.FindOneById(activeSearchingGame.id.toString(), true);
+//       return QuizGameInfo.InitGame(
+//         savedGame,
+//         questionsForNewGame.map((question) => new QuizGameQuestionInfoEntity(question.id.toString(), question.body)),
+//       );
+//     }
 
-    let newGame = await this.gameRepo.CreateGame(+command.userId);
-    let newQuizGame = QuizGameInfo.InitNewGame(newGame.id.toString(), command.userId, command.userLogin, newGame.createdAt);
+//     let newGame = await this.gameRepo.CreateGame(+command.userId);
+//     let newQuizGame = QuizGameInfo.InitNewGame(newGame.id.toString(), command.userId, command.userLogin, newGame.createdAt);
 
-    return newQuizGame;
-  }
+//     return newQuizGame;
+//   }
 
-  private AssemblyGame(game: GamesRepoEntity, newUserId: string) {
-    game.player_2_id = +newUserId;
-    game.status = "Active";
-    game.startedAt = new Date();
-    game.player_1_score = 0;
-    game.player_2_score = 0;
+//   private AssemblyGame(game: GamesRepoEntity, newUserId: string) {
+//     game.player_2_id = +newUserId;
+//     game.status = "Active";
+//     game.startedAt = new Date();
+//     game.player_1_score = 0;
+//     game.player_2_score = 0;
 
-    return game;
-  }
-}
+//     return game;
+//   }
+// }

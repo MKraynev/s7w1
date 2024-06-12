@@ -17,7 +17,7 @@ export class GameQuizConnectionV2UseCase implements ICommandHandler<QuizGameConn
   constructor(private dataSource: DataSource) {}
   async execute(command: QuizGameConnectToGameCommand): Promise<QuizGameInfo> {
     const queryRunner = this.dataSource.createQueryRunner();
-
+    let savedGame: GamesRepoEntity;
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -28,23 +28,29 @@ export class GameQuizConnectionV2UseCase implements ICommandHandler<QuizGameConn
       let availableGame = await this.FindAvailableGame(command.userId, queryRunner);
       this.AddPlayerToGame(availableGame, user);
 
-      this.UpdateGameStatus(availableGame);
+      if (GameQuizRules.AllPlayersAreReady(availableGame)) {
+        this.UpdateGameStatus(availableGame);
+        this.SetStartGameField(availableGame);
+        await this.AddQuestionsToGame(availableGame, queryRunner);
+      }
 
-      if (GameQuizRules.AllPlayersAreReady(availableGame)) await this.AddQuestionsToGame(availableGame);
-
-      let savedGame = await queryRunner.manager.save(GamesRepoEntity, availableGame);
+      savedGame = await queryRunner.manager.save(GamesRepoEntity, availableGame);
 
       await queryRunner.commitTransaction();
-      await queryRunner.release();
-
-      return QuizGameInfo.Get(savedGame);
     } catch (err) {
       await queryRunner.rollbackTransaction();
-      await queryRunner.release();
 
       console.log(err);
+
       throw err;
+    } finally {
+      await queryRunner.release();
     }
+
+    return QuizGameInfo.Get(savedGame);
+  }
+  SetStartGameField(availableGame: GamesRepoEntity) {
+    availableGame.startedAt = new Date();
   }
   private async FindUser(userId: string, qr: QueryRunner): Promise<{ userNotExist: boolean; user: UserRepoEntity }> {
     let user = await qr.manager.findOne(UserRepoEntity, { where: { id: +userId } });
@@ -65,13 +71,13 @@ export class GameQuizConnectionV2UseCase implements ICommandHandler<QuizGameConn
       },
     });
 
-    if (!searchingGame) searchingGame = GamesRepoEntity.Init(+exceptuserId);
+    if (!searchingGame) searchingGame = GamesRepoEntity.Init(0, false);
 
     return searchingGame;
   }
 
   private AddPlayerToGame(game: GamesRepoEntity, player: UserRepoEntity) {
-    if (game.player_1 !== undefined) {
+    if (game.player_1) {
       game.player_2 = player;
       game.player_2_id = player.id;
       game.player_2_score = 0;
@@ -82,9 +88,36 @@ export class GameQuizConnectionV2UseCase implements ICommandHandler<QuizGameConn
     }
   }
 
-  private UpdateGameStatus(game: GamesRepoEntity) {}
+  private UpdateGameStatus(game: GamesRepoEntity) {
+    switch (game.status) {
+      case "PendingSecondPlayer":
+        game.status = "Active";
+        break;
 
-  private async AddQuestionsToGame(game: GamesRepoEntity) {}
+      case "Active":
+        game.status = "Finished";
+        break;
+    }
+  }
+
+  private async AddQuestionsToGame(game: GamesRepoEntity, qr: QueryRunner) {
+    let questions = await qr.manager
+      .createQueryBuilder()
+      .select("qqe")
+      .from(QuizQuestionEntity, "qqe")
+      .orderBy("RANDOM()")
+      .limit(GamesRepoEntity.QuestionCount())
+      .getMany();
+
+    questions.forEach(
+      async (q, pos) =>
+        await qr.manager.save(
+          GameQuizQuestionsInGameRepoEntity,
+          GameQuizQuestionsInGameRepoEntity.Init(game.id.toString(), q.id.toString(), pos),
+        ),
+    );
+    game.questionEntities = questions;
+  }
 }
 
 /*

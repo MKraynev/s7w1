@@ -12,7 +12,6 @@ export const testDbConfiguration = TypeOrmModule.forRoot({
   port: POSTGRES_PORT,
   username: POSTGRES_USERNAME,
   password: POSTGRES_PASSWORD,
-  database: "Test",
   autoLoadEntities: true,
   synchronize: true,
 });
