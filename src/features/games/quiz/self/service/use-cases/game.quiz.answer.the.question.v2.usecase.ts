@@ -149,32 +149,42 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
 
     console.log("found stats p1, p2", p1_stats, p2_stats);
 
-    if (!p1_stats) p1_stats = GameQuizPlayerRepoEntity.Init(currentGame.player_1_id);
-    if (!p2_stats) p2_stats = GameQuizPlayerRepoEntity.Init(currentGame.player_1_id);
-    let p1_gameStatus: QuizGameStatus;
-    let p2_gameStatus: QuizGameStatus;
+    try {
+      if (!p1_stats) p1_stats = GameQuizPlayerRepoEntity.Init(currentGame.player_1_id);
+      if (!p2_stats) p2_stats = GameQuizPlayerRepoEntity.Init(currentGame.player_1_id);
 
-    let scoreDiff = currentGame.player_1_score - currentGame.player_2_score;
-    switch (scoreDiff) {
-      case 0:
-        p1_gameStatus = QuizGameStatus.draw;
-        p2_gameStatus = QuizGameStatus.draw;
-        break;
+      console.log("result stats", p1_stats, p2_stats);
 
-      default:
-        if (scoreDiff > 0) {
-          p1_gameStatus = QuizGameStatus.win;
-          p2_gameStatus = QuizGameStatus.lose;
-        } else {
-          p1_gameStatus = QuizGameStatus.lose;
-          p2_gameStatus = QuizGameStatus.win;
-        }
+      let p1_gameStatus: QuizGameStatus;
+      let p2_gameStatus: QuizGameStatus;
+
+      let scoreDiff = currentGame.player_1_score - currentGame.player_2_score;
+      switch (scoreDiff) {
+        case 0:
+          p1_gameStatus = QuizGameStatus.draw;
+          p2_gameStatus = QuizGameStatus.draw;
+          break;
+
+        default:
+          if (scoreDiff > 0) {
+            p1_gameStatus = QuizGameStatus.win;
+            p2_gameStatus = QuizGameStatus.lose;
+          } else {
+            p1_gameStatus = QuizGameStatus.lose;
+            p2_gameStatus = QuizGameStatus.win;
+          }
+      }
+
+      p1_stats.AddScores(currentGame.player_1_score, p1_gameStatus);
+      p2_stats.AddScores(currentGame.player_2_score, p2_gameStatus);
+
+      console.log("stats before save", p1_stats, p2_stats);
+
+      await qr.manager.save(GameQuizPlayerRepoEntity, p1_stats);
+      await qr.manager.save(GameQuizPlayerRepoEntity, p2_stats);
+    } catch (e) {
+      console.log("UpdatePlayersStats occur, e", e);
+      throw new UnauthorizedException();
     }
-
-    p1_stats.AddScores(currentGame.player_1_score, p1_gameStatus);
-    p2_stats.AddScores(currentGame.player_2_score, p2_gameStatus);
-
-    await qr.manager.save(GameQuizPlayerRepoEntity, p1_stats);
-    await qr.manager.save(GameQuizPlayerRepoEntity, p2_stats);
   }
 }
