@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { JwtServiceUserAccessTokenLoad } from "../../../../../../jwt/entities/JwtServiceAccessTokenLoad";
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { GameQuizWinnersRepoService } from "../../../winners/repo/game.quiz.winners.repo.service";
 import { GameQuizPlayerRepoEntity } from "../../../winners/repo/entity/game.quiz.winner.repo.entity";
 import { count } from "console";
@@ -33,15 +33,20 @@ export class GameQuizGetUsersTopUseCase
   constructor(private playersRepo: GameQuizWinnersRepoService) {}
 
   async execute(command: GameQuizGetUsersTopCommand): Promise<{ count: number; winners: Array<PlayerStatistic> }> {
-    let users = await this.playersRepo.CountAndReadMany(command.paginator.sorter, command.paginator.skip, command.paginator.limit);
-    return {
-      count: users.count,
-      winners: users.winners.map((player) => {
-        let { id, user, playerId, ...rest } = player;
+    try {
+      let users = await this.playersRepo.CountAndReadMany(command.paginator.sorter, command.paginator.skip, command.paginator.limit);
+      return {
+        count: users.count,
+        winners: users.winners.map((player) => {
+          let { id, user, playerId, ...rest } = player;
 
-        let result: PlayerStatistic = { ...rest, player: { id: user.id.toString(), login: user.login } };
-        return result;
-      }),
-    };
+          let result: PlayerStatistic = { ...rest, player: { id: user.id.toString(), login: user.login } };
+          return result;
+        }),
+      };
+    } catch (e) {
+      console.log(e);
+      return { count: 0, winners: [] };
+    }
   }
 }
