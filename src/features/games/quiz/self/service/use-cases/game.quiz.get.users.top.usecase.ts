@@ -39,7 +39,7 @@ export class GameQuizGetUsersTopUseCase
       winners: users.winners.map((player) => {
         let { id, user, playerId, ...rest } = player;
 
-        let result: PlayerStatistic = { ...rest, player: { id: id.toString(), login: user.login } };
+        let result: PlayerStatistic = { ...rest, player: { id: user.id.toString(), login: user.login } };
         return result;
       }),
     };
