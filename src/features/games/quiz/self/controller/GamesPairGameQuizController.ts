@@ -27,7 +27,7 @@ export class GamesPairGameQuizController {
   public async GetTopUsers(@Query("sort") sort: string[], @QueryPaginator() paginator: InputPaginator) {
     //input data: undefined [ 'sumScore desc', 'avgScores desc' ]
     let sortUnits: { sortBy: keyof GameQuizPlayerRepoEntity; sortDirection: "asc" | "desc" }[] = [];
-    let availableKeys = Object.keys(GameQuizPlayerRepoEntity);
+    let availableKeys = ["sumScore", "avgScores", "gamesCount", "winsCount", "lossesCount", "drawsCount"];
     let availableDir = ["asc", "desc"];
 
     console.log("input sort data:", sort);
