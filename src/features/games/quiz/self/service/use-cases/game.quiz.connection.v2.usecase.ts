@@ -49,9 +49,11 @@ export class GameQuizConnectionV2UseCase implements ICommandHandler<QuizGameConn
 
     return QuizGameInfo.Get(savedGame);
   }
-  SetStartGameField(availableGame: GamesRepoEntity) {
+
+  private SetStartGameField(availableGame: GamesRepoEntity) {
     availableGame.startedAt = new Date();
   }
+
   private async FindUser(userId: string, qr: QueryRunner): Promise<{ userNotExist: boolean; user: UserRepoEntity }> {
     let user = await qr.manager.findOne(UserRepoEntity, { where: { id: +userId } });
 
@@ -81,10 +83,12 @@ export class GameQuizConnectionV2UseCase implements ICommandHandler<QuizGameConn
       game.player_2 = player;
       game.player_2_id = player.id;
       game.player_2_score = 0;
+      game.player_2_answerCount = 0;
     } else {
       game.player_1 = player;
       game.player_1_id = player.id;
       game.player_1_score = 0;
+      game.player_1_answerCount = 0;
     }
   }
 
@@ -119,66 +123,3 @@ export class GameQuizConnectionV2UseCase implements ICommandHandler<QuizGameConn
     game.questionEntities = questions;
   }
 }
-
-/*
-return await this.dataSource.transaction("SERIALIZABLE", async (transactionalEntityManager) => {
-      await transactionalEntityManager;
-      try {
-        let player = await transactionalEntityManager.findOne(GameQuizPlayerRepoEntity, { where: { playerId: +command.userId } });
-        if (!player) player = GameQuizPlayerRepoEntity.Init(+command.userId);
-
-        if (player.currentGameId) throw new ForbiddenException("Player already got active game");
-
-        let activeSearchingGame = await transactionalEntityManager.query(`
-          SELECT 
-            "game"."id" AS "id", 
-            "game"."player_1_id" AS "player_1_id", 
-            "game"."player_2_id" AS "player_2_id", 
-            "game"."player_1_score" AS "player_1_score", 
-            "game"."player_2_score" AS "player_2_score", 
-            "game"."status" AS "status", 
-            "game"."createdAt" AS "createdAt", 
-            "game"."startedAt" AS "startedAt", 
-            "game"."endedAt" AS "endedAt", 
-            "game"."updatedAt" AS "updatedAt" 
-          FROM public."Games" "game" 
-            WHERE "game"."status" = 'PendingSecondPlayer'
-            AND "game"."player_1_id" != ${command.userId}
-          LIMIT 1
-        `);
-
-        //NO ACTIVE SEARCHING GAME
-        if (!activeSearchingGame) {
-          let newGame = GamesRepoEntity.Init(+command.userId);
-          let savedNewGame = await transactionalEntityManager.save(GamesRepoEntity, newGame);
-          player.currentGameId = savedNewGame.id;
-
-          transactionalEntityManager.save(GameQuizPlayerRepoEntity, player);
-
-          return QuizGameInfo.InitNewGame(savedNewGame.id.toString(), command.userId, command.userLogin, savedNewGame.createdAt);
-        }
-
-        let randomQuestions = (await transactionalEntityManager
-          .createQueryBuilder()
-          .select("qqe.id", "id")
-          .from(QuizQuestionEntity, "qqe")
-          .orderBy("RANDOM()")
-          .limit(GamesRepoEntity.QuestionCount())
-          .getMany()) as { id: number }[];
-
-        await Promise.all(
-          randomQuestions.map((rq, orderNum) =>
-            transactionalEntityManager.save(
-              GameQuizQuestionsInGameRepoEntity,
-              GameQuizQuestionsInGameRepoEntity.Init(activeSearchingGame.id, rq.id.toString(), orderNum),
-            ),
-          ),
-        );
-
-        return new QuizGameInfo();
-      } catch (e) {
-        console.log(e);
-        throw e;
-      }
-    });
-*/

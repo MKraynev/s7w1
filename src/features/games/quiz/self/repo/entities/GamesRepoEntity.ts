@@ -30,6 +30,9 @@ export class GamesRepoEntity {
   answers_p1: QuizGameAnswerRepoEntity[];
 
   @Column({ nullable: true })
+  player_1_answerCount: number;
+
+  @Column({ nullable: true })
   player_1_score: number;
 
   @ManyToOne(() => UserRepoEntity, { nullable: true, onDelete: "SET NULL" })
@@ -40,6 +43,9 @@ export class GamesRepoEntity {
 
   @OneToMany(() => QuizGameAnswerRepoEntity, (answer) => answer.game)
   answers_p2: QuizGameAnswerRepoEntity[];
+
+  @Column({ nullable: true })
+  player_2_answerCount: number;
 
   @Column({ nullable: true })
   player_2_score: number;

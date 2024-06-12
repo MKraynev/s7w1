@@ -39,7 +39,7 @@ export class QuizGameAnswerRepoEntity {
   @UpdateDateColumn({ type: "timestamptz" })
   updatedAt: Date;
 
-  public static Init(gameId: string, questionId: string, playerId: string, answer: string) {
+  public static Init(gameId: number, questionId: number, playerId: number, answer: string) {
     let res = new QuizGameAnswerRepoEntity();
     res.answer = answer;
     res.userId = +playerId;

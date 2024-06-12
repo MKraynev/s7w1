@@ -12,8 +12,8 @@ export class GameQuizAnswersRepoService {
     return await this.repo.find({ where: { gameId: +gameId, userId: +userId } });
   }
 
-  public async Save(gameId: string, questionId: string, userId: string, answer: string) {
-    return await this.repo.save(QuizGameAnswerRepoEntity.Init(gameId, questionId, userId, answer));
+  public async Save(gameId: number, questionId: number, userId: string, answer: string) {
+    return await this.repo.save(QuizGameAnswerRepoEntity.Init(gameId, questionId, +userId, answer));
   }
 
   public async DeleteAll() {

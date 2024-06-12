@@ -19,12 +19,6 @@ export class GameQuizPlayerRepoEntity {
   @Column({ nullable: true })
   playerId: number;
 
-  @OneToOne(() => GamesRepoEntity, { nullable: true, onDelete: "CASCADE" })
-  currentGame: GamesRepoEntity;
-  @JoinColumn({ name: "currentGameId" })
-  @Column({ nullable: true })
-  currentGameId: number | null;
-
   @Column()
   sumScore: number;
 
@@ -53,7 +47,6 @@ export class GameQuizPlayerRepoEntity {
     player.winsCount = 0;
     player.lossesCount = 0;
     player.drawsCount = 0;
-    player.currentGame = null;
 
     return player;
   }
