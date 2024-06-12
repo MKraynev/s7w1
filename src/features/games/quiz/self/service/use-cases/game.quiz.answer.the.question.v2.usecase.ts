@@ -182,22 +182,24 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
   private async AddExtraPoints(game: GamesRepoEntity, qr: QueryRunner) {
     console.log("game stats before exta:", game);
 
-    let p1_lastAnswer: QuizGameAnswerRepoEntity = await qr.manager.find(QuizGameAnswerRepoEntity, {
+    let p1_lastAnswers = await qr.manager.find(QuizGameAnswerRepoEntity, {
       where: { gameId: game.id, userId: game.player_1_id },
       order: { createdAt: "DESC" },
       take: 1,
-    })[0];
+    });
 
-    let p2_lastAnswer: QuizGameAnswerRepoEntity = await qr.manager.find(QuizGameAnswerRepoEntity, {
+    let p2_lastAnswers = await qr.manager.find(QuizGameAnswerRepoEntity, {
       where: { gameId: game.id, userId: game.player_2_id },
       order: { createdAt: "DESC" },
       take: 1,
-    })[0];
+    });
 
-    console.log("last answers p1, p2:", p1_lastAnswer, p2_lastAnswer);
+    console.log("last answers p1, p2:", p1_lastAnswers, p2_lastAnswers);
 
-    if (+new Date(p1_lastAnswer.createdAt) < +new Date(p2_lastAnswer.createdAt) && game.player_1_score > 0) game.player_1_score += 1;
-    else if (+new Date(p2_lastAnswer.createdAt) < +new Date(p1_lastAnswer.createdAt) && game.player_2_score > 0) game.player_2_score += 1;
+    if (+new Date(p1_lastAnswers[0].createdAt) < +new Date(p2_lastAnswers[0].createdAt) && game.player_1_score > 0)
+      game.player_1_score += 1;
+    else if (+new Date(p2_lastAnswers[0].createdAt) < +new Date(p1_lastAnswers[0].createdAt) && game.player_2_score > 0)
+      game.player_2_score += 1;
 
     console.log("game stats after exta:", game);
   }
