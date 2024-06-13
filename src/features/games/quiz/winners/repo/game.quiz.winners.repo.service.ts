@@ -35,8 +35,6 @@ export class GameQuizWinnersRepoService {
     let orderObj: FindOptionsOrder<GameQuizPlayerRepoEntity> = {};
     sorts.forEach((sort) => (orderObj[sort.sortBy.toString()] = sort.sortDirection));
 
-    console.log("top orderObj", orderObj);
-
     let [winners, winnersCount] = await this.repo.findAndCount({
       order: orderObj,
       skip: skip,

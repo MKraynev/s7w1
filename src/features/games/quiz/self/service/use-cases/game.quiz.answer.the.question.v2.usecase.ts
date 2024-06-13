@@ -28,7 +28,6 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
 
       let currentGame = await this.FindUserCurrentGame(command.userId, queryRunner);
       if (!currentGame || currentGame.status !== "Active") {
-        console.log("currentGame:", currentGame);
         throw new ForbiddenException();
       }
 
@@ -37,7 +36,6 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
       let userAlreadyAnswered = currentGame.player_1_id === user.id ? currentGame.player_1_answerCount : currentGame.player_2_answerCount;
 
       if (gameQuestions.length === userAlreadyAnswered) {
-        console.log("gameQuestions.length === userAlreadyAnswered", gameQuestions.length, userAlreadyAnswered);
         throw new ForbiddenException(); //player answered all questions
       }
 
@@ -144,12 +142,8 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
     let p1_stats = await qr.manager.findOne(GameQuizPlayerRepoEntity, { where: { playerId: currentGame.player_1_id } });
     let p2_stats = await qr.manager.findOne(GameQuizPlayerRepoEntity, { where: { playerId: currentGame.player_2_id } });
 
-    console.log("found stats", p1_stats, p2_stats);
-
     if (!p1_stats) p1_stats = GameQuizPlayerRepoEntity.Init(currentGame.player_1_id);
     if (!p2_stats) p2_stats = GameQuizPlayerRepoEntity.Init(currentGame.player_2_id);
-
-    console.log("result stats", p1_stats, p2_stats);
 
     let p1_gameStatus: QuizGameStatus;
     let p2_gameStatus: QuizGameStatus;
@@ -174,14 +168,10 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
     p1_stats.AddScores(currentGame.player_1_score, p1_gameStatus);
     p2_stats.AddScores(currentGame.player_2_score, p2_gameStatus);
 
-    console.log("data to save", p1_stats, p2_stats);
-
     await Promise.all([qr.manager.save(GameQuizPlayerRepoEntity, p1_stats), qr.manager.save(GameQuizPlayerRepoEntity, p2_stats)]);
   }
 
   private async AddExtraPoints(game: GamesRepoEntity, qr: QueryRunner) {
-    console.log("game stats before exta:", game);
-
     let p1_lastAnswers = await qr.manager.find(QuizGameAnswerRepoEntity, {
       where: { gameId: game.id, userId: game.player_1_id },
       order: { createdAt: "DESC" },
@@ -194,13 +184,9 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
       take: 1,
     });
 
-    console.log("last answers p1, p2:", p1_lastAnswers, p2_lastAnswers);
-
     if (+new Date(p1_lastAnswers[0].createdAt) < +new Date(p2_lastAnswers[0].createdAt) && game.player_1_score > 0)
       game.player_1_score += 1;
     else if (+new Date(p2_lastAnswers[0].createdAt) < +new Date(p1_lastAnswers[0].createdAt) && game.player_2_score > 0)
       game.player_2_score += 1;
-
-    console.log("game stats after exta:", game);
   }
 }

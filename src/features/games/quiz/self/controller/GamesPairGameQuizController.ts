@@ -25,13 +25,11 @@ export class GamesPairGameQuizController {
 
   @Get("users/top")
   public async GetTopUsers(@Query("sort") sort: string | string[] | undefined, @QueryPaginator() paginator: InputPaginator) {
-    //input data: [ 'sumScore desc', 'avgScores desc' ]
     let sortUnits: { sortBy: keyof GameQuizPlayerRepoEntity; sortDirection: "asc" | "desc" }[] = [];
     let availableKeys = ["sumScore", "avgScores", "gamesCount", "winsCount", "lossesCount", "drawsCount"];
     let availableDir = ["asc", "desc"];
 
-    console.log("input sort data:", sort);
-
+    //TODO сделать обработчкик 'string| string[]| undefined' поудачнее
     if (Array.isArray(sort))
       sort.forEach((s) => {
         let [key, dir] = s.split(" ");
@@ -48,13 +46,10 @@ export class GamesPairGameQuizController {
       }
     }
 
-    console.log("sortUnits:", sortUnits);
-
     let data = await this.commandBus.execute<GameQuizGetUsersTopCommand, { count: number; winners: Array<GameQuizPlayerRepoEntity> }>(
       new GameQuizGetUsersTopCommand({ sorter: sortUnits, skip: paginator.skipElements, limit: paginator.pageSize }),
     );
 
-    console.log("data", data);
     return new OutputPaginator(data.count, data.winners, paginator);
   }
 
@@ -66,8 +61,6 @@ export class GamesPairGameQuizController {
     @Query("sortDirection") sortDirecrion: "desc" | "asc" = "desc",
     @QueryPaginator() paginator: InputPaginator,
   ) {
-    console.log("input values:", token, sortBy, sortDirecrion, paginator);
-
     let games = await this.commandBus.execute<GameQuizGetPairsMyCommand, { count: number; games: QuizGameInfo[] }>(
       new GameQuizGetPairsMyCommand(token, {
         sortBy: sortBy,
@@ -84,7 +77,6 @@ export class GamesPairGameQuizController {
   @Get("users/my-statistic")
   @UseGuards(JwtAuthGuard)
   public async GetMyStatistic(@ReadAccessToken() token: JwtServiceUserAccessTokenLoad) {
-    console.log("input values:", token);
     let statistic = await this.commandBus.execute<
       GameQuizGetMyStatisticCommand,
       { sumScore: number; avgScores: number; gamesCount: number; winsCount: number; lossesCount: number; drawsCount: number }
@@ -108,18 +100,11 @@ export class GamesPairGameQuizController {
     @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
     @Body(new ValidateParameters()) userResponse: { answer: string },
   ) {
-    console.log("Input values:", token, userResponse);
+    let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
+      new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
+    );
 
-    try {
-      let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
-        new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
-      );
-
-      return answerResult;
-    } catch (e) {
-      console.log(e);
-      throw new ForbiddenException();
-    }
+    return answerResult;
   }
 
   @Get("pairs/:id")
@@ -134,8 +119,6 @@ export class GamesPairGameQuizController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   public async ConnectToGame(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad) {
-    console.log("input data:", tokenLoad);
-
     let newGame = await this.commandBus.execute<QuizGameConnectToGameCommand, QuizGameInfo>(
       new QuizGameConnectToGameCommand(tokenLoad.id, tokenLoad.login),
     );
