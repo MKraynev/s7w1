@@ -34,7 +34,7 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
     let userId_num = +command.userId;
     if (game.player_1_id !== userId_num && game.player_2_id !== userId_num) throw new ForbiddenException();
 
-    if (game.status == "PendingSecondPlayer") return this.PendingSecondPlayerScenario(game);
+    if (game.status === "PendingSecondPlayer") return this.PendingSecondPlayerScenario(game);
 
     let usersInfo = await this.userRepo.GetIdLogin(game.player_1_id, game.player_2_id);
     let answersInfo: QuizGameQuestionsExtendedInfoEntity[] = await this.questionsInGameRepo.GetGameQuestionsInfoOrdered(
@@ -42,6 +42,8 @@ export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCo
       game.player_1_id,
       game.player_2_id,
     );
+
+    console.log("GameQuizGetByIdUseCase, found game:", game);
 
     let answers = QuizGameQuestionsExtendedInfoEntity.GetPlayersAnswersInfo(answersInfo);
 
