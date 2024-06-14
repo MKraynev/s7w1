@@ -60,18 +60,6 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
         userAlreadyAnswered + 1 === gameQuestions.length &&
         currentGame.player_1_answerCount + currentGame.player_2_answerCount < gameQuestions.length * 2;
 
-      console.log(
-        "let currentPlayerAnswerAllQuestionsAndSecondOneDidnt = userAlreadyAnswered + 1 === gameQuestions.length && currentGame.player_1_answerCount + currentGame.player_2_answerCount < gameQuestions.length * 2;",
-      );
-      console.log(
-        "userAlreadyAnswered/gameQuestions.length/currentGame.player_1_answerCountcurrentGame.player_2_answerCount/",
-        userAlreadyAnswered,
-        gameQuestions.length,
-        currentGame.player_1_answerCount,
-        currentGame.player_2_answerCount,
-      );
-      console.log("currentPlayerAnswerAllQuestionsAndSecondOneDidnt:", currentPlayerAnswerAllQuestionsAndSecondOneDidnt);
-
       if (currentPlayerAnswerAllQuestionsAndSecondOneDidnt) this.CloseGameAfterExpiredTime(command.userId);
 
       //update game stats
@@ -216,11 +204,13 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
 
     try {
       let currentGame = await this.FindUserCurrentGame(finishedUserId, queryRunner);
+
       if (!currentGame || currentGame.status !== "Active") {
         return;
       }
 
       let gameQuestions = await this.GameQuestions(currentGame.id, queryRunner);
+
       let secondPlayer: { id: number; answeredQuestionCount: number };
       if (+finishedUserId === currentGame.player_1_id) {
         secondPlayer = {
@@ -239,18 +229,16 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
       }
 
       //Ответить за пользователя
-      await Promise.all(
-        gameQuestions.map(async (q, qpos) => {
-          if (qpos >= secondPlayer.answeredQuestionCount) {
-            return queryRunner.manager.save(
-              QuizGameAnswerRepoEntity,
-              QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, null),
-            );
-          }
-        }),
-      );
 
-      this.CloseGame(currentGame);
+      gameQuestions.forEach(async (q, qpos) => {
+        if (qpos >= secondPlayer.answeredQuestionCount) {
+          return queryRunner.manager.save(
+            QuizGameAnswerRepoEntity,
+            QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, null),
+          );
+        }
+      }),
+        this.CloseGame(currentGame);
       await this.AddExtraPoints(currentGame, queryRunner);
       await this.UpdatePlayersStats(currentGame, queryRunner);
 

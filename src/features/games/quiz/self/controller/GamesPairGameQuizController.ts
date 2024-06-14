@@ -50,6 +50,8 @@ export class GamesPairGameQuizController {
       new GameQuizGetUsersTopCommand({ sorter: sortUnits, skip: paginator.skipElements, limit: paginator.pageSize }),
     );
 
+    console.log("return val:", data);
+
     return new OutputPaginator(data.count, data.winners, paginator);
   }
 
@@ -90,6 +92,8 @@ export class GamesPairGameQuizController {
   public async GetCurrentUserGame(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad) {
     let game = await this.commandBus.execute<GameQuizGetMyCurrentCommand, GamesRepoEntity>(new GameQuizGetMyCurrentCommand(tokenLoad.id));
 
+    console.log("return val:", game);
+
     return game;
   }
 
@@ -113,6 +117,8 @@ export class GamesPairGameQuizController {
   @UseGuards(JwtAuthGuard)
   public async GetById(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad, @Param("id") id: string) {
     let game = await this.commandBus.execute<GameQuizGetByIdCommand, QuizGameInfo>(new GameQuizGetByIdCommand(id, tokenLoad.id));
+
+    console.log("return val:", game);
 
     return game;
   }

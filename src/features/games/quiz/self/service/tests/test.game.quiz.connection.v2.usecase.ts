@@ -9,12 +9,17 @@ import { Equal } from "typeorm";
 import { arrayNotEmpty } from "class-validator";
 import { QuizQuestionRepoService } from "../../../questions/repo/QuestionsRepoService";
 import { QuizQuestionPostEntity } from "../../../questions/controllers/entities/QuestionsControllerPostEntity";
+import { GameQuizAnswerTheQuestionV2UseCase } from "../use-cases/game.quiz.answer.the.question.v2.usecase";
+import { GameQuizAnswerTheQuestionCommand } from "../use-cases/game.quiz.answer.the.question.usecase";
+import { GameQuizGetByIdCommand, GameQuizGetByIdUseCase } from "../use-cases/game.quiz.get.by.id.usecase";
 
 describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
   let module: TestingModule;
   let userRepo: UsersRepoService;
   let gameRepo: GamesRepoService;
   let connectionUseCase: GameQuizConnectionV2UseCase;
+  let answerUseCase: GameQuizAnswerTheQuestionV2UseCase;
+  let getGameByIdUseCase: GameQuizGetByIdUseCase;
   let questionRepo: QuizQuestionRepoService;
 
   beforeAll(async () => {
@@ -24,6 +29,8 @@ describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
 
     userRepo = module.get<UsersRepoService>(UsersRepoService);
     connectionUseCase = module.get<GameQuizConnectionV2UseCase>(GameQuizConnectionV2UseCase);
+    answerUseCase = module.get<GameQuizAnswerTheQuestionV2UseCase>(GameQuizAnswerTheQuestionV2UseCase);
+    getGameByIdUseCase = module.get<GameQuizGetByIdUseCase>(GameQuizGetByIdUseCase);
     gameRepo = module.get<GamesRepoService>(GamesRepoService);
     questionRepo = module.get<QuizQuestionRepoService>(QuizQuestionRepoService);
   });
@@ -127,6 +134,61 @@ describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
         finishGameDate: null,
         status: "Active",
       });
+    },
+    1000 * 60 * 5, //5 min
+  );
+
+  it(
+    `${GameQuizConnectionV2UseCase.name} finished game after 10 sec`,
+    async () => {
+      let userData_1: UserControllerRegistrationEntity = {
+        login: "login3",
+        email: "mail3",
+        password: "123456",
+      };
+
+      let userData_2: UserControllerRegistrationEntity = {
+        login: "login4",
+        email: "mail4",
+        password: "123456",
+      };
+
+      let q1 = await questionRepo.Create(new QuizQuestionPostEntity("q1", ["q1"]), true);
+      let q2 = await questionRepo.Create(new QuizQuestionPostEntity("q2", ["q2"]), true);
+      let q3 = await questionRepo.Create(new QuizQuestionPostEntity("q3", ["q3"]), true);
+      let q4 = await questionRepo.Create(new QuizQuestionPostEntity("q4", ["q4"]), true);
+      let q5 = await questionRepo.Create(new QuizQuestionPostEntity("q5", ["q5"]), true);
+
+      let user_1 = await userRepo.Create(userData_1);
+      let user_2 = await userRepo.Create(userData_2);
+
+      let command_1 = new QuizGameConnectToGameCommand(user_1.id.toString(), user_1.login);
+      let command_2 = new QuizGameConnectToGameCommand(user_2.id.toString(), user_2.login);
+
+      let useCaseResult_1 = await connectionUseCase.execute(command_1);
+      let useCaseResult_2 = await connectionUseCase.execute(command_2);
+
+      let a1 = await answerUseCase.execute(
+        new GameQuizAnswerTheQuestionCommand(user_1.id.toString(), user_1.login, useCaseResult_2.questions[0].body),
+      );
+      let a2 = await answerUseCase.execute(
+        new GameQuizAnswerTheQuestionCommand(user_1.id.toString(), user_1.login, useCaseResult_2.questions[1].body),
+      );
+      let a3 = await answerUseCase.execute(
+        new GameQuizAnswerTheQuestionCommand(user_1.id.toString(), user_1.login, useCaseResult_2.questions[2].body),
+      );
+      let a4 = await answerUseCase.execute(
+        new GameQuizAnswerTheQuestionCommand(user_1.id.toString(), user_1.login, useCaseResult_2.questions[3].body),
+      );
+      let a5 = await answerUseCase.execute(
+        new GameQuizAnswerTheQuestionCommand(user_1.id.toString(), user_1.login, useCaseResult_2.questions[4].body),
+      );
+
+      await new Promise((r) => setTimeout(r, 10000));
+
+      let gameInfo = await getGameByIdUseCase.execute(new GameQuizGetByIdCommand(useCaseResult_1.id.toString(), user_1.id.toString()));
+      console.log(gameInfo);
+      expect(gameInfo.status).toEqual("Finished");
     },
     1000 * 60 * 5, //5 min
   );
