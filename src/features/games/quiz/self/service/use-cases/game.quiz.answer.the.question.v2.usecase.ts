@@ -229,16 +229,18 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
       }
 
       //Ответить за пользователя
+      await Promise.all(
+        gameQuestions.map(async (q, qpos) => {
+          if (qpos >= secondPlayer.answeredQuestionCount) {
+            return queryRunner.manager.save(
+              QuizGameAnswerRepoEntity,
+              QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, null),
+            );
+          }
+        }),
+      );
 
-      gameQuestions.forEach(async (q, qpos) => {
-        if (qpos >= secondPlayer.answeredQuestionCount) {
-          return queryRunner.manager.save(
-            QuizGameAnswerRepoEntity,
-            QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, null),
-          );
-        }
-      }),
-        this.CloseGame(currentGame);
+      this.CloseGame(currentGame);
       await this.AddExtraPoints(currentGame, queryRunner);
       await this.UpdatePlayersStats(currentGame, queryRunner);
 

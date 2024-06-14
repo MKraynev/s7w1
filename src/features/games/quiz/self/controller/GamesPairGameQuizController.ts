@@ -131,6 +131,8 @@ export class GamesPairGameQuizController {
       new QuizGameConnectToGameCommand(tokenLoad.id, tokenLoad.login),
     );
 
+    console.log("result:", newGame);
+
     return newGame;
   }
 }
