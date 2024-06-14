@@ -19,13 +19,16 @@ export class QuizGameAnswerRepoEntity {
   })
   @JoinColumn()
   user: UserRepoEntity;
-  @Column()
+  @Column({ nullable: true })
   userId: number;
 
-  @ManyToOne(() => QuizQuestionEntity)
+  @ManyToOne(() => QuizQuestionEntity, {
+    nullable: true,
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   question: QuizQuestionEntity;
-  @Column()
+  @Column({ nullable: true })
   questionId: number;
 
   @ManyToOne(() => GamesRepoEntity, { nullable: true, onDelete: "CASCADE" })
