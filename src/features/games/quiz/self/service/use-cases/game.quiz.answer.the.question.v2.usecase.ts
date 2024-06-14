@@ -258,6 +258,6 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
     console.log("Closing game by", userId);
     setTimeout(() => {
       this.EndGameByFinishedUser(userId);
-    }, GameQuizRules.SecondUserAnswerAvailableTime_ms());
+    }, GameQuizRules.SecondUserAnswerAvailableTime_ms() - 1000);
   }
 }
