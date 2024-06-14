@@ -51,4 +51,8 @@ export class GameQuizRules {
   public static AllPlayersAreReady(game: GamesRepoEntity) {
     return game.player_1 && game.player_2;
   }
+
+  public static SecondUserAnswerAvailableTime_ms() {
+    return 10000;
+  }
 }

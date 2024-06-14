@@ -6,7 +6,6 @@ import { Brackets, DataSource, QueryRunner } from "typeorm";
 import { GamesRepoEntity } from "../../repo/entities/GamesRepoEntity";
 import { UserRepoEntity } from "../../../../../users/repo/entities/UsersRepoEntity";
 import { QuizGameAnswerRepoEntity } from "../../../answers/repo/entities/GamesAnswersRepoEntity";
-import { QuizGameInfo } from "../../controller/entities/QuizGameGetMyCurrent/QuizGameGetMyCurrentUsecaseEntity";
 import { GameQuizRules } from "../../../rules/game.quiz.rules";
 import { GameQuizPlayerRepoEntity, QuizGameStatus } from "../../../winners/repo/entity/game.quiz.winner.repo.entity";
 
@@ -39,14 +38,15 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
         throw new ForbiddenException(); //player answered all questions
       }
 
-      let currentQuestion = gameQuestions[userAlreadyAnswered];
+      let currentQuestion = gameQuestions[userAlreadyAnswered]; //newPos = count
+
       //save answer
       let savedAnswer = await queryRunner.manager.save(
         QuizGameAnswerRepoEntity,
         QuizGameAnswerRepoEntity.Init(currentGame.id, currentQuestion.id, user.id, command.answer),
       );
 
-      //add scores for answer
+      //add answer scores
       this.AddScores(currentGame, user.id, command.answer, currentQuestion.correctAnswers);
 
       if (this.PlayersAnsweredAllQuesitons(currentGame)) {
@@ -54,6 +54,15 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
         await this.AddExtraPoints(currentGame, queryRunner);
         await this.UpdatePlayersStats(currentGame, queryRunner);
       }
+
+      //from Russia with love, Mr. Bond
+      let currentPlayerAnswerAllQuestionsAndSecondOneDidnt =
+        userAlreadyAnswered + 1 === gameQuestions.length &&
+        currentGame.player_1_answerCount + currentGame.player_2_answerCount < gameQuestions.length * 2;
+
+      console.log("currentPlayerAnswerAllQuestionsAndSecondOneDidnt:", currentPlayerAnswerAllQuestionsAndSecondOneDidnt);
+
+      if (currentPlayerAnswerAllQuestionsAndSecondOneDidnt) this.CloseGameAfterExpiredTime(command.userId);
 
       //update game stats
       await queryRunner.manager.save(GamesRepoEntity, currentGame);
@@ -71,8 +80,7 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
 
       console.log(err);
 
-      //throw err;
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     } finally {
       await queryRunner.release();
     }
@@ -188,5 +196,67 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
       game.player_1_score += 1;
     else if (+new Date(p2_lastAnswers[0].createdAt) < +new Date(p1_lastAnswers[0].createdAt) && game.player_2_score > 0)
       game.player_2_score += 1;
+  }
+
+  private async EndGameByFinishedUser(finishedUserId: string) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction("SERIALIZABLE");
+
+    try {
+      let currentGame = await this.FindUserCurrentGame(finishedUserId, queryRunner);
+      if (!currentGame || currentGame.status !== "Active") {
+        return;
+      }
+
+      let gameQuestions = await this.GameQuestions(currentGame.id, queryRunner);
+      let secondPlayer: { id: number; answeredQuestionCount: number };
+      if (+finishedUserId === currentGame.player_1_id) {
+        secondPlayer = {
+          id: currentGame.player_2_id,
+          answeredQuestionCount: currentGame.player_2_answerCount,
+        };
+
+        currentGame.player_2_answerCount = gameQuestions.length;
+      } else {
+        secondPlayer = {
+          id: currentGame.player_1_id,
+          answeredQuestionCount: currentGame.player_1_answerCount,
+        };
+
+        currentGame.player_1_answerCount = gameQuestions.length;
+      }
+
+      //Ответить за пользователя
+      await Promise.all(
+        gameQuestions.map(async (q, qpos) => {
+          if (qpos >= secondPlayer.answeredQuestionCount) {
+            return queryRunner.manager.save(
+              QuizGameAnswerRepoEntity,
+              QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, null),
+            );
+          }
+        }),
+      );
+
+      this.CloseGame(currentGame);
+      await this.AddExtraPoints(currentGame, queryRunner);
+      await this.UpdatePlayersStats(currentGame, queryRunner);
+
+      //update game stats
+      await queryRunner.manager.save(GamesRepoEntity, currentGame);
+
+      await queryRunner.commitTransaction();
+    } catch (e) {
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  private async CloseGameAfterExpiredTime(userId) {
+    setTimeout(() => {
+      this.EndGameByFinishedUser(userId);
+    }, GameQuizRules.SecondUserAnswerAvailableTime_ms());
   }
 }
