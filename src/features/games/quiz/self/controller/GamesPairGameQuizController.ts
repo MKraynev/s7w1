@@ -100,6 +100,8 @@ export class GamesPairGameQuizController {
     @ReadAccessToken() token: JwtServiceUserAccessTokenLoad,
     @Body(new ValidateParameters()) userResponse: { answer: string },
   ) {
+    console.log("Input data:", token, userResponse);
+
     let answerResult = await this.commandBus.execute<GameQuizAnswerTheQuestionCommand, QuizGameAnswerResult>(
       new GameQuizAnswerTheQuestionCommand(token.id, token.login, userResponse.answer),
     );

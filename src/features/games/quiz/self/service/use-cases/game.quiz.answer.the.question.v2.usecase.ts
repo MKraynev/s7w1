@@ -60,6 +60,16 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
         userAlreadyAnswered + 1 === gameQuestions.length &&
         currentGame.player_1_answerCount + currentGame.player_2_answerCount < gameQuestions.length * 2;
 
+      console.log(
+        "let currentPlayerAnswerAllQuestionsAndSecondOneDidnt = userAlreadyAnswered + 1 === gameQuestions.length && currentGame.player_1_answerCount + currentGame.player_2_answerCount < gameQuestions.length * 2;",
+      );
+      console.log(
+        "userAlreadyAnswered/gameQuestions.length/currentGame.player_1_answerCountcurrentGame.player_2_answerCount/",
+        userAlreadyAnswered,
+        gameQuestions.length,
+        currentGame.player_1_answerCount,
+        currentGame.player_2_answerCount,
+      );
       console.log("currentPlayerAnswerAllQuestionsAndSecondOneDidnt:", currentPlayerAnswerAllQuestionsAndSecondOneDidnt);
 
       if (currentPlayerAnswerAllQuestionsAndSecondOneDidnt) this.CloseGameAfterExpiredTime(command.userId);
