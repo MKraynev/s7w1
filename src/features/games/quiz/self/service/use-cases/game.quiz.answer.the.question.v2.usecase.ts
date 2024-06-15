@@ -267,8 +267,8 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
   }
 
   private async CloseGameAfterExpiredTime(userId) {
-    setTimeout(() => {
-      this.EndGameByFinishedUser(userId);
-    }, GameQuizRules.SecondUserAnswerAvailableTime_ms() / 2);
+    await setTimeout(async () => {
+      await this.EndGameByFinishedUser(userId);
+    }, GameQuizRules.SecondUserAnswerAvailableTime_ms());
   }
 }
