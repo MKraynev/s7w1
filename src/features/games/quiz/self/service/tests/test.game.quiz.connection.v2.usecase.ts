@@ -11,7 +11,10 @@ import { QuizQuestionRepoService } from "../../../questions/repo/QuestionsRepoSe
 import { QuizQuestionPostEntity } from "../../../questions/controllers/entities/QuestionsControllerPostEntity";
 import { GameQuizAnswerTheQuestionV2UseCase } from "../use-cases/game.quiz.answer.the.question.v2.usecase";
 import { GameQuizAnswerTheQuestionCommand } from "../use-cases/game.quiz.answer.the.question.usecase";
-import { GameQuizGetByIdCommand, GameQuizGetByIdUseCase } from "../use-cases/game.quiz.get.by.id.usecase";
+import { GameQuizGetByIdCommand } from "../use-cases/game.quiz.get.by.id.usecase";
+import { QuizGameAnswerRepoEntity } from "../../../answers/repo/entities/GamesAnswersRepoEntity";
+import { GameQuizAnswersRepoService } from "../../../answers/repo/game.quiz.answers.repo.service";
+import { GameQuizGetByIdV2UseCase } from "../use-cases/game.quiz.get.by.id.v2.usecase";
 
 describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
   let module: TestingModule;
@@ -19,9 +22,9 @@ describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
   let gameRepo: GamesRepoService;
   let connectionUseCase: GameQuizConnectionV2UseCase;
   let answerUseCase: GameQuizAnswerTheQuestionV2UseCase;
-  let getGameByIdUseCase: GameQuizGetByIdUseCase;
+  let getGameByIdUseCase: GameQuizGetByIdV2UseCase;
   let questionRepo: QuizQuestionRepoService;
-
+  let answerRepo: GameQuizAnswersRepoService;
   beforeAll(async () => {
     module = await TestGameQuizModule.compile();
 
@@ -30,9 +33,10 @@ describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
     userRepo = module.get<UsersRepoService>(UsersRepoService);
     connectionUseCase = module.get<GameQuizConnectionV2UseCase>(GameQuizConnectionV2UseCase);
     answerUseCase = module.get<GameQuizAnswerTheQuestionV2UseCase>(GameQuizAnswerTheQuestionV2UseCase);
-    getGameByIdUseCase = module.get<GameQuizGetByIdUseCase>(GameQuizGetByIdUseCase);
+    getGameByIdUseCase = module.get<GameQuizGetByIdV2UseCase>(GameQuizGetByIdV2UseCase);
     gameRepo = module.get<GamesRepoService>(GamesRepoService);
     questionRepo = module.get<QuizQuestionRepoService>(QuizQuestionRepoService);
+    answerRepo = module.get<GameQuizAnswersRepoService>(GameQuizAnswersRepoService);
   });
 
   afterAll(async () => {
@@ -43,56 +47,57 @@ describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
     await userRepo.DeleteAll();
     await gameRepo.DeleteAll();
     await questionRepo.DeleteAll();
+    await answerRepo.DeleteAll();
   });
 
-  // it(
-  //   `${GameQuizConnectionV2UseCase.name} init game`,
-  //   async () => {
-  //     let userData: UserControllerRegistrationEntity = {
-  //       login: "login",
-  //       email: "mail",
-  //       password: "12345",
-  //     };
+  it(
+    `${GameQuizConnectionV2UseCase.name} init game`,
+    async () => {
+      let userData: UserControllerRegistrationEntity = {
+        login: "login",
+        email: "mail",
+        password: "12345",
+      };
 
-  //     let user = await userRepo.Create(userData);
-  //     let command = new QuizGameConnectToGameCommand(user.id.toString(), user.login);
+      let user = await userRepo.Create(userData);
+      let command = new QuizGameConnectToGameCommand(user.id.toString(), user.login);
 
-  //     let useCaseResult = await connectionUseCase.execute(command);
-  //     console.log(useCaseResult);
+      let useCaseResult = await connectionUseCase.execute(command);
+      console.log(useCaseResult);
 
-  //     let game = await gameRepo.GetUserCurrentGame(user.id.toString());
-  //     expect(game).not.toBeNull();
-  //   },
-  //   1000 * 60 * 5, //5 min
-  // );
+      let game = await gameRepo.GetUserCurrentGame(user.id.toString());
+      expect(game).not.toBeNull();
+    },
+    1000 * 60 * 5, //5 min
+  );
 
-  // it(
-  //   `${GameQuizConnectionV2UseCase.name} return correct entity for first Player`,
-  //   async () => {
-  //     let userData: UserControllerRegistrationEntity = {
-  //       login: "login2",
-  //       email: "mail2",
-  //       password: "123456",
-  //     };
+  it(
+    `${GameQuizConnectionV2UseCase.name} return correct entity for first Player`,
+    async () => {
+      let userData: UserControllerRegistrationEntity = {
+        login: "login2",
+        email: "mail2",
+        password: "123456",
+      };
 
-  //     let user = await userRepo.Create(userData);
-  //     let command = new QuizGameConnectToGameCommand(user.id.toString(), user.login);
+      let user = await userRepo.Create(userData);
+      let command = new QuizGameConnectToGameCommand(user.id.toString(), user.login);
 
-  //     let useCaseResult = await connectionUseCase.execute(command);
+      let useCaseResult = await connectionUseCase.execute(command);
 
-  //     expect(useCaseResult).toEqual({
-  //       id: expect.any(String),
-  //       firstPlayerProgress: { answers: [], player: { id: expect.any(String), login: userData.login }, score: 0 },
-  //       pairCreatedDate: expect.any(Date),
-  //       questions: null,
-  //       secondPlayerProgress: null,
-  //       startGameDate: null,
-  //       finishGameDate: null,
-  //       status: "PendingSecondPlayer",
-  //     });
-  //   },
-  //   1000 * 60 * 5, //5 min
-  // );
+      expect(useCaseResult).toEqual({
+        id: expect.any(String),
+        firstPlayerProgress: { answers: [], player: { id: expect.any(String), login: userData.login }, score: 0 },
+        pairCreatedDate: expect.any(Date),
+        questions: null,
+        secondPlayerProgress: null,
+        startGameDate: null,
+        finishGameDate: null,
+        status: "PendingSecondPlayer",
+      });
+    },
+    1000 * 60 * 5, //5 min
+  );
 
   it(
     `${GameQuizConnectionV2UseCase.name} return correct entity for second Player`,
@@ -168,26 +173,37 @@ describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
       let useCaseResult_1 = await connectionUseCase.execute(command_1);
       let useCaseResult_2 = await connectionUseCase.execute(command_2);
 
-      let a1 = await answerUseCase.execute(
+      console.log("start game", useCaseResult_2);
+
+      await answerUseCase.execute(
         new GameQuizAnswerTheQuestionCommand(user_1.id.toString(), user_1.login, useCaseResult_2.questions[0].body),
       );
+      await new Promise((r) => setTimeout(r, 1000));
+
       let a2 = await answerUseCase.execute(
         new GameQuizAnswerTheQuestionCommand(user_1.id.toString(), user_1.login, useCaseResult_2.questions[1].body),
       );
+      await new Promise((r) => setTimeout(r, 1000));
       let a3 = await answerUseCase.execute(
         new GameQuizAnswerTheQuestionCommand(user_1.id.toString(), user_1.login, useCaseResult_2.questions[2].body),
       );
+      await new Promise((r) => setTimeout(r, 1000));
       let a4 = await answerUseCase.execute(
         new GameQuizAnswerTheQuestionCommand(user_1.id.toString(), user_1.login, useCaseResult_2.questions[3].body),
       );
+      await new Promise((r) => setTimeout(r, 1000));
       let a5 = await answerUseCase.execute(
         new GameQuizAnswerTheQuestionCommand(user_1.id.toString(), user_1.login, useCaseResult_2.questions[4].body),
       );
 
       await new Promise((r) => setTimeout(r, 10000));
-
+      let start = Date.now();
       let gameInfo = await getGameByIdUseCase.execute(new GameQuizGetByIdCommand(useCaseResult_1.id.toString(), user_1.id.toString()));
-      console.log(gameInfo);
+
+      console.log("ended sec: ", (Date.now() - start) / 1000);
+
+      console.log("gameInfo", JSON.parse(JSON.stringify(gameInfo)));
+
       expect(gameInfo.status).toEqual("Finished");
     },
     1000 * 60 * 5, //5 min

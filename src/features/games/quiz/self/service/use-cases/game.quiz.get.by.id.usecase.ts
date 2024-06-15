@@ -11,6 +11,7 @@ import { QuizGameQuestionsExtendedInfoEntity } from "../../repo/entities/QuizGam
 import { QuizGamePlayerInfoEntity } from "../../controller/entities/QuizGameGetMyCurrent/QuizGamePlayerInfoEntity";
 import { QuizGameQuestionInfoEntity } from "../../controller/entities/QuizGameGetMyCurrent/QuizGameQuestionInfoEntity";
 import { GamesRepoEntity } from "../../repo/entities/GamesRepoEntity";
+import { QuizGameAnswerInfoEntity } from "../../controller/entities/QuizGameGetMyCurrent/QuizGameAnswerInfoEntity";
 
 export class GameQuizGetByIdCommand {
   constructor(
@@ -18,61 +19,78 @@ export class GameQuizGetByIdCommand {
     public userId: string,
   ) {}
 }
-@CommandHandler(GameQuizGetByIdCommand)
-@Injectable()
-export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCommand, QuizGameInfo> {
-  constructor(
-    private gamesRepo: GamesRepoService,
-    private questionsInGameRepo: GameQuizQuestionsInGameService,
-    private userRepo: UsersRepoService,
-  ) {}
 
-  async execute(command: GameQuizGetByIdCommand): Promise<QuizGameInfo> {
-    let game = await this.gamesRepo.FindOneById(command.gameId, true);
-    if (!game) throw new NotFoundException();
+// @CommandHandler(GameQuizGetByIdCommand)
+// @Injectable()
+// export class GameQuizGetByIdUseCase implements ICommandHandler<GameQuizGetByIdCommand, QuizGameInfo> {
+//   constructor(
+//     private gamesRepo: GamesRepoService,
+//     private questionsInGameRepo: GameQuizQuestionsInGameService,
+//     private userRepo: UsersRepoService,
+//   ) {}
 
-    let userId_num = +command.userId;
-    if (game.player_1_id !== userId_num && game.player_2_id !== userId_num) throw new ForbiddenException();
+//   async execute(command: GameQuizGetByIdCommand): Promise<QuizGameInfo> {
+//     let game = await this.gamesRepo.FindOneById(command.gameId, true);
+//     if (!game) throw new NotFoundException();
 
-    if (game.status === "PendingSecondPlayer") return this.PendingSecondPlayerScenario(game);
+//     let userId_num = +command.userId;
+//     if (game.player_1_id !== userId_num && game.player_2_id !== userId_num) throw new ForbiddenException();
 
-    let usersInfo = await this.userRepo.GetIdLogin(game.player_1_id, game.player_2_id);
-    let answersInfo: QuizGameQuestionsExtendedInfoEntity[] = await this.questionsInGameRepo.GetGameQuestionsInfoOrdered(
-      game.id,
-      game.player_1_id,
-      game.player_2_id,
-    );
+//     if (game.status === "PendingSecondPlayer") return this.PendingSecondPlayerScenario(game);
 
-    console.log("GameQuizGetByIdUseCase, found game:", game);
+//     let usersInfo = await this.userRepo.GetIdLogin(game.player_1_id, game.player_2_id);
 
-    let answers = QuizGameQuestionsExtendedInfoEntity.GetPlayersAnswersInfo(answersInfo);
+//     let answersInfo: QuizGameQuestionsExtendedInfoEntity[] = await this.questionsInGameRepo.GetGameQuestionsInfoOrdered(
+//       game.id,
+//       game.player_1_id,
+//       game.player_2_id,
+//     );
 
-    let currentGameInfo: QuizGameInfo = new QuizGameInfo(
-      game.id.toString(),
-      new QuizGamePlayerProgressEntity(
-        answers.firstPlayerResult,
-        new QuizGamePlayerInfoEntity(game.player_1_id.toString(), usersInfo.find((info) => info.id === game.player_1_id).login),
-        game.player_1_score,
-      ),
-      new QuizGamePlayerProgressEntity(
-        answers.secondPlayerResult,
-        new QuizGamePlayerInfoEntity(game.player_2_id.toString(), usersInfo.find((info) => info.id === game.player_2_id).login),
-        game.player_2_score,
-      ),
-      answersInfo.map((answerLine) => new QuizGameQuestionInfoEntity(answerLine.questionId.toString(), answerLine.question)),
-      game.status,
-      game.createdAt,
-      game.startedAt,
-      game.endedAt,
-    );
+//     console.log("GameQuizGetByIdUseCase, found game:", game);
 
-    return currentGameInfo;
-  }
-  private async PendingSecondPlayerScenario(currentGame: GamesRepoEntity): Promise<QuizGameInfo> {
-    let result: QuizGameInfo;
+//     // let answers = QuizGameQuestionsExtendedInfoEntity.GetPlayersAnswersInfo(answersInfo);
+//     let firstPlayerAnswersInfo: QuizGameAnswerInfoEntity[] = game.answers_p1.map((a) =>
+//       QuizGameAnswerInfoEntity.Init(
+//         a.id.toString(),
+//         answersInfo.find((ai) => ai.questionId === a.questionId).answer.includes(a.answer) ? "Correct" : "Incorrect",
+//         a.createdAt,
+//       ),
+//     );
 
-    let userInfo = await this.userRepo.ReadOneById(currentGame.player_1_id.toString());
+//     let secondPlayerAnswersInfo: QuizGameAnswerInfoEntity[] = game.answers_p2.map((a) =>
+//       QuizGameAnswerInfoEntity.Init(
+//         a.id.toString(),
+//         answersInfo.find((ai) => ai.questionId === a.questionId).answer.includes(a.answer) ? "Correct" : "Incorrect",
+//         a.createdAt,
+//       ),
+//     );
 
-    return QuizGameInfo.InitNewGame(currentGame.id.toString(), currentGame.player_1_id.toString(), userInfo.login, currentGame.createdAt);
-  }
-}
+//     let currentGameInfo: QuizGameInfo = new QuizGameInfo(
+//       game.id.toString(),
+//       new QuizGamePlayerProgressEntity(
+//         firstPlayerAnswersInfo,
+//         new QuizGamePlayerInfoEntity(game.player_1_id.toString(), usersInfo.find((info) => info.id === game.player_1_id).login),
+//         game.player_1_score,
+//       ),
+//       new QuizGamePlayerProgressEntity(
+//         secondPlayerAnswersInfo,
+//         new QuizGamePlayerInfoEntity(game.player_2_id.toString(), usersInfo.find((info) => info.id === game.player_2_id).login),
+//         game.player_2_score,
+//       ),
+//       answersInfo.map((answerLine) => new QuizGameQuestionInfoEntity(answerLine.questionId.toString(), answerLine.question)),
+//       game.status,
+//       game.createdAt,
+//       game.startedAt,
+//       game.endedAt,
+//     );
+
+//     return currentGameInfo;
+//   }
+//   private async PendingSecondPlayerScenario(currentGame: GamesRepoEntity): Promise<QuizGameInfo> {
+//     let result: QuizGameInfo;
+
+//     let userInfo = await this.userRepo.ReadOneById(currentGame.player_1_id.toString());
+
+//     return QuizGameInfo.InitNewGame(currentGame.id.toString(), currentGame.player_1_id.toString(), userInfo.login, currentGame.createdAt);
+//   }
+// }

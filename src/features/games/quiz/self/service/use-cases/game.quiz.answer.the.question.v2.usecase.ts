@@ -229,16 +229,28 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
       }
 
       //Ответить за пользователя
-      await Promise.all(
-        gameQuestions.map(async (q, qpos) => {
-          if (qpos >= secondPlayer.answeredQuestionCount) {
-            return queryRunner.manager.save(
-              QuizGameAnswerRepoEntity,
-              QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, null),
-            );
-          }
-        }),
-      );
+      // for (let [index, q] of gameQuestions.entries()) {
+      //   if (index >= secondPlayer.answeredQuestionCount) {
+      //     queryRunner.manager.save(QuizGameAnswerRepoEntity, QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, ""));
+      //   }
+      // }
+
+      // await Promise.all(
+      //   gameQuestions.map((q, p) => {
+      //     if (p >= secondPlayer.answeredQuestionCount)
+      //       return queryRunner.manager.save(
+      //         QuizGameAnswerRepoEntity,
+      //         QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, ""),
+      //       );
+      //     return [];
+      //   }),
+      // );
+
+      let answers = gameQuestions
+        .slice(secondPlayer.answeredQuestionCount)
+        .map((q) => QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, null));
+
+      await queryRunner.manager.insert(QuizGameAnswerRepoEntity, answers);
 
       this.CloseGame(currentGame);
       await this.AddExtraPoints(currentGame, queryRunner);
@@ -255,9 +267,8 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
   }
 
   private async CloseGameAfterExpiredTime(userId) {
-    console.log("Closing game by", userId);
     setTimeout(() => {
       this.EndGameByFinishedUser(userId);
-    }, GameQuizRules.SecondUserAnswerAvailableTime_ms() - 2000);
+    }, GameQuizRules.SecondUserAnswerAvailableTime_ms());
   }
 }
