@@ -58,7 +58,7 @@ export class GameQuizGetMyCurrentUseCase implements ICommandHandler<GameQuizGetM
         currentGame.player_2_score,
       ),
       answersInfo.map((answerLine) => new QuizGameQuestionInfoEntity(answerLine.questionId.toString(), answerLine.question)),
-      "Active",
+      currentGame.status,
       currentGame.createdAt,
       currentGame.startedAt,
       currentGame.endedAt,

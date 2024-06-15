@@ -195,17 +195,56 @@ describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
       let a5 = await answerUseCase.execute(
         new GameQuizAnswerTheQuestionCommand(user_1.id.toString(), user_1.login, useCaseResult_2.questions[4].body),
       );
+      let start = Date.now();
 
       await new Promise((r) => setTimeout(r, 10000));
-      let start = Date.now();
+
       let gameInfo = await getGameByIdUseCase.execute(new GameQuizGetByIdCommand(useCaseResult_1.id.toString(), user_1.id.toString()));
 
       console.log("ended sec: ", (Date.now() - start) / 1000);
 
-      console.log("gameInfo", JSON.parse(JSON.stringify(gameInfo)));
+      // console.log("gameInfo", JSON.parse(JSON.stringify(gameInfo)));
+      console.log("gameInfo", JSON.stringify(gameInfo));
 
       expect(gameInfo.status).toEqual("Finished");
     },
     1000 * 60 * 5, //5 min
   );
 });
+
+let gameInfo = {
+  id: "217",
+  firstPlayerProgress: {
+    answers: [
+      { questionId: "437", addedAt: "2024-06-15T09:09:44.127Z", answerStatus: "Correct" },
+      { questionId: "438", addedAt: "2024-06-15T09:09:45.134Z", answerStatus: "Correct" },
+      { questionId: "440", addedAt: "2024-06-15T09:09:46.150Z", answerStatus: "Correct" },
+      { questionId: "439", addedAt: "2024-06-15T09:09:47.164Z", answerStatus: "Correct" },
+      { questionId: "436", addedAt: "2024-06-15T09:09:48.171Z", answerStatus: "Correct" },
+    ],
+    player: { id: "332", login: "login3" },
+    score: 6,
+  },
+  secondPlayerProgress: {
+    answers: [
+      { questionId: "437", addedAt: "2024-06-15T09:09:53.183Z", answerStatus: "Incorrect" },
+      { questionId: "438", addedAt: "2024-06-15T09:09:53.183Z", answerStatus: "Incorrect" },
+      { questionId: "440", addedAt: "2024-06-15T09:09:53.183Z", answerStatus: "Incorrect" },
+      { questionId: "439", addedAt: "2024-06-15T09:09:53.183Z", answerStatus: "Incorrect" },
+      { questionId: "436", addedAt: "2024-06-15T09:09:53.183Z", answerStatus: "Incorrect" },
+    ],
+    player: { id: "333", login: "login4" },
+    score: 0,
+  },
+  questions: [
+    { id: "437", body: "q2" },
+    { id: "438", body: "q3" },
+    { id: "440", body: "q5" },
+    { id: "439", body: "q4" },
+    { id: "436", body: "q1" },
+  ],
+  status: "Finished",
+  pairCreatedDate: "2024-06-15T09:09:44.116Z",
+  startGameDate: "2024-06-15T09:09:44.122Z",
+  finishGameDate: "2024-06-15T09:09:53.190Z",
+};

@@ -1,10 +1,7 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { JwtServiceUserAccessTokenLoad } from "../../../../../../jwt/entities/JwtServiceAccessTokenLoad";
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { GameQuizWinnersRepoService } from "../../../winners/repo/game.quiz.winners.repo.service";
 import { GameQuizPlayerRepoEntity } from "../../../winners/repo/entity/game.quiz.winner.repo.entity";
-import { count } from "console";
-import { DataSource } from "typeorm";
 export type PlayerStatistic = {
   player: { id: string; login: string };
   sumScore: number;
