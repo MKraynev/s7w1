@@ -5,7 +5,7 @@ import { UsersRepoService } from "../../../../../users/repo/UsersRepoService";
 import { UserControllerRegistrationEntity } from "../../../../../users/controllers/entities/UsersControllerRegistrationEntity";
 import { QuizGameConnectToGameCommand } from "../use-cases/game.quiz.connection.usecase";
 import { GamesRepoService } from "../../repo/GamesRepoService";
-import { Equal } from "typeorm";
+import { DataSource, Equal } from "typeorm";
 import { arrayNotEmpty } from "class-validator";
 import { QuizQuestionRepoService } from "../../../questions/repo/QuestionsRepoService";
 import { QuizQuestionPostEntity } from "../../../questions/controllers/entities/QuestionsControllerPostEntity";
@@ -15,6 +15,7 @@ import { GameQuizGetByIdCommand } from "../use-cases/game.quiz.get.by.id.usecase
 import { QuizGameAnswerRepoEntity } from "../../../answers/repo/entities/GamesAnswersRepoEntity";
 import { GameQuizAnswersRepoService } from "../../../answers/repo/game.quiz.answers.repo.service";
 import { GameQuizGetByIdV2UseCase } from "../use-cases/game.quiz.get.by.id.v2.usecase";
+import { GameQuizClosingGameEntity } from "../../repo/entities/game.quiz.closing.game.entity";
 
 describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
   let module: TestingModule;
@@ -25,6 +26,7 @@ describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
   let getGameByIdUseCase: GameQuizGetByIdV2UseCase;
   let questionRepo: QuizQuestionRepoService;
   let answerRepo: GameQuizAnswersRepoService;
+  let dataSource: DataSource;
   beforeAll(async () => {
     module = await TestGameQuizModule.compile();
 
@@ -37,6 +39,7 @@ describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
     gameRepo = module.get<GamesRepoService>(GamesRepoService);
     questionRepo = module.get<QuizQuestionRepoService>(QuizQuestionRepoService);
     answerRepo = module.get<GameQuizAnswersRepoService>(GameQuizAnswersRepoService);
+    dataSource = module.get<DataSource>(DataSource);
   });
 
   afterAll(async () => {
@@ -44,10 +47,11 @@ describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
   });
 
   beforeEach(async () => {
-    await userRepo.DeleteAll();
-    await gameRepo.DeleteAll();
-    await questionRepo.DeleteAll();
+    await dataSource.manager.delete(GameQuizClosingGameEntity, {});
     await answerRepo.DeleteAll();
+    await questionRepo.DeleteAll();
+    await gameRepo.DeleteAll();
+    await userRepo.DeleteAll();
   });
 
   it(
@@ -211,40 +215,3 @@ describe(`${GameQuizConnectionV2UseCase.name} test`, () => {
     1000 * 60 * 5, //5 min
   );
 });
-
-let gameInfo = {
-  id: "217",
-  firstPlayerProgress: {
-    answers: [
-      { questionId: "437", addedAt: "2024-06-15T09:09:44.127Z", answerStatus: "Correct" },
-      { questionId: "438", addedAt: "2024-06-15T09:09:45.134Z", answerStatus: "Correct" },
-      { questionId: "440", addedAt: "2024-06-15T09:09:46.150Z", answerStatus: "Correct" },
-      { questionId: "439", addedAt: "2024-06-15T09:09:47.164Z", answerStatus: "Correct" },
-      { questionId: "436", addedAt: "2024-06-15T09:09:48.171Z", answerStatus: "Correct" },
-    ],
-    player: { id: "332", login: "login3" },
-    score: 6,
-  },
-  secondPlayerProgress: {
-    answers: [
-      { questionId: "437", addedAt: "2024-06-15T09:09:53.183Z", answerStatus: "Incorrect" },
-      { questionId: "438", addedAt: "2024-06-15T09:09:53.183Z", answerStatus: "Incorrect" },
-      { questionId: "440", addedAt: "2024-06-15T09:09:53.183Z", answerStatus: "Incorrect" },
-      { questionId: "439", addedAt: "2024-06-15T09:09:53.183Z", answerStatus: "Incorrect" },
-      { questionId: "436", addedAt: "2024-06-15T09:09:53.183Z", answerStatus: "Incorrect" },
-    ],
-    player: { id: "333", login: "login4" },
-    score: 0,
-  },
-  questions: [
-    { id: "437", body: "q2" },
-    { id: "438", body: "q3" },
-    { id: "440", body: "q5" },
-    { id: "439", body: "q4" },
-    { id: "436", body: "q1" },
-  ],
-  status: "Finished",
-  pairCreatedDate: "2024-06-15T09:09:44.116Z",
-  startGameDate: "2024-06-15T09:09:44.122Z",
-  finishGameDate: "2024-06-15T09:09:53.190Z",
-};

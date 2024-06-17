@@ -8,6 +8,7 @@ import { UserRepoEntity } from "../../../../../users/repo/entities/UsersRepoEnti
 import { QuizGameAnswerRepoEntity } from "../../../answers/repo/entities/GamesAnswersRepoEntity";
 import { GameQuizRules } from "../../../rules/game.quiz.rules";
 import { GameQuizPlayerRepoEntity, QuizGameStatus } from "../../../winners/repo/entity/game.quiz.winner.repo.entity";
+import { GameQuizClosingGameEntity } from "../../repo/entities/game.quiz.closing.game.entity";
 
 @Injectable()
 @CommandHandler(GameQuizAnswerTheQuestionCommand)
@@ -54,6 +55,13 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
         await this.AddExtraPoints(currentGame, queryRunner);
         await this.UpdatePlayersStats(currentGame, queryRunner);
       }
+
+      let currentPlayerAnswerAllQuestionsAndSecondOneDidnt =
+        userAlreadyAnswered + 1 === gameQuestions.length &&
+        currentGame.player_1_answerCount + currentGame.player_2_answerCount < gameQuestions.length * 2;
+
+      if (currentPlayerAnswerAllQuestionsAndSecondOneDidnt)
+        await queryRunner.manager.save(GameQuizClosingGameEntity, GameQuizClosingGameEntity.Init(currentGame)); //Crete db record of game for closing
 
       //update game stats
       await queryRunner.manager.save(GamesRepoEntity, currentGame);

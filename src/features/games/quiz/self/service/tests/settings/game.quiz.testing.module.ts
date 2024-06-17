@@ -5,6 +5,7 @@ import { GamesModule } from "../../../GamesModule";
 import { DevicesModule } from "../../../../../../devices/DevicesModule";
 import { LikesForPostRepoModule } from "../../../../../../likes/postLikes/repo/LikesForPostRepoModule";
 import { CommentsModule } from "../../../../../../comments/CommentsModule";
+import { AppModule } from "../../../../../../../app/app.module";
 
 export const testDbConfiguration = TypeOrmModule.forRoot({
   type: "postgres",
@@ -17,5 +18,5 @@ export const testDbConfiguration = TypeOrmModule.forRoot({
 });
 
 export const TestGameQuizModule = Test.createTestingModule({
-  imports: [testDbConfiguration, GamesModule, DevicesModule, LikesForPostRepoModule, LikesForPostRepoModule, CommentsModule],
+  imports: [testDbConfiguration, AppModule],
 });

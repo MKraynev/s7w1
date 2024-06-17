@@ -14,6 +14,8 @@ import { GameQuizGetUsersTopUseCase } from "./service/use-cases/game.quiz.get.us
 import { GameQuizConnectionV2UseCase } from "./service/use-cases/game.quiz.connection.v2.usecase";
 import { GameQuizAnswerTheQuestionV2UseCase } from "./service/use-cases/game.quiz.answer.the.question.v2.usecase";
 import { GameQuizGetByIdV2UseCase } from "./service/use-cases/game.quiz.get.by.id.v2.usecase";
+import { ScheduleModule } from "@nestjs/schedule";
+import { GameQuizCloseExpireGameEvent } from "./events/game.quiz.close.expire.game.event";
 
 export const QuizGameUseCases = [
   GameQuizGetMyCurrentUseCase,
@@ -27,6 +29,7 @@ export const QuizGameUseCases = [
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     GameQuizWinnersRepoModule,
     GameQuizRepoModule,
     GameQuizAnswersRepoModule,
@@ -36,7 +39,7 @@ export const QuizGameUseCases = [
     QuizQuestRepoModule,
   ],
   controllers: [GamesPairGameQuizController],
-  providers: [...QuizGameUseCases],
+  providers: [...QuizGameUseCases, GameQuizCloseExpireGameEvent],
   exports: [...QuizGameUseCases],
 })
 export class GamesModule {}

@@ -13,6 +13,7 @@ import { GamesModule } from "../features/games/quiz/self/GamesModule";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { SuperAdminModule } from "../superAdmin/SuperAdminModule";
 import { QuizGameQuestionsInGameModule } from "../features/games/quiz/questions.in.game/repo/game.quiz.questions.in.game.repo.module";
+import { ScheduleModule } from "@nestjs/schedule";
 
 let a: TypeOrmModuleOptions;
 
