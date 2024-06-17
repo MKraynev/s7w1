@@ -55,13 +55,6 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
         await this.UpdatePlayersStats(currentGame, queryRunner);
       }
 
-      //from Russia with love, Mr. Bond
-      let currentPlayerAnswerAllQuestionsAndSecondOneDidnt =
-        userAlreadyAnswered + 1 === gameQuestions.length &&
-        currentGame.player_1_answerCount + currentGame.player_2_answerCount < gameQuestions.length * 2;
-
-      if (currentPlayerAnswerAllQuestionsAndSecondOneDidnt) this.CloseGameAfterExpiredTime(command.userId);
-
       //update game stats
       await queryRunner.manager.save(GamesRepoEntity, currentGame);
 
@@ -195,85 +188,9 @@ export class GameQuizAnswerTheQuestionV2UseCase implements ICommandHandler<GameQ
     else if (+new Date(p2_lastAnswers[0].createdAt) < +new Date(p1_lastAnswers[0].createdAt) && game.player_2_score > 0)
       game.player_2_score += 1;
   }
-
-  private async EndGameByFinishedUser(finishedUserId: string) {
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction("SERIALIZABLE");
-
-    try {
-      let currentGame = await this.FindUserCurrentGame(finishedUserId, queryRunner);
-
-      if (!currentGame || currentGame.status !== "Active") {
-        return;
-      }
-
-      let gameQuestions = await this.GameQuestions(currentGame.id, queryRunner);
-
-      let secondPlayer: { id: number; answeredQuestionCount: number };
-      if (+finishedUserId === currentGame.player_1_id) {
-        secondPlayer = {
-          id: currentGame.player_2_id,
-          answeredQuestionCount: currentGame.player_2_answerCount,
-        };
-
-        currentGame.player_2_answerCount = gameQuestions.length;
-      } else {
-        secondPlayer = {
-          id: currentGame.player_1_id,
-          answeredQuestionCount: currentGame.player_1_answerCount,
-        };
-
-        currentGame.player_1_answerCount = gameQuestions.length;
-      }
-
-      //Ответить за пользователя
-      // for (let [index, q] of gameQuestions.entries()) {
-      //   if (index >= secondPlayer.answeredQuestionCount) {
-      //     queryRunner.manager.save(QuizGameAnswerRepoEntity, QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, ""));
-      //   }
-      // }
-
-      // await Promise.all(
-      //   gameQuestions.map((q, p) => {
-      //     if (p >= secondPlayer.answeredQuestionCount)
-      //       return queryRunner.manager.save(
-      //         QuizGameAnswerRepoEntity,
-      //         QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, ""),
-      //       );
-      //     return [];
-      //   }),
-      // );
-
-      let answers = gameQuestions
-        .slice(secondPlayer.answeredQuestionCount)
-        .map((q) => QuizGameAnswerRepoEntity.Init(currentGame.id, q.id, secondPlayer.id, null));
-
-      await queryRunner.manager.insert(QuizGameAnswerRepoEntity, answers);
-
-      this.CloseGame(currentGame);
-      await this.AddExtraPoints(currentGame, queryRunner);
-      await this.UpdatePlayersStats(currentGame, queryRunner);
-
-      //update game stats
-      await queryRunner.manager.save(GamesRepoEntity, currentGame);
-
-      await queryRunner.commitTransaction();
-    } catch (e) {
-    } finally {
-      await queryRunner.release();
-    }
-  }
-
-  private async CloseGameAfterExpiredTime(userId) {
-    await setTimeout(async () => {
-      await this.EndGameByFinishedUser(userId);
-    }, 2000);
-  }
 }
 
 /*
 крон
-
+сервео
 */
