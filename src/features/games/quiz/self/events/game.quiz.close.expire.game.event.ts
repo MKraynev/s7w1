@@ -11,9 +11,9 @@ import { GameQuizPlayerRepoEntity, QuizGameStatus } from "../../winners/repo/ent
 export class GameQuizCloseExpireGameEvent {
   constructor(private dataSource: DataSource) {}
 
-  @Interval(GameQuizRules.SecondUserAnswerAvailableTime_ms() * 0.4)
+  @Interval(1000)
   public async CloseExpiredGame() {
-    console.log("period:", GameQuizRules.SecondUserAnswerAvailableTime_ms() * 0.4);
+    console.log("time ms:", Date.now());
     console.log("start:", new Date().toLocaleString());
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -23,13 +23,16 @@ export class GameQuizCloseExpireGameEvent {
 
     try {
       let expiredGames = await this.FindExpiredGames(queryRunner);
-      expiredGames.forEach(async (eg) => {
+
+      console.log("found expired games:", expiredGames);
+
+      for (const eg of expiredGames) {
         this.CloseGame(eg.game);
         this.AddExtraScore(eg.game);
         await this.UpdatePlayersStats(eg.game, queryRunner);
         await queryRunner.manager.save(GamesRepoEntity, eg.game);
         await queryRunner.manager.delete(GameQuizClosingGameEntity, eg);
-      });
+      }
 
       await queryRunner.commitTransaction();
     } catch (e) {
@@ -38,10 +41,16 @@ export class GameQuizCloseExpireGameEvent {
     } finally {
       await queryRunner.release();
     }
+    console.log("event done:", new Date().toLocaleString());
   }
 
   private async FindExpiredGames(qr: QueryRunner) {
-    let expiredGameTime = Date.now() - GameQuizRules.SecondUserAnswerAvailableTime_ms();
+    let expiredGameTime = Date.now() - 0.85 * GameQuizRules.SecondUserAnswerAvailableTime_ms();
+    console.log("search less than:", expiredGameTime);
+    return await qr.manager.find(GameQuizClosingGameEntity, {
+      where: { createdAt_milliseconds: LessThan(expiredGameTime) },
+      relations: { game: true },
+    });
 
     /*
 {
@@ -65,11 +74,6 @@ export class GameQuizCloseExpireGameEvent {
     }
   }
 */
-
-    return await qr.manager.find(GameQuizClosingGameEntity, {
-      where: { createdAt_milliseconds: LessThan(expiredGameTime) },
-      relations: { game: true },
-    });
   }
 
   private AddExtraScore(game: GamesRepoEntity) {
@@ -115,3 +119,21 @@ export class GameQuizCloseExpireGameEvent {
     await Promise.all([qr.manager.save(GameQuizPlayerRepoEntity, p1_stats), qr.manager.save(GameQuizPlayerRepoEntity, p2_stats)]);
   }
 }
+
+/*
+game in db
+1_718_733_713_010
+
+user answered -> 8:01:53 PM
+
+start: 6/18/2024, 8:01:54 PM
+search less than: 1_718_733_701_782
+
+
+event done: 6/18/2024, 8:01:57 PM
+time ms: 1_718_733_704_785
+
+                  707 -> 2:00
+                  710 -> 2:03
+                  713 -> 2:06
+*/
