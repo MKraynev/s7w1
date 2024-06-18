@@ -11,7 +11,7 @@ import { GameQuizPlayerRepoEntity, QuizGameStatus } from "../../winners/repo/ent
 export class GameQuizCloseExpireGameEvent {
   constructor(private dataSource: DataSource) {}
 
-  @Interval(1000)
+  @Interval(2000)
   public async CloseExpiredGame() {
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -39,7 +39,7 @@ export class GameQuizCloseExpireGameEvent {
   }
 
   private async FindExpiredGames(qr: QueryRunner) {
-    let expiredGameTime = Date.now() - 0.85 * GameQuizRules.SecondUserAnswerAvailableTime_ms();
+    let expiredGameTime = Date.now() - 0.75 * GameQuizRules.SecondUserAnswerAvailableTime_ms();
 
     return await qr.manager.find(GameQuizClosingGameEntity, {
       where: { createdAt_milliseconds: LessThan(expiredGameTime) },
