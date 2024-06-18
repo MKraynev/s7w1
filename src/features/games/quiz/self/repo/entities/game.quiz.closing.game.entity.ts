@@ -22,7 +22,6 @@ export class GameQuizClosingGameEntity {
     result.game = game;
     result.gameId = game.id;
     result.createdAt_milliseconds = Date.now();
-    console.log("game ->", result);
 
     return result;
   }

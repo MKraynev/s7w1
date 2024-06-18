@@ -13,9 +13,6 @@ export class GameQuizCloseExpireGameEvent {
 
   @Interval(1000)
   public async CloseExpiredGame() {
-    console.log("time ms:", Date.now());
-    console.log("start:", new Date().toLocaleString());
-
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -23,8 +20,6 @@ export class GameQuizCloseExpireGameEvent {
 
     try {
       let expiredGames = await this.FindExpiredGames(queryRunner);
-
-      console.log("found expired games:", expiredGames);
 
       for (const eg of expiredGames) {
         this.CloseGame(eg.game);
@@ -41,12 +36,11 @@ export class GameQuizCloseExpireGameEvent {
     } finally {
       await queryRunner.release();
     }
-    console.log("event done:", new Date().toLocaleString());
   }
 
   private async FindExpiredGames(qr: QueryRunner) {
     let expiredGameTime = Date.now() - 0.85 * GameQuizRules.SecondUserAnswerAvailableTime_ms();
-    console.log("search less than:", expiredGameTime);
+
     return await qr.manager.find(GameQuizClosingGameEntity, {
       where: { createdAt_milliseconds: LessThan(expiredGameTime) },
       relations: { game: true },

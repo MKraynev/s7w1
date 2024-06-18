@@ -11,6 +11,8 @@ import { GamesRepoService } from "../../features/games/quiz/self/repo/GamesRepoS
 import { GameQuizAnswersRepoService } from "../../features/games/quiz/answers/repo/game.quiz.answers.repo.service";
 import { GameQuizQuestionsInGameService } from "../../features/games/quiz/questions.in.game/repo/game.quiz.questions.in.game.repo.service";
 import { GameQuizWinnersRepoService } from "../../features/games/quiz/winners/repo/game.quiz.winners.repo.service";
+import { DataSource } from "typeorm";
+import { GameQuizClosingGameEntity } from "../../features/games/quiz/self/repo/entities/game.quiz.closing.game.entity";
 
 @Controller("testing/all-data")
 export class AdminTestingController {
@@ -27,25 +29,25 @@ export class AdminTestingController {
     private quizGameRepo: GamesRepoService,
     private answersRepo: GameQuizAnswersRepoService,
     private winnerRepo: GameQuizWinnersRepoService,
+    private datasource: DataSource,
   ) {}
 
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   async DeleteAll() {
-    await Promise.all([
-      this.blogRepo.DeleteAll(),
-      this.quizGameRepo.DeleteAll(),
-      this.userRepo.DeleteAll(),
-      this.postRepo.DeleteAll(),
-      this.commentRepo.DeleteAll(),
-      this.likeForPost.DeleteAll(),
-      this.likeForComments.DeleteAll(),
-      this.deviceRepo.DeleteAll(),
-      this.quizQuestionsRepo.DeleteAll(),
-      this.answersRepo.DeleteAll(),
-      this.quizQuestionsInGameRepo.DeleteAll(),
-      this.winnerRepo.DeleteAll(),
-    ]);
+    await this.likeForPost.DeleteAll();
+    await this.likeForComments.DeleteAll();
+    await this.commentRepo.DeleteAll();
+    await this.postRepo.DeleteAll();
+    await this.blogRepo.DeleteAll();
+    await this.answersRepo.DeleteAll();
+    await this.quizQuestionsInGameRepo.DeleteAll();
+    await this.winnerRepo.DeleteAll();
+    await this.quizQuestionsRepo.DeleteAll();
+    await this.datasource.manager.delete(GameQuizClosingGameEntity, {});
+    await this.quizGameRepo.DeleteAll();
+    await this.deviceRepo.DeleteAll();
+    await this.userRepo.DeleteAll();
 
     return;
   }
