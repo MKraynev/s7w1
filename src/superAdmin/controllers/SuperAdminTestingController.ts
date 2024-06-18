@@ -35,19 +35,23 @@ export class AdminTestingController {
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   async DeleteAll() {
-    await this.likeForPost.DeleteAll();
-    await this.likeForComments.DeleteAll();
-    await this.commentRepo.DeleteAll();
-    await this.postRepo.DeleteAll();
-    await this.blogRepo.DeleteAll();
-    await this.answersRepo.DeleteAll();
-    await this.quizQuestionsInGameRepo.DeleteAll();
-    await this.winnerRepo.DeleteAll();
-    await this.quizQuestionsRepo.DeleteAll();
-    await this.datasource.manager.delete(GameQuizClosingGameEntity, {});
-    await this.quizGameRepo.DeleteAll();
-    await this.deviceRepo.DeleteAll();
-    await this.userRepo.DeleteAll();
+    try {
+      await this.likeForPost.DeleteAll();
+      await this.likeForComments.DeleteAll();
+      await this.commentRepo.DeleteAll();
+      await this.postRepo.DeleteAll();
+      await this.blogRepo.DeleteAll();
+      await this.answersRepo.DeleteAll();
+      await this.quizQuestionsInGameRepo.DeleteAll();
+      await this.winnerRepo.DeleteAll();
+      await this.quizQuestionsRepo.DeleteAll();
+      await this.datasource.manager.delete(GameQuizClosingGameEntity, {});
+      await this.quizGameRepo.DeleteAll();
+      await this.deviceRepo.DeleteAll();
+      await this.userRepo.DeleteAll();
+    } catch (e) {
+      console.log(e);
+    }
 
     return;
   }
