@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Redirect, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, Query, Redirect, Res, UseGuards } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "../../../guards/common/JwtAuthGuard";
 import { ReadAccessToken } from "../../../jwt/decorators/JwtRequestReadAccessToken";
@@ -8,8 +8,8 @@ import { BlogCreateEntity } from "../../blogs/controller/entities/blogs.super.ad
 import {
   BloggerPostNewBlogCommand,
   BloggerPostNewBlogResult,
-  BloggerPostNewBlogUseCase,
-} from "../service/use-cases/blogger.post.new.blog.usecase";
+  BloggerPostBlogUseCase,
+} from "../service/use-cases/blogger.post.blog.usecase";
 import { QueryPaginator } from "../../../paginator/QueryPaginatorDecorator";
 import { PostRepoEntity } from "../../posts/repo/entity/PostsRepoEntity";
 import { InputPaginator } from "../../../paginator/entities/QueryPaginatorInputEntity";
@@ -18,6 +18,36 @@ import { InputPaginator } from "../../../paginator/entities/QueryPaginatorInputE
 @UseGuards(JwtAuthGuard)
 export class BloggerController {
   constructor(private comandBus: CommandBus) {}
+
+  @Put(":id")
+  public async UpdateBlogById() {
+    return "put";
+  }
+
+  @Delete(":id")
+  public async DeleteBlogById() {
+    return "delete";
+  }
+
+  @Post(":id/posts")
+  public async SaveBlogsPost() {
+    return "post";
+  }
+
+  @Get(":id/posts")
+  public async GetBlogsPost() {
+    return "get";
+  }
+
+  @Put(":blogId/posts/:postId")
+  public async UpdateBlogsPost() {
+    return "put";
+  }
+
+  @Delete(":id/posts/:postId")
+  public async DeleteBlogsPost() {
+    return "delete";
+  }
 
   @Post("")
   public async SaveBlog(
@@ -31,6 +61,7 @@ export class BloggerController {
   }
 
   @Get("")
-  @Redirect("/blogs")
-  public async GetBlogs() {}
+  public async GetBlogs() {
+    return "get";
+  }
 }

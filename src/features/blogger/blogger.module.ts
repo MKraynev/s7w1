@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserToBlogRepoEntity } from "./repo/entities/user.to.blog.repo.entity";
-import { BloggerPostNewBlogUseCase } from "./service/use-cases/blogger.post.new.blog.usecase";
+import { BloggerPostBlogUseCase } from "./service/use-cases/blogger.post.blog.usecase";
 
-const BloggerUseCases = [BloggerPostNewBlogUseCase];
+const BloggerUseCases = [BloggerPostBlogUseCase];
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserToBlogRepoEntity])],

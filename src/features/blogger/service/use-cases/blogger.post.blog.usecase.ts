@@ -32,7 +32,7 @@ export class BloggerPostNewBlogResult {
 
 @Injectable()
 @CommandHandler(BloggerPostNewBlogCommand)
-export class BloggerPostNewBlogUseCase implements ICommandHandler<BloggerPostNewBlogCommand, BloggerPostNewBlogResult> {
+export class BloggerPostBlogUseCase implements ICommandHandler<BloggerPostNewBlogCommand, BloggerPostNewBlogResult> {
   constructor(private ds: DataSource) {}
 
   async execute(command: BloggerPostNewBlogCommand): Promise<BloggerPostNewBlogResult> {

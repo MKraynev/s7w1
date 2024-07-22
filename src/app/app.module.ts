@@ -14,6 +14,7 @@ import { ThrottlerModule } from "@nestjs/throttler";
 import { SuperAdminModule } from "../superAdmin/SuperAdminModule";
 import { QuizGameQuestionsInGameModule } from "../features/games/quiz/questions.in.game/repo/game.quiz.questions.in.game.repo.module";
 import { ScheduleModule } from "@nestjs/schedule";
+import { BloggerModule } from "../features/blogger/blogger.module";
 
 let a: TypeOrmModuleOptions;
 
@@ -30,6 +31,7 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
     UsersModule,
     DevicesModule,
     BlogModule,
+    BloggerModule,
     PostModule,
     CommentsModule,
     QuizQuestionsModule,
