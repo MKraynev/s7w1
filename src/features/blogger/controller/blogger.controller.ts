@@ -10,9 +10,6 @@ import {
   BloggerPostNewBlogResult,
   BloggerPostBlogUseCase,
 } from "../service/use-cases/blogger.post.blog.usecase";
-import { QueryPaginator } from "../../../paginator/QueryPaginatorDecorator";
-import { PostRepoEntity } from "../../posts/repo/entity/PostsRepoEntity";
-import { InputPaginator } from "../../../paginator/entities/QueryPaginatorInputEntity";
 
 @Controller("blogger/blogs")
 @UseGuards(JwtAuthGuard)
