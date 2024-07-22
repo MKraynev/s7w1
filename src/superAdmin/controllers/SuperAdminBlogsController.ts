@@ -12,25 +12,22 @@ import {
   Query,
   UseFilters,
   UseGuards,
-} from '@nestjs/common';
-import { BlogCreateEntity } from './entities/SuperAdminCreateBlogEntity';
-import {
-  PostCreateEntity,
-  PostWithExpectedBlogIdCreateEntity,
-} from './entities/SuperAdminCreatePostEntity';
-import { DataBaseException } from './exceptions/SuperAdminControllerExceptionFilter';
-import { SuperAdminGuard } from '../../guards/admin/GuardAdmin';
-import { BlogsRepoService } from '../../features/blogs/repo/blogs.repo.service';
-import { PostsRepoService } from '../../features/posts/repo/PostsRepoService';
-import { BlogRepoEntity } from '../../features/blogs/repo/entities/blogs.repo.entity';
-import { InputPaginator } from '../../paginator/entities/QueryPaginatorInputEntity';
-import { QueryPaginator } from '../../paginator/QueryPaginatorDecorator';
-import { OutputPaginator } from '../../paginator/entities/QueryPaginatorUutputEntity';
-import { ValidateParameters } from '../../pipes/ValidationPipe';
-import { PostGetResultEntity } from '../../features/posts/service/entities/PostsControllerGetResultEntity';
-import { PostRepoEntity } from '../../features/posts/repo/entity/PostsRepoEntity';
+} from "@nestjs/common";
+import { BlogCreateEntity } from "./entities/SuperAdminCreateBlogEntity";
+import { PostCreateEntity, PostWithExpectedBlogIdCreateEntity } from "./entities/SuperAdminCreatePostEntity";
+import { DataBaseException } from "./exceptions/SuperAdminControllerExceptionFilter";
+import { SuperAdminGuard } from "../../guards/admin/GuardAdmin";
+import { BlogsRepoService } from "../../features/blogs/repo/blogs.repo.service";
+import { PostsRepoService } from "../../features/posts/repo/PostsRepoService";
+import { BlogRepoEntity } from "../../features/blogs/repo/entities/blogs.repo.entity";
+import { InputPaginator } from "../../paginator/entities/QueryPaginatorInputEntity";
+import { QueryPaginator } from "../../paginator/QueryPaginatorDecorator";
+import { OutputPaginator } from "../../paginator/entities/QueryPaginatorUutputEntity";
+import { ValidateParameters } from "../../pipes/ValidationPipe";
+import { PostGetResultEntity } from "../../features/posts/service/entities/PostsControllerGetResultEntity";
+import { PostRepoEntity } from "../../features/posts/repo/entity/PostsRepoEntity";
 
-@Controller('sa/blogs')
+@Controller("sa/blogs")
 @UseGuards(SuperAdminGuard)
 export class SuperAdminBlogController {
   constructor(
@@ -41,11 +38,13 @@ export class SuperAdminBlogController {
   //get -> hometask_13/api/blogs
   @Get()
   async getBlogs(
-    @Query('searchNameTerm') nameTerm: string | undefined,
-    @Query('sortBy') sortBy: keyof BlogRepoEntity = 'createdAt',
-    @Query('sortDirection') sortDirecrion: 'desc' | 'asc' = 'desc',
+    @Query("searchNameTerm") nameTerm: string | undefined,
+    @Query("sortBy") sortBy: keyof BlogRepoEntity = "createdAt",
+    @Query("sortDirection") sortDirecrion: "desc" | "asc" = "desc",
     @QueryPaginator() paginator: InputPaginator,
   ) {
+    console.log("sort params:", nameTerm, sortBy, sortDirecrion, paginator);
+
     let { count, blogs } = await this.blogRepo.CountAndReadManyByName(
       nameTerm,
       sortBy,
@@ -69,12 +68,9 @@ export class SuperAdminBlogController {
     return savedBlog;
   }
 
-  @Put(':id')
+  @Put(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async UpdateBlog(
-    @Param('id') id: string,
-    @Body(new ValidateParameters()) blogData: BlogCreateEntity,
-  ) {
+  async UpdateBlog(@Param("id") id: string, @Body(new ValidateParameters()) blogData: BlogCreateEntity) {
     let updatedBlog = await this.blogRepo.UpdateById(+id, blogData, true);
 
     if (updatedBlog) {
@@ -85,9 +81,9 @@ export class SuperAdminBlogController {
   }
 
   //delete -> /hometask_13/api/blogs/{id}
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async DeleteBlog(@Param('id') id: string) {
+  async DeleteBlog(@Param("id") id: string) {
     let count = await this.blogRepo.DeleteOne(+id);
 
     if (count > 0) return;
@@ -96,31 +92,27 @@ export class SuperAdminBlogController {
   }
 
   //post -> hometask_13/api/blogs/{blogId}/posts
-  @Post(':id/posts')
+  @Post(":id/posts")
   // @UseFilters(DataBaseException)
   @HttpCode(HttpStatus.CREATED)
   async SaveBlogsPosts(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body(new ValidateParameters())
     postData: PostCreateEntity,
   ) {
-    let createdPost = (await this.postRepo.Create(
-      postData,
-      id,
-      true,
-    )) as PostGetResultEntity;
+    let createdPost = (await this.postRepo.Create(postData, id, true)) as PostGetResultEntity;
 
     createdPost.InitLikes();
 
     return createdPost;
   }
 
-  @Get(':id/posts')
+  @Get(":id/posts")
   @UseFilters(DataBaseException)
   async GetBlogsPosts(
-    @Param('id') id: string,
-    @Query('sortBy') sortBy: keyof PostRepoEntity = 'createdAt',
-    @Query('sortDirection') sortDirecrion: 'desc' | 'asc' = 'desc',
+    @Param("id") id: string,
+    @Query("sortBy") sortBy: keyof PostRepoEntity = "createdAt",
+    @Query("sortDirection") sortDirecrion: "desc" | "asc" = "desc",
     @QueryPaginator() paginator: InputPaginator,
   ) {
     let { count, posts } = await this.postRepo.ReadManyByBlogId(
@@ -137,12 +129,12 @@ export class SuperAdminBlogController {
   }
 
   //put -> //sa/blogs/:blogId/posts/:postId
-  @Put(':blogId/posts/:postId')
+  @Put(":blogId/posts/:postId")
   @UseGuards(SuperAdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async UpdatePost(
-    @Param('blogId') blogId: string,
-    @Param('postId') postId: string,
+    @Param("blogId") blogId: string,
+    @Param("postId") postId: string,
     @Body(new ValidateParameters())
     postData: PostCreateEntity,
   ) {
@@ -154,13 +146,10 @@ export class SuperAdminBlogController {
   }
 
   //delete -> //sa/blogs/:blogId/posts/:postId
-  @Delete(':blogId/posts/:postId')
+  @Delete(":blogId/posts/:postId")
   @UseGuards(SuperAdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  async DeletePost(
-    @Param('blogId') blogId: string,
-    @Param('postId') postId: string,
-  ) {
+  async DeletePost(@Param("blogId") blogId: string, @Param("postId") postId: string) {
     let updatePost = await this.postRepo.DeleteOne(+postId, +blogId);
 
     if (updatePost > 0) return;

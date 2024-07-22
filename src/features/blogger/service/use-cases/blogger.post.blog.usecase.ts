@@ -47,6 +47,13 @@ export class BloggerPostBlogUseCase implements ICommandHandler<BloggerPostNewBlo
 
     let savedLink = await this.ds.manager.save(UserToBlogRepoEntity, UserToBlogRepoEntity.Init(user, savedBlog));
 
-    return new BloggerPostNewBlogResult(savedBlog.id, savedBlog.name, savedBlog.description, savedBlog.websiteUrl, savedBlog.createdAt);
+    return new BloggerPostNewBlogResult(
+      savedBlog.id,
+      savedBlog.name,
+      savedBlog.description,
+      savedBlog.websiteUrl,
+      savedBlog.createdAt,
+      false,
+    );
   }
 }
