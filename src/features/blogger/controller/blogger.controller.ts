@@ -1,15 +1,14 @@
-import { Body, Controller, Delete, Get, Post, Put, Query, Redirect, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, Redirect, Res, UseGuards } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "../../../guards/common/JwtAuthGuard";
 import { ReadAccessToken } from "../../../jwt/decorators/JwtRequestReadAccessToken";
 import { JwtServiceUserAccessTokenLoad } from "../../../jwt/entities/JwtServiceAccessTokenLoad";
 import { ValidateParameters } from "../../../pipes/ValidationPipe";
 import { BlogCreateEntity } from "../../blogs/controller/entities/blogs.super.admin.create.entity";
-import {
-  BloggerPostNewBlogCommand,
-  BloggerPostNewBlogResult,
-  BloggerPostBlogUseCase,
-} from "../service/use-cases/blogger.post.blog.usecase";
+import { BloggerPostBlogCommand, BloggerPostNewBlogResult, BloggerPostBlogUseCase } from "../service/use-cases/blogger.post.blog.usecase";
+import { BloggerPutBlogsByIdCommand } from "../service/use-cases/blogger.put.blogs.by.id.usecase";
+import { BloggerDeleteBlogsByIdCommand } from "../service/use-cases/blogger.delete.blogs.by.id.usecase";
+import { BloggerControllerPostBlogsPostByBlogIdEntity } from "./entities/blogger.controller.post.blogs.post.by.blog.id.entity";
 
 @Controller("blogger/blogs")
 @UseGuards(JwtAuthGuard)
@@ -17,18 +16,42 @@ export class BloggerController {
   constructor(private comandBus: CommandBus) {}
 
   @Put(":id")
-  public async UpdateBlogById() {
-    return "put";
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async UpdateBlogById(
+    @ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad,
+    @Param("id") id: string,
+    @Body(new ValidateParameters()) newBlogData: BlogCreateEntity,
+  ) {
+    console.log("PUT inputData:", tokenLoad, id, newBlogData);
+
+    let command = new BloggerPutBlogsByIdCommand(tokenLoad, id, newBlogData);
+    let result = await this.comandBus.execute<BloggerPutBlogsByIdCommand, boolean>(command);
+
+    return;
   }
 
   @Delete(":id")
-  public async DeleteBlogById() {
-    return "delete";
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async DeleteBlogById(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad, @Param("id") id: string) {
+    console.log("Delete inputData:", tokenLoad, id);
+
+    let command = new BloggerDeleteBlogsByIdCommand(tokenLoad, id);
+    let result = await this.comandBus.execute<BloggerDeleteBlogsByIdCommand, number>(command);
+    return;
   }
 
   @Post(":id/posts")
-  public async SaveBlogsPost() {
-    return "post";
+  @HttpCode(HttpStatus.CREATED)
+  public async SaveBlogsPost(
+    @ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad,
+    @Param("id") id: string,
+    @Body(new ValidateParameters()) postData: BloggerControllerPostBlogsPostByBlogIdEntity,
+  ) {
+    console.log("Delete inputData:", tokenLoad, id, postData);
+
+    let command = new BloggerDeleteBlogsByIdCommand(tokenLoad, id);
+    let result = await this.comandBus.execute<BloggerDeleteBlogsByIdCommand, number>(command);
+    return;
   }
 
   @Get(":id/posts")
@@ -51,8 +74,8 @@ export class BloggerController {
     @ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad,
     @Body(new ValidateParameters()) blog: BlogCreateEntity,
   ) {
-    let command = new BloggerPostNewBlogCommand(tokenLoad.id, tokenLoad.login, blog.name, blog.description, blog.websiteUrl);
-    let result = await this.comandBus.execute<BloggerPostNewBlogCommand, BloggerPostNewBlogResult>(command);
+    let command = new BloggerPostBlogCommand(tokenLoad.id, tokenLoad.login, blog.name, blog.description, blog.websiteUrl);
+    let result = await this.comandBus.execute<BloggerPostBlogCommand, BloggerPostNewBlogResult>(command);
 
     return result;
   }

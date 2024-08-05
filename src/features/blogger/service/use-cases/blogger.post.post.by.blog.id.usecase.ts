@@ -1,59 +1,82 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { JwtServiceUserAccessTokenLoad } from "../../../../jwt/entities/JwtServiceAccessTokenLoad";
+import { BloggerControllerPostBlogsPostByBlogIdEntity } from "../../controller/entities/blogger.controller.post.blogs.post.by.blog.id.entity";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { DataSource } from "typeorm";
 import { UserRepoEntity } from "../../../users/repo/entities/UsersRepoEntity";
-import { BlogRepoEntity } from "../../../blogs/repo/entities/blogs.repo.entity";
-import { BlogCreateEntity } from "../../../blogs/controller/entities/blogs.super.admin.create.entity";
 import { UserToBlogRepoEntity } from "../../repo/entities/user.to.blog.repo.entity";
+import { PostRepoEntity } from "../../../posts/repo/entity/PostsRepoEntity";
+import { PostCreateEntity } from "../../../posts/controller/entities/SuperAdminCreatePostEntity";
 
-export class BloggerPostBlogCommand {
+export class BloggerPostPostByBlogIdCommand {
+  public id: number;
   constructor(
-    public userId: string,
-    public login: string,
-    public name: string,
-    public description: string,
-    public websiteUrl: string,
-  ) {}
-}
-
-export class BloggerPostNewBlogResult {
-  public id: string;
-  constructor(
-    id: number,
-    public name: string,
-    public description: string,
-    public websiteUrl: string,
-    public createdAt: Date,
-    public isMembership: boolean = true,
+    public tokenLoad: JwtServiceUserAccessTokenLoad,
+    id: string,
+    public postData: BloggerControllerPostBlogsPostByBlogIdEntity,
   ) {
-    this.id = id.toString();
+    this.id = +id;
+    if (isNaN(this.id)) throw new NotFoundException();
   }
 }
 
+export type BloggerPostPostByBlogIdResult = {
+  id: string;
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
+  blogName: string;
+  createdAt: Date;
+  extendedLikesInfo: {
+    likesCount: number;
+    dislikesCount: number;
+    myStatus: string;
+    newestLikes: any[];
+  };
+};
+
 @Injectable()
-@CommandHandler(BloggerPostBlogCommand)
-export class BloggerPostBlogUseCase implements ICommandHandler<BloggerPostBlogCommand, BloggerPostNewBlogResult> {
+@CommandHandler(BloggerPostPostByBlogIdCommand)
+export class BloggerPostPostByBlogIdUseCase implements ICommandHandler<BloggerPostPostByBlogIdCommand, BloggerPostPostByBlogIdResult> {
   constructor(private ds: DataSource) {}
 
-  async execute(command: BloggerPostBlogCommand): Promise<BloggerPostNewBlogResult> {
-    let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.userId } });
+  async execute(command: BloggerPostPostByBlogIdCommand): Promise<BloggerPostPostByBlogIdResult> {
+    let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.id } });
     if (!user) throw new UnauthorizedException();
 
-    let savedBlog = await this.ds.manager.save(
-      BlogRepoEntity,
-      BlogRepoEntity.Init(new BlogCreateEntity(command.name, command.description, command.websiteUrl)),
+    let usersBlog = await this.ds.manager.findOne(UserToBlogRepoEntity, {
+      where: { blogId: command.id },
+      relations: { blog: true },
+    });
+
+    if (!usersBlog) throw new NotFoundException();
+
+    if (usersBlog.userId !== +command.tokenLoad.id) throw new ForbiddenException();
+
+    let postObj = PostRepoEntity.Init(
+      new PostCreateEntity(command.postData.title, command.postData.shortDescription, command.postData.content),
+      command.id,
     );
 
-    let savedLink = await this.ds.manager.save(UserToBlogRepoEntity, UserToBlogRepoEntity.Init(user, savedBlog));
+    let savedPost = await this.ds.manager.save(PostRepoEntity, postObj);
 
-    return new BloggerPostNewBlogResult(
-      savedBlog.id,
-      savedBlog.name,
-      savedBlog.description,
-      savedBlog.websiteUrl,
-      savedBlog.createdAt,
-      false,
-    );
+    let result = {
+      id: savedPost.id.toString(),
+      title: savedPost.title,
+      shortDescription: savedPost.shortDescription,
+      content: savedPost.content,
+      blogId: usersBlog.blogId.toString(),
+      blogName: usersBlog.blog.name,
+      createdAt: savedPost.createdAt,
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: "None",
+        newestLikes: [],
+      },
+    };
+    return result;
   }
 }
 

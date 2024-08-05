@@ -4,8 +4,9 @@ import { UserToBlogRepoEntity } from "./repo/entities/user.to.blog.repo.entity";
 import { BloggerPostBlogUseCase } from "./service/use-cases/blogger.post.blog.usecase";
 import { BloggerController } from "./controller/blogger.controller";
 import { CqrsModule } from "@nestjs/cqrs";
+import { BloggerPutBlogsByIdUseCase } from "./service/use-cases/blogger.put.blogs.by.id.usecase";
 
-const BloggerUseCases = [BloggerPostBlogUseCase];
+const BloggerUseCases = [BloggerPostBlogUseCase, BloggerPutBlogsByIdUseCase];
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserToBlogRepoEntity]), CqrsModule],

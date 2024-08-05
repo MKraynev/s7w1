@@ -26,6 +26,8 @@ import { OutputPaginator } from "../../paginator/entities/QueryPaginatorUutputEn
 import { ValidateParameters } from "../../pipes/ValidationPipe";
 import { PostGetResultEntity } from "../../features/posts/service/entities/PostsControllerGetResultEntity";
 import { PostRepoEntity } from "../../features/posts/repo/entity/PostsRepoEntity";
+import { CommandBus } from "@nestjs/cqrs";
+import { SuperAdminBlogsGetBlogsCommand } from "../use-cases/super.admin.blogs.get.blogs.usecase";
 
 @Controller("sa/blogs")
 @UseGuards(SuperAdminGuard)
@@ -33,17 +35,24 @@ export class SuperAdminBlogController {
   constructor(
     private blogRepo: BlogsRepoService,
     private postRepo: PostsRepoService,
+    private commandBus: CommandBus,
   ) {}
 
   //get -> hometask_13/api/blogs
   @Get()
   async getBlogs(
-    @Query("searchNameTerm") nameTerm: string | undefined,
+    @Query("searchNameTerm") nameTerm: string | undefined = undefined,
     @Query("sortBy") sortBy: keyof BlogRepoEntity = "createdAt",
     @Query("sortDirection") sortDirecrion: "desc" | "asc" = "desc",
     @QueryPaginator() paginator: InputPaginator,
   ) {
     console.log("sort params:", nameTerm, sortBy, sortDirecrion, paginator);
+
+    let usecaseRes = await this.commandBus.execute<SuperAdminBlogsGetBlogsCommand, any>(
+      new SuperAdminBlogsGetBlogsCommand(nameTerm, sortBy, sortDirecrion, paginator),
+    );
+
+    console.log(usecaseRes);
 
     let { count, blogs } = await this.blogRepo.CountAndReadManyByName(
       nameTerm,
