@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { DataSource } from "typeorm";
+import { DataSource, SelectQueryBuilder } from "typeorm";
 import { BlogRepoEntity } from "../../features/blogs/repo/entities/blogs.repo.entity";
 import { InputPaginator } from "../../paginator/entities/QueryPaginatorInputEntity";
 import { UserToBlogRepoEntity } from "../../features/blogger/repo/entities/user.to.blog.repo.entity";
@@ -41,11 +41,10 @@ export class SuperAdminBlogsGetBlogsUseCase implements ICommandHandler<SuperAdmi
   constructor(private ds: DataSource) {}
 
   async execute(command: SuperAdminBlogsGetBlogsCommand): Promise<any> {
-    const query = this.ds
+    let query = this.ds
       .createQueryBuilder(BlogRepoEntity, "b")
       .leftJoinAndSelect(UserToBlogRepoEntity, "utb", 'b.id = utb."blogId"')
       .leftJoinAndSelect(UserRepoEntity, "u", 'utb."userId" = u.id')
-      .where("b.name ILIKE :searchNameTerm", { searchNameTerm: `%${command.nameTerm}%` })
       .limit(10)
       .select([
         'b.id AS "id"',
@@ -54,8 +53,10 @@ export class SuperAdminBlogsGetBlogsUseCase implements ICommandHandler<SuperAdmi
         'b."websiteUrl" AS "websiteUrl"',
         'b."createdAt" AS "createdAt"',
         'b."isMembership" AS "isMembership"',
-        "json_build_object(" + "'userId', u.id," + "'userLogin', u.login" + ') AS "blogOwnerInfo"',
+        "json_build_object('userId', u.id, 'userLogin', u.login) AS \"blogOwnerInfo\"",
       ]);
+
+    if (command.nameTerm) query = query.where("b.name ILIKE :searchNameTerm", { searchNameTerm: `%${command.nameTerm}%` });
 
     const results = await query.getRawMany();
 
