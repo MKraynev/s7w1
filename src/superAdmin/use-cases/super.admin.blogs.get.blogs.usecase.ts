@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { BlogRepoEntity } from "../../features/blogs/repo/entities/blogs.repo.entity";
 import { InputPaginator } from "../../paginator/entities/QueryPaginatorInputEntity";
 import { UserToBlogRepoEntity } from "../../features/blogger/repo/entities/user.to.blog.repo.entity";
+import { UserRepoEntity } from "../../features/users/repo/entities/UsersRepoEntity";
 
 export class SuperAdminBlogsGetBlogsCommand {
   constructor(
@@ -43,7 +44,7 @@ export class SuperAdminBlogsGetBlogsUseCase implements ICommandHandler<SuperAdmi
     const query = this.ds
       .createQueryBuilder(BlogRepoEntity, "b")
       .leftJoinAndSelect(UserToBlogRepoEntity, "utb", 'b.id = utb."blogId"')
-      .leftJoinAndSelect("User", "u", 'utb."userId" = u.id')
+      .leftJoinAndSelect(UserRepoEntity, "u", 'utb."userId" = u.id')
       .where("b.name ILIKE :searchNameTerm", { searchNameTerm: `%${command.nameTerm}%` })
       .limit(10)
       .select([
