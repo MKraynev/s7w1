@@ -43,27 +43,31 @@ export class SuperAdminBlogController {
   async getBlogs(
     @Query("searchNameTerm") nameTerm: string | undefined = undefined,
     @Query("sortBy") sortBy: keyof BlogRepoEntity = "createdAt",
-    @Query("sortDirection") sortDirecrion: "desc" | "asc" = "desc",
+    @Query("sortDirection") sortDirecrion: "DESC" | "ASC" = "DESC",
     @QueryPaginator() paginator: InputPaginator,
   ) {
     console.log("sort params:", nameTerm, sortBy, sortDirecrion, paginator);
 
-    let usecaseRes = await this.commandBus.execute<SuperAdminBlogsGetBlogsCommand, any>(
+    if (sortDirecrion.includes("asc")) sortDirecrion = "ASC";
+    else sortDirecrion = "DESC" as "DESC";
+
+    let usecaseRes = await this.commandBus.execute<SuperAdminBlogsGetBlogsCommand, { count: number; blogs: any }>(
       new SuperAdminBlogsGetBlogsCommand(nameTerm, sortBy, sortDirecrion, paginator),
     );
 
     console.log(usecaseRes);
 
-    let { count, blogs } = await this.blogRepo.CountAndReadManyByName(
-      nameTerm,
-      sortBy,
-      sortDirecrion,
-      paginator.skipElements,
-      paginator.pageSize,
-      true,
-    );
+    // let { count, blogs } = await this.blogRepo.CountAndReadManyByName(
+    //   nameTerm,
+    //   sortBy,
+    //   sortDirecrion,
+    //   paginator.skipElements,
+    //   paginator.pageSize,
+    //   true,
+    // );
 
-    let pagedBlogs = new OutputPaginator(count, blogs, paginator);
+    // let pagedBlogs = new OutputPaginator(count, blogs, paginator);
+    let pagedBlogs = new OutputPaginator(usecaseRes.count, usecaseRes.blogs, paginator);
 
     return pagedBlogs;
   }
