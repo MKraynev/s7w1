@@ -57,6 +57,8 @@ export class SuperAdminBlogsGetBlogsUseCase implements ICommandHandler<SuperAdmi
       ])
       .orderBy(`b.${command.sortBy}`, command.sortDirecrion);
 
+    console.log(".orderBy(`b.${command.sortBy}`, command.sortDirecrion):", command.sortBy, command.sortDirecrion);
+
     if (command.nameTerm) query = query.where("b.name ILIKE :searchNameTerm", { searchNameTerm: `%${command.nameTerm}%` });
 
     let count = await query.getCount();
