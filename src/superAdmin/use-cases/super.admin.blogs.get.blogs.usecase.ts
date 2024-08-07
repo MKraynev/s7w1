@@ -71,7 +71,7 @@ export class SuperAdminBlogsGetBlogsUseCase implements ICommandHandler<SuperAdmi
 
     console.log("count request:", query.getQuery());
 
-    query = query.skip(command.paginator.skipElements).limit(command.paginator.pageSize);
+    query = query.offset(command.paginator.skipElements).limit(command.paginator.pageSize);
     console.log("result request:", query.getQuery());
     const results = (await query.getRawMany()) as {
       id: number;
