@@ -45,7 +45,6 @@ export class SuperAdminBlogsGetBlogsUseCase implements ICommandHandler<SuperAdmi
       .createQueryBuilder(BlogRepoEntity, "b")
       .leftJoinAndSelect(UserToBlogRepoEntity, "utb", 'b.id = utb."blogId"')
       .leftJoinAndSelect(UserRepoEntity, "u", 'utb."userId" = u.id')
-      .limit(command.paginator.pageSize)
       .select([
         'b.id AS "id"',
         'b.name AS "name"',
@@ -70,7 +69,7 @@ export class SuperAdminBlogsGetBlogsUseCase implements ICommandHandler<SuperAdmi
 
     console.log("paginator data after culc:", command.paginator);
 
-    query = query.skip(command.paginator.skipElements);
+    query = query.skip(command.paginator.skipElements).limit(command.paginator.pageSize);
     const results = (await query.getRawMany()) as {
       id: number;
       name: string;
