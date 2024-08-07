@@ -60,8 +60,13 @@ export class SuperAdminBlogsGetBlogsUseCase implements ICommandHandler<SuperAdmi
     if (command.nameTerm) query = query.where("b.name ILIKE :searchNameTerm", { searchNameTerm: `%${command.nameTerm}%` });
 
     let count = await query.getCount();
+
+    console.log("paginator data:", command.paginator);
+
     if (count < (command.paginator.pageNumber + 1) * command.paginator.pageSize)
       command.paginator.skipElements = count - command.paginator.pageSize;
+
+    console.log("paginator data after culc:", command.paginator);
 
     query = query.skip(command.paginator.skipElements);
     const results = (await query.getRawMany()) as {
@@ -116,200 +121,82 @@ JOIN
 
 */
 
+/*
+sort params: undefined createdAt DESC InputPaginator {
+  sortDirection: 'desc',
+  pageNumber: 3,
+  pageSize: 3,
+  skipElements: 6
+}
+*/
 let Expected = {
-  pagesCount: 2,
-  page: 1,
-  pageSize: 10,
+  pagesCount: 4,
+  page: 3,
+  pageSize: 3,
   totalCount: 12,
   items: [
-    {
-      name: "Timma",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:45.095Z",
-      isMembership: false,
-      id: "284",
-      blogOwnerInfo: { userId: "182", userLogin: "9148lg" },
-    },
-    {
-      name: "Tima",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:44.192Z",
-      isMembership: false,
-      id: "283",
-      blogOwnerInfo: { userId: "182", userLogin: "9148lg" },
-    },
-    {
-      name: "Alex",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:43.277Z",
-      isMembership: false,
-      id: "282",
-      blogOwnerInfo: { userId: "182", userLogin: "9148lg" },
-    },
-    {
-      name: "Alexey",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:42.369Z",
-      isMembership: false,
-      id: "281",
-      blogOwnerInfo: { userId: "182", userLogin: "9148lg" },
-    },
-    {
-      name: "Andrey",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:41.461Z",
-      isMembership: false,
-      id: "280",
-      blogOwnerInfo: { userId: "182", userLogin: "9148lg" },
-    },
-    {
-      name: "Don",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:40.541Z",
-      isMembership: false,
-      id: "279",
-      blogOwnerInfo: { userId: "182", userLogin: "9148lg" },
-    },
     {
       name: "John",
       description: "description",
       websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:39.621Z",
+      createdAt: "2024-08-06T21:23:17.395Z",
       isMembership: false,
-      id: "278",
-      blogOwnerInfo: { userId: "181", userLogin: "9147lg" },
+      id: "317",
+      blogOwnerInfo: { userId: "189", userLogin: "6794lg" },
     },
     {
       name: "Gggrrttt",
       description: "description",
       websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:38.745Z",
+      createdAt: "2024-08-06T21:23:16.446Z",
       isMembership: false,
-      id: "277",
-      blogOwnerInfo: { userId: "181", userLogin: "9147lg" },
+      id: "316",
+      blogOwnerInfo: { userId: "189", userLogin: "6794lg" },
     },
     {
       name: "Mima",
       description: "description",
       websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:37.833Z",
+      createdAt: "2024-08-06T21:23:15.526Z",
       isMembership: false,
-      id: "276",
-      blogOwnerInfo: { userId: "181", userLogin: "9147lg" },
-    },
-    {
-      name: "Dima",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:36.953Z",
-      isMembership: false,
-      id: "275",
-      blogOwnerInfo: { userId: "181", userLogin: "9147lg" },
+      id: "315",
+      blogOwnerInfo: { userId: "189", userLogin: "6794lg" },
     },
   ],
 };
 
 let Received = {
-  pagesCount: 2,
-  page: 1,
-  pageSize: 10,
+  pagesCount: 4,
+  page: 3,
+  pageSize: 3,
   totalCount: 12,
   items: [
     {
-      id: 284,
       name: "Timma",
       description: "description",
       websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:45.095Z",
+      createdAt: "2024-08-06T21:23:22.804Z",
       isMembership: false,
-      blogOwnerInfo: { userId: 182, userLogin: "9148lg" },
+      id: "323",
+      blogOwnerInfo: { userId: "190", userLogin: "6795lg" },
     },
     {
-      id: 283,
       name: "Tima",
       description: "description",
       websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:44.192Z",
+      createdAt: "2024-08-06T21:23:21.888Z",
       isMembership: false,
-      blogOwnerInfo: { userId: 182, userLogin: "9148lg" },
+      id: "322",
+      blogOwnerInfo: { userId: "190", userLogin: "6795lg" },
     },
     {
-      id: 282,
       name: "Alex",
       description: "description",
       websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:43.277Z",
+      createdAt: "2024-08-06T21:23:20.977Z",
       isMembership: false,
-      blogOwnerInfo: { userId: 182, userLogin: "9148lg" },
-    },
-    {
-      id: 281,
-      name: "Alexey",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:42.369Z",
-      isMembership: false,
-      blogOwnerInfo: { userId: 182, userLogin: "9148lg" },
-    },
-    {
-      id: 280,
-      name: "Andrey",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:41.461Z",
-      isMembership: false,
-      blogOwnerInfo: { userId: 182, userLogin: "9148lg" },
-    },
-    {
-      id: 279,
-      name: "Don",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:40.541Z",
-      isMembership: false,
-      blogOwnerInfo: { userId: 182, userLogin: "9148lg" },
-    },
-    {
-      id: 278,
-      name: "John",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:39.621Z",
-      isMembership: false,
-      blogOwnerInfo: { userId: 181, userLogin: "9147lg" },
-    },
-    {
-      id: 277,
-      name: "Gggrrttt",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:38.745Z",
-      isMembership: false,
-      blogOwnerInfo: { userId: 181, userLogin: "9147lg" },
-    },
-    {
-      id: 276,
-      name: "Mima",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:37.833Z",
-      isMembership: false,
-      blogOwnerInfo: { userId: 181, userLogin: "9147lg" },
-    },
-    {
-      id: 275,
-      name: "Dima",
-      description: "description",
-      websiteUrl: "https://someurl.com",
-      createdAt: "2024-08-06T21:07:36.953Z",
-      isMembership: false,
-      blogOwnerInfo: { userId: 181, userLogin: "9147lg" },
+      id: "321",
+      blogOwnerInfo: { userId: "190", userLogin: "6795lg" },
     },
   ],
 };
