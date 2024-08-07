@@ -55,7 +55,7 @@ export class SuperAdminBlogsGetBlogsUseCase implements ICommandHandler<SuperAdmi
         'b."isMembership" AS "isMembership"',
         "json_build_object('userId', u.id, 'userLogin', u.login) AS \"blogOwnerInfo\"",
       ])
-      .orderBy(`b.${command.sortBy}`, command.sortDirecrion);
+      .orderBy(`b."${command.sortBy}"`, command.sortDirecrion);
 
     console.log(".orderBy(`b.${command.sortBy}`, command.sortDirecrion):", command.sortBy, command.sortDirecrion);
 
