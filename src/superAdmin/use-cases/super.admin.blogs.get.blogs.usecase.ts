@@ -69,7 +69,10 @@ export class SuperAdminBlogsGetBlogsUseCase implements ICommandHandler<SuperAdmi
 
     console.log("paginator data after culc:", command.paginator);
 
+    console.log("count request:", query.getQuery());
+
     query = query.skip(command.paginator.skipElements).limit(command.paginator.pageSize);
+    console.log("result request:", query.getQuery());
     const results = (await query.getRawMany()) as {
       id: number;
       name: string;
