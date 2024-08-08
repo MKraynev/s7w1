@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserRepoEntity } from "../../../users/repo/entities/UsersRepoEntity";
 import { BlogRepoEntity } from "../../../blogs/repo/entities/blogs.repo.entity";
 
@@ -7,11 +7,13 @@ export class UserToBlogRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ManyToOne(() => UserRepoEntity, { nullable: false, onDelete: "CASCADE" })
   @JoinColumn({ name: "userId" })
   user: UserRepoEntity;
   @Column()
   userId: number;
 
+  @OneToOne(() => BlogRepoEntity, { nullable: false, onDelete: "CASCADE" })
   @JoinColumn({ name: "blogId" })
   blog: BlogRepoEntity;
   @Column({ nullable: true })
