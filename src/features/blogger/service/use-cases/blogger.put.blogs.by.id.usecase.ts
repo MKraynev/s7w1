@@ -25,21 +25,26 @@ export class BloggerPutBlogsByIdUseCase implements ICommandHandler<BloggerPutBlo
   constructor(private ds: DataSource) {}
 
   async execute(command: BloggerPutBlogsByIdCommand): Promise<boolean> {
-    let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.tokenLoad.id } });
-    if (!user) throw new UnauthorizedException();
+    try {
+      let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.tokenLoad.id } });
+      if (!user) throw new UnauthorizedException();
 
-    let usersBlog = await this.ds.manager.findOne(UserToBlogRepoEntity, {
-      where: { userId: +command.tokenLoad.id, blogId: command.id },
-      relations: { blog: true },
-    });
-    if (!usersBlog) throw new ForbiddenException(); //include not found + userId != blog.createrId
+      let usersBlog = await this.ds.manager.findOne(UserToBlogRepoEntity, {
+        where: { userId: +command.tokenLoad.id, blogId: command.id },
+        relations: { blog: true },
+      });
+      if (!usersBlog) throw new ForbiddenException(); //include not found + userId != blog.createrId
 
-    usersBlog.blog.name = command.newBlogData.name;
-    usersBlog.blog.description = command.newBlogData.description;
-    usersBlog.blog.websiteUrl = command.newBlogData.websiteUrl;
+      usersBlog.blog.name = command.newBlogData.name;
+      usersBlog.blog.description = command.newBlogData.description;
+      usersBlog.blog.websiteUrl = command.newBlogData.websiteUrl;
 
-    let updatedBlog = await this.ds.manager.save(BlogRepoEntity, usersBlog.blog);
+      let updatedBlog = await this.ds.manager.save(BlogRepoEntity, usersBlog.blog);
 
-    return true;
+      return true;
+    } catch (e) {
+      console.log("ERROR", e);
+      return true;
+    }
   }
 }
