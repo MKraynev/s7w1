@@ -25,7 +25,7 @@ export class BloggerPutBlogsByIdUseCase implements ICommandHandler<BloggerPutBlo
   constructor(private ds: DataSource) {}
 
   async execute(command: BloggerPutBlogsByIdCommand): Promise<boolean> {
-    let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.id } });
+    let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.tokenLoad.id } });
     if (!user) throw new UnauthorizedException();
 
     let usersBlog = await this.ds.manager.findOne(UserToBlogRepoEntity, {
