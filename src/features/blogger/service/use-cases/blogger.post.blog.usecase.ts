@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { ForbiddenException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { DataSource } from "typeorm";
 import { UserRepoEntity } from "../../../users/repo/entities/UsersRepoEntity";
@@ -36,24 +36,29 @@ export class BloggerPostBlogUseCase implements ICommandHandler<BloggerPostBlogCo
   constructor(private ds: DataSource) {}
 
   async execute(command: BloggerPostBlogCommand): Promise<BloggerPostNewBlogResult> {
-    let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.userId } });
-    if (!user) throw new UnauthorizedException();
+    try {
+      let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.userId } });
+      if (!user) throw new UnauthorizedException();
 
-    let savedBlog = await this.ds.manager.save(
-      BlogRepoEntity,
-      BlogRepoEntity.Init(new BlogCreateEntity(command.name, command.description, command.websiteUrl)),
-    );
+      let savedBlog = await this.ds.manager.save(
+        BlogRepoEntity,
+        BlogRepoEntity.Init(new BlogCreateEntity(command.name, command.description, command.websiteUrl)),
+      );
 
-    let savedLink = await this.ds.manager.save(UserToBlogRepoEntity, UserToBlogRepoEntity.Init(user, savedBlog));
+      let savedLink = await this.ds.manager.save(UserToBlogRepoEntity, UserToBlogRepoEntity.Init(user, savedBlog));
 
-    return new BloggerPostNewBlogResult(
-      savedBlog.id,
-      savedBlog.name,
-      savedBlog.description,
-      savedBlog.websiteUrl,
-      savedBlog.createdAt,
-      false,
-    );
+      return new BloggerPostNewBlogResult(
+        savedBlog.id,
+        savedBlog.name,
+        savedBlog.description,
+        savedBlog.websiteUrl,
+        savedBlog.createdAt,
+        false,
+      );
+    } catch (e) {
+      console.log(e);
+      throw new ForbiddenException();
+    }
   }
 }
 
