@@ -7,7 +7,7 @@ export class UserToBlogRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => UserRepoEntity, { nullable: false, onDelete: "CASCADE" })
+  @ManyToOne(() => UserRepoEntity, { nullable: false, onDelete: "CASCADE" })
   @JoinColumn({ name: "userId" })
   user: UserRepoEntity;
   @Column()
