@@ -31,12 +31,16 @@ export class BloggerDeleteBlogsByIdUseCase implements ICommandHandler<BloggerDel
       relations: { blog: true, user: true },
     });
 
+    console.log("found blog:", usersBlog);
+
     if (!usersBlog) throw new NotFoundException();
 
     if (usersBlog.userId !== +command.tokenLoad.id) throw new ForbiddenException();
 
     // let delResult = await this.ds.manager.delete(BlogRepoEntity, usersBlog.blog);
     let deleted = await this.ds.manager.createQueryBuilder().delete().from(BlogRepoEntity).where("id = :id", { id: command.id }).execute();
+
+    console.log("Deleted info:", deleted);
 
     return deleted.affected;
   }
