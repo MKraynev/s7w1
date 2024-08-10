@@ -23,7 +23,7 @@ export class BloggerDeleteBlogsByIdUseCase implements ICommandHandler<BloggerDel
   constructor(private ds: DataSource) {}
 
   async execute(command: BloggerDeleteBlogsByIdCommand): Promise<number> {
-    let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.id } });
+    let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.tokenLoad.id } });
     if (!user) throw new UnauthorizedException();
 
     let usersBlog = await this.ds.manager.findOne(UserToBlogRepoEntity, {
