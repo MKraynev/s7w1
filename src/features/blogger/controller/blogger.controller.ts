@@ -1,4 +1,19 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, Redirect, Res, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  Query,
+  Redirect,
+  Res,
+  UseGuards,
+} from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "../../../guards/common/JwtAuthGuard";
 import { ReadAccessToken } from "../../../jwt/decorators/JwtRequestReadAccessToken";
@@ -9,6 +24,7 @@ import { BloggerPostBlogCommand, BloggerPostNewBlogResult, BloggerPostBlogUseCas
 import { BloggerPutBlogsByIdCommand } from "../service/use-cases/blogger.put.blogs.by.id.usecase";
 import { BloggerDeleteBlogsByIdCommand } from "../service/use-cases/blogger.delete.blogs.by.id.usecase";
 import { BloggerControllerPostBlogsPostByBlogIdEntity } from "./entities/blogger.controller.post.blogs.post.by.blog.id.entity";
+import { NotFoundError } from "rxjs";
 
 @Controller("blogger/blogs")
 @UseGuards(JwtAuthGuard)
@@ -34,10 +50,14 @@ export class BloggerController {
   @HttpCode(HttpStatus.NO_CONTENT)
   public async DeleteBlogById(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad, @Param("id") id: string) {
     console.log("Delete inputData:", tokenLoad, id);
-
-    let command = new BloggerDeleteBlogsByIdCommand(tokenLoad, id);
-    let result = await this.comandBus.execute<BloggerDeleteBlogsByIdCommand, number>(command);
-    return;
+    try {
+      let command = new BloggerDeleteBlogsByIdCommand(tokenLoad, id);
+      let result = await this.comandBus.execute<BloggerDeleteBlogsByIdCommand, number>(command);
+      return;
+    } catch (e) {
+      console.log(e);
+      throw new NotFoundException();
+    }
   }
 
   @Post(":id/posts")

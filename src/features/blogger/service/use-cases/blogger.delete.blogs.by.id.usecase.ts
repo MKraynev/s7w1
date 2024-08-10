@@ -12,8 +12,8 @@ export class BloggerDeleteBlogsByIdCommand {
     public tokenLoad: JwtServiceUserAccessTokenLoad,
     id: string,
   ) {
+    if (isNaN(+id)) throw new NotFoundException();
     this.id = +id;
-    if (isNaN(this.id)) throw new NotFoundException();
   }
 }
 
@@ -23,25 +23,20 @@ export class BloggerDeleteBlogsByIdUseCase implements ICommandHandler<BloggerDel
   constructor(private ds: DataSource) {}
 
   async execute(command: BloggerDeleteBlogsByIdCommand): Promise<number> {
-    try {
-      let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.id } });
-      if (!user) throw new UnauthorizedException();
+    let user = await this.ds.manager.findOne(UserRepoEntity, { where: { id: +command.id } });
+    if (!user) throw new UnauthorizedException();
 
-      let usersBlog = await this.ds.manager.findOne(UserToBlogRepoEntity, {
-        where: { blogId: command.id },
-        relations: { blog: true, user: true },
-      });
+    let usersBlog = await this.ds.manager.findOne(UserToBlogRepoEntity, {
+      where: { blogId: command.id },
+      relations: { blog: true, user: true },
+    });
 
-      if (!usersBlog) throw new NotFoundException();
+    if (!usersBlog) throw new NotFoundException();
 
-      if (usersBlog.userId !== +command.tokenLoad.id) throw new ForbiddenException();
+    if (usersBlog.userId !== +command.tokenLoad.id) throw new ForbiddenException();
 
-      let delResult = await this.ds.manager.delete(BlogRepoEntity, usersBlog.blog);
+    let delResult = await this.ds.manager.delete(BlogRepoEntity, usersBlog.blog);
 
-      return delResult.affected;
-    } catch (e) {
-      console.log(e);
-      throw new NotFoundException();
-    }
+    return delResult.affected;
   }
 }
