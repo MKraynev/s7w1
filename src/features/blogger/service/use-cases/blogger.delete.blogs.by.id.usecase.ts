@@ -28,7 +28,7 @@ export class BloggerDeleteBlogsByIdUseCase implements ICommandHandler<BloggerDel
 
     let usersBlog = await this.ds.manager.findOne(UserToBlogRepoEntity, {
       where: { blogId: command.id },
-      relations: { blog: true },
+      relations: { blog: true, user: true },
     });
 
     if (!usersBlog) throw new NotFoundException();
